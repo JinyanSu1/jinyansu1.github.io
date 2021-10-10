@@ -1,0 +1,36 @@
+# jemdoc: menu{MENU.txt}{index.html}, nofooter
+# jemdoc: addcss{person.css}, showsource 
+= Jinyan Su (Former name: Hui Zhang)
+
+
+~~~
+{}{img_left}{photo.jpg}{81.85px}{127.35px}{Jinyan Su}
+
+Forth year mathmatical student (Undergraudate)\n 
+[http://en.uestc.edu.cn/ UESTC] \n
+[https://www.math.uestc.edu.cn/  School of mathematical sciences]\n
+Visiting student at [https://www.kaust.edu.sa/ KAUST]\n
+\n
+Email: /jinyansu.huizhang/ \[@\] outlook \[DOT\] com\n
+\[[https://scholar.google.com.tw/citations?user=qbb5A1YAAAAJ&hl=en/ Google Scholar]\]    
+~~~
+
+
+== Research
+My research interests include
+- Differential Privacy; Security; Learning theory; Reinforcement Learning; Game theory.
+
+=== Publicated and preprints
+. *Jinyan Su*, Di Wang*, \"Faster Rates of Differentially Private Stochastic Convex Optimization\", (Submited to International Conference on Algorithmic Learning Theory （ALT)) \[[https://arxiv.org/abs/2108.00331/ arxiv]\].
+. *Hui Zhang*, Yong Deng*, \"Entropy measure for orderable sets\",  Information Sciences, 2021, \[[https://www.sciencedirect.com/science/article/abs/pii/S0020025521001110/ PDF]\].
+=== Submited papers
+. Dong Hao\*, *Jinyan Su*, Shi Qi, [https://personal.ntu.edu.sg/boan/ Bo An], \"Cooperation, Retaliation and Forgiveness in Revision Games\", (Submitted to AAAI 2022), (*I am the student first author*).
+. *Jinyan Su*, Yong Deng*, [https://smt.sutd.edu.sg/people/faculty/cheong-kang-hao Kang Hao Cheonge], \"Coalition size based social ranking solution,\", (Submitted to Information sciences).
+=== In preparation
+. *Jinyan Su*, Di Wang*, \"On Learning Halfspaces with Public Unlabeled Data in Non-interactive LDP Model\"
+
+
+
+== Teaching
+- I am a teaching assistant of UESTC summer school: Application of matrix, 2019.
+

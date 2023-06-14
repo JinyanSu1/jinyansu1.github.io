@@ -1,22 +1,18 @@
 I am Jinyan Su. 
+
 ## Contact
 Email: jinyansu6@gmail.com
 <br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/);
 
 ## Papers
 (\* denotes equal contribution)
-<!--
-- DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text.
+
+- DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text.(https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.
-
-
 - [M4: Multi-generator, Multi-domain, and Multi-lingual Black-Box Machine-Generated Text Detection](https://arxiv.org/abs/2305.14902)
 <br>Yuxia Wang, Jonibek Mansurov\*, Petar Ivanov\*, **Jinyan Su\***, Artem Shelmanov\*, Akim Tsvigun, Chenxi Whitehouse, Osama Mohammed Afzal, Tarek Mahmoud, Alham Fikri Aji, Preslav Nakov.
-
-
 - Leveraging Large Language Models for Structure Learning in Prompted Weak Supervision
 <br>**Jinyan Su\***, Peilin Yu\*, Jieyu Zhang, Stephen H. Bach.
--->
 - [Differentially Private Stochastic Convex Optimization in (Non)-Euclidean Space Revisited](https://arxiv.org/abs/2303.18047)
 <br>**Jinyan Su**, Changhong Zhao, Di Wang.
 <br>*UAI 2023*.
@@ -42,5 +38,5 @@ Email: jinyansu6@gmail.com
 <br> 2021.4 - 2021.10
 
 ## Misc
-- I spend huge amount of my time reading books and watching TV series. From 2023.4, I started to keep track of [them](https://github.com/JinyanSu1/jinyansu1.github.io/blob/main/Entertainment/TV_series.md).
+- I spend huge amount of time watching TV series. Now, I finally decided to make lists of [them](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).
 

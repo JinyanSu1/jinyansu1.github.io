@@ -7,7 +7,7 @@ Email: jinyansu6@gmail.com
 ## Papers
 (\* denotes equal contribution)
 
-- DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text.(https://arxiv.org/pdf/2306.05540.pdf)
+- [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.
 - [M4: Multi-generator, Multi-domain, and Multi-lingual Black-Box Machine-Generated Text Detection](https://arxiv.org/abs/2305.14902)
 <br>Yuxia Wang, Jonibek Mansurov\*, Petar Ivanov\*, **Jinyan Su\***, Artem Shelmanov\*, Akim Tsvigun, Chenxi Whitehouse, Osama Mohammed Afzal, Tarek Mahmoud, Alham Fikri Aji, Preslav Nakov.

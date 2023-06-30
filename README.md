@@ -38,5 +38,6 @@ Email: jinyansu6@gmail.com
 <br> 2021.4 - 2021.10
 
 ## Misc
-- I spend huge amount of time watching TV series. Now, I finally decided to make lists of [them](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).
+- I spend huge amount of time watching [TV series](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).
+- I spoil my messy and noisy ADHD brain with [regular routines](https://jinyansu.notion.site/Habit-tracker-4f080a775dda48f29393b77caa749893?pvs=4).
 

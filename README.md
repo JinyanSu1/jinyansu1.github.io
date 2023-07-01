@@ -39,5 +39,5 @@ Email: jinyansu6@gmail.com
 
 ## Misc
 - I spend huge amount of time watching [TV series](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).
-- I organize my noisy brain and messy ADHD routine with (constanly changing) [experimental rules](https://jinyansu.notion.site/Habit-tracker-4f080a775dda48f29393b77caa749893?pvs=4).
+
 

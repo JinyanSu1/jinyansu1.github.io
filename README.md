@@ -1,4 +1,6 @@
-I am Jinyan Su. 
+I am Jinyan Su. I do research in machine learning and natural language processing. 
+
+I am eager to explore problems from real data and am actively looking for part time/full time research intern opportunities. Please don't hesitate to contact me resume if you have such opportunity:)
 
 ## Contact
 Email: jinyansu6@gmail.com
@@ -26,16 +28,9 @@ Email: jinyansu6@gmail.com
 
 
 ## Education
-- Cornell University - Ph.D. in Computer Science  (2023 - 2028). 
+- Cornell University - Ph.D. in Computer Science  (2023 - present). 
 - University of electronic and science technology in China(UESTC) - B.S. in information and computing sciences (2018 - 2022).
 
-## Working Experience
-- Mohamed bin Zayed University of Artificial Intelligence(MBZUAI) - Research Assistant
-<br> 2022.09 - 2023.8
-- The Chinese University of Hong Kong(CUHK) - Research Assistant
-<br> 2021.12 - 2022.4
-- King Abdullah University of Science and Technology(KAUST) - Research Intern
-<br> 2021.4 - 2021.10
 
 ## Misc
 - I spend huge amount of time watching [TV series](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).

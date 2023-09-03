@@ -1,9 +1,9 @@
 I am Jinyan Su. I do research in machine learning and natural language processing. 
 
-I am eager to explore problems from real data and am actively looking for part time/full time research intern opportunities. Please don't hesitate to contact me resume if you have such opportunity:)
+I am eager to explore problems from real data and am actively looking for part time/full time research intern opportunities. Please don't hesitate to contact me for resume if you have such opportunity:)
 
 ## Contact
-Email: jinyansu6@gmail.com
+Email: js3673[@]cornell.edu
 <br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/);
 
 ## Papers

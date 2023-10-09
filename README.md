@@ -11,10 +11,7 @@ Email: js3673[@]cornell.edu
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.
-- [M4: Multi-generator, Multi-domain, and Multi-lingual Black-Box Machine-Generated Text Detection](https://arxiv.org/abs/2305.14902)
-<br>Yuxia Wang, Jonibek Mansurov\*, Petar Ivanov\*, **Jinyan Su\***, Artem Shelmanov\*, Akim Tsvigun, Chenxi Whitehouse, Osama Mohammed Afzal, Tarek Mahmoud, Alham Fikri Aji, Preslav Nakov.
-- Leveraging Large Language Models for Structure Learning in Prompted Weak Supervision
-<br>**Jinyan Su\***, Peilin Yu\*, Jieyu Zhang, Stephen H. Bach.
+<br>*Findings of EMNLP 2023*.
 - [Differentially Private Stochastic Convex Optimization in (Non)-Euclidean Space Revisited](https://arxiv.org/abs/2303.18047)
 <br>**Jinyan Su**, Changhong Zhao, Di Wang.
 <br>*UAI 2023*.
@@ -31,8 +28,5 @@ Email: js3673[@]cornell.edu
 - Cornell University - Ph.D. in Computer Science  (2023 - present). 
 - University of electronic and science technology in China(UESTC) - B.S. in information and computing sciences (2018 - 2022).
 
-
-## Misc
-- I spend huge amount of time watching [TV series](https://jinyansu.notion.site/a588c6c2e70b4142b82df57822295b10?v=19754f469af548c49bca8eafc20656c2&pvs=4).
 
 

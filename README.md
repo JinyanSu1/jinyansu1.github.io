@@ -1,6 +1,4 @@
-I am Jinyan Su. I do research in machine learning and natural language processing. 
 
-I am eager to explore problems from real data and am actively looking for part time/full time research intern opportunities. Please don't hesitate to contact me for resume if you have such opportunity:)
 
 ## Contact
 Email: js3673[@]cornell.edu

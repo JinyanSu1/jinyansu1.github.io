@@ -2,7 +2,7 @@
 
 ## Contact
 Email: js3673[@]cornell.edu
-<br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/);
+<br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/); [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&view_op=list_works&gmla=AP6z3ObywXQ3lTcNEvGJ5_6uUzoS1-MWO44ZfYnB3R7Ij4Q3Y-B2VjQrRwXjXdN0p1z8zNgjOTExzj5acAcoOyXg9Hg&user=yRNsFuMAAAAJ)
 
 ## Papers
 (\* denotes equal contribution)

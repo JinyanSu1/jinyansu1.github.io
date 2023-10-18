@@ -1,4 +1,4 @@
-She/her \|\| They/them🌈
+She/her \|\| They/them
 
 ## Contact
 Email: js3673[@]cornell.edu

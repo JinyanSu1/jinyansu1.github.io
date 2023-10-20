@@ -26,5 +26,5 @@ Email: js3673[@]cornell.edu
 - Cornell University - Ph.D. in Computer Science  (2023 - present). 
 - University of electronic and science technology in China(UESTC) - B.S. in information and computing sciences (2018 - 2022).
 
-## [Blog](https://jinyansu.notion.site/jinyansu/Blog-9477b268fe984e69ba0d20f49c9838f1)
+
 

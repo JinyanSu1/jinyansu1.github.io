@@ -1,11 +1,15 @@
 She/her \|\| They/them
-
+## Research interest
+- ML theory
+- Natural language processing
+  
 ## Contact
 Email: js3673[@]cornell.edu
 <br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/); [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1)
 
 ## Papers
 (\* denotes equal contribution)
+
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.

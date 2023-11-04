@@ -1,7 +1,7 @@
-She/her \|\| They/them
-## Research interest
-- ML theory
-- Natural language processing
+Hi, I am Jinyan, currently a first year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) on natural language processing and [Sarah Dean](https://sdean.website/) on some ML theory. Before my PhD, I was quite lucky to collaborate with [Preslav Nakov](https://scholar.google.com/citations?user=DfXsKZ4AAAAJ&hl=en), [Stephan Bach](https://cs.brown.edu/people/sbach/), [Di Wang](https://shao3wangdi.github.io/), and [Changhong Zhao](https://scholar.google.com/citations?user=Xpx6WYoAAAAJ&hl=en).
+
+
+
   
 ## Contact
 Email: js3673[@]cornell.edu

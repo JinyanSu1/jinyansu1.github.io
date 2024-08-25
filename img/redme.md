@@ -1,7 +1,9 @@
-Hi, I am Jinyan, currently a first year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Sarah Dean](https://sdean.website/). Before my PhD, I was quite lucky to collaborate with [Preslav Nakov](https://scholar.google.com/citations?user=DfXsKZ4AAAAJ&hl=en), [Stephan Bach](https://cs.brown.edu/people/sbach/), [Di Wang](https://shao3wangdi.github.io/), and [Changhong Zhao](https://scholar.google.com/citations?user=Xpx6WYoAAAAJ&hl=en).
+Hi, I am Jinyan, currently a second year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Wen Sun](https://wensun.github.io/). I was also quite lucky to collaborate with [Sarah Dean](https://sdean.website/). 
+
+
 ## Research interest
-- Natural language processing
-- ML theory
+- Multi-objective Personalization
+
 
 
 
@@ -12,6 +14,7 @@ Email: js3673[@]cornell.edu
 
 ## Papers
 (\* denotes equal contribution)
+
 
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)

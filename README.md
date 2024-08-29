@@ -18,7 +18,7 @@ Email: js3673[@]cornell.edu
 
 
 - [Learning from Streaming Data when Users Choose](https://proceedings.mlr.press/v235/su24a.html)
-  <br>**Jinyan Su**u, Sarah Dean.
+  <br>**Jinyan Su**, Sarah Dean.
   <br>*ICML 2024*
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)

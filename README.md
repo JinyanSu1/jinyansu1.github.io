@@ -1,34 +1,29 @@
 Hi, I am Jinyan, currently a second year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Wen Sun](https://wensun.github.io/). I was also quite lucky to collaborate with [Sarah Dean](https://sdean.website/). 
 
 
-## Research interest
-- Multi-objective Personalization
-
+## Recent Research interest
+- LLM alignment
+- Privacy and safety issues induced by LLM
+- LLM data augmentation
 
 
 
   
 ## Contact
 Email: js3673[@]cornell.edu
-<br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/); [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1)
+<br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/); 
 
-## Papers
+## Selected publications (More recent ones can be find in my [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1))
 (\* denotes equal contribution)
 
-
+- [Learning from Streaming Data when Users Choose](https://proceedings.mlr.press/v235/su24a.html)
+  <br>**Jinyan Su**u, Sarah Dean.
+  <br>*ICML 2024*
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.
 <br>*Findings of EMNLP 2023*.
-- [Differentially Private Stochastic Convex Optimization in (Non)-Euclidean Space Revisited](https://arxiv.org/abs/2303.18047)
-<br>**Jinyan Su**, Changhong Zhao, Di Wang.
-<br>*UAI 2023*.
-- [On PAC Learning Halfspaces in Non-interactive Local Privacy Model with Public Unlabeled Data](https://arxiv.org/abs/2209.08319)
-<br>**Jinyan Su**, Jinhui Xu, Di Wang.
-<br>*ACML 2022*. <font color=red>Best paper award</font>
-- [Faster Rates of Private Stochastic Convex Optimization](https://arxiv.org/abs/2108.00331)
-<br>**Jinyan Su**, Lijie Hu, Di Wang.
-<br>*ALT 2022*.
+
 
 
 

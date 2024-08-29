@@ -13,7 +13,8 @@ Hi, I am Jinyan, currently a second year PhD student at Cornell university worki
 Email: js3673[@]cornell.edu
 <br>[Twitter](https://twitter.com/SuJinyan6); [Linkedin](https://www.linkedin.com/in/jinyan-su-b3b856276/); 
 
-## Selected publications (More recent ones can be find in my [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1))
+## Selected publications 
+# (More recent ones can be find in my [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1))
 (\* denotes equal contribution)
 
 - [Learning from Streaming Data when Users Choose](https://proceedings.mlr.press/v235/su24a.html)

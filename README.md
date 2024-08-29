@@ -1,10 +1,11 @@
-Hi, I am Jinyan, currently a second year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Wen Sun](https://wensun.github.io/). I was also quite lucky to collaborate with [Sarah Dean](https://sdean.website/). 
+Hi, I am Jinyan, currently a second year PhD student at Cornell university working with [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Wen Sun](https://wensun.github.io/). I was also quite lucky to collaborate with [Sarah Dean](https://sdean.website/). You can find my CV [here](https://www.overleaf.com/read/ndtqsxqddgxv#3e222d).
 
 
 ## Recent Research interest
 - LLM alignment
 - Privacy and safety issues induced by LLM
 - LLM data augmentation
+
 
 
 

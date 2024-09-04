@@ -1,4 +1,4 @@
-Hi, I am Jinyan, currently a second year PhD student at Cornell university. <span style="color:red">You can find my CV [here]([https://drive.google.com/file/d/1ZF6QiqHQsNCV82Y2DHgT0kZTmSPz6QSG/view?usp=sharing]).
+Hi, I am Jinyan, currently a second year PhD student at Cornell university. <span style="color:red">You can find my CV [here](https://drive.google.com/file/d/1ZF6QiqHQsNCV82Y2DHgT0kZTmSPz6QSG/view?usp=sharing).
 </span>.
 
 ## Recent Research interest

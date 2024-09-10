@@ -1,5 +1,5 @@
 Hi, I am Jinyan, currently a second year MS/PhD student at Cornell university.
-</span>.
+
 
 ## Recent Research interest
 - LLM alignment

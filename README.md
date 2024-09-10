@@ -1,4 +1,4 @@
-Hi, I am Jinyan, currently a second year PhD student at Cornell university.
+Hi, I am Jinyan, currently a second year MS/PhD student at Cornell university.
 </span>.
 
 ## Recent Research interest

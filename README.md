@@ -25,6 +25,10 @@ Email: js3673[@]cornell.edu
  <br>Yuxia Wang, Jonibek Mansurov, Petar Ivanov, **Jinyan Su**, Artem Shelmanov, Akim Tsvigun, Osama Mohanned Afzal, Tarek Mahmoud, Giovanni Puccetti, Thomas Arnold, Alham Fikri Aji, Nizar Habash, Iryna Gurevych, Preslav Nakov
 <br> *ACL 2024*
 
+- [Adapting Fake News Detection to the Era of Large Language Models](https://arxiv.org/pdf/2311.04917)
+<br>**Jinyan Su**, Claire Cardie, Preslav Nakov
+<br>*Findings of NAACL 2024*
+
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.
 <br>*Findings of EMNLP 2023*.

@@ -17,6 +17,9 @@ Email: js3673[@]cornell.edu
 ## Publications 
 [Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=yRNsFuMAAAAJ&view_op=list_works&authuser=1)
 
+- [Corpus Poisoning via  Approximate Greedy Gradient Descent](https://arxiv.org/pdf/2406.05087)
+<br>**Jinyan Su**, John X Morris, Preslav Nakov, Claire Cardie.
+
 - [Learning from Streaming Data when Users Choose](https://arxiv.org/pdf/2406.01481)
   <br>**Jinyan Su**, Sarah Dean
   <br> *ICML 2024*
@@ -28,6 +31,10 @@ Email: js3673[@]cornell.edu
 - [Adapting Fake News Detection to the Era of Large Language Models](https://arxiv.org/pdf/2311.04917)
 <br>**Jinyan Su**, Claire Cardie, Preslav Nakov
 <br>*Findings of NAACL 2024*
+
+- [M4: Multi-generator, Multi-domain, and Multi-lingual Black-Box Machine-Generated Text Detection.](https://arxiv.org/pdf/2305.14902)
+<br>Yuxia Wang, Jonibek Mansurov*, Petar Ivanov*, **Jinyan Su***, Artem Shelmanov*, Akim Tsvigun, Chenxi Whitehouse, Osama Mohammed Afzal, Tarek Mahmoud, Alham Fikri Aji, Preslav Nakov.
+<br>EACL 2024 <span style="color:red">(Resource paper award)</span>.
 
 - [DetectLLM: Leveraging Log Rank Information for Zero-Shot Detection of Machine-Generated Text](https://arxiv.org/pdf/2306.05540.pdf)
 <br>**Jinyan Su**, Terry Yue Zhuo, Di Wang, Preslav Nakov.

@@ -44,6 +44,22 @@ Email: js3673[@]cornell.edu
 <br>**Jinyan Su***, Peilin Yu*, Jieyu Zhang, Stephen H Bach.
 <br>*IEEE BigData 2023*
 
+- [Differentially Private Stochastic Convex Optimization in (Non)-Euclidean Space Revisited](https://proceedings.mlr.press/v216/su23b/su23b.pdf) 
+<br>**Jinyan Su**, Changhong Zhao, Di Wang.
+<br>UAI 2023
+
+
+- [On PAC Learning Halfspaces in Non-interactive Local Privacy Model with Public Unlabeled Data.](https://proceedings.mlr.press/v189/su23a/su23a.pdf)
+<br>**Jinyan Su**, Jinhui Xu, Di Wang
+<br>ACML 2022 <span style="color:red">(Best paper award)</span>.
+
+- [Faster Rates of Private Stochastic Convex Optimization](https://proceedings.mlr.press/v167/su22a/su22a.pdf)
+<br>**Jinyan Su**, Lijie Hu, Di Wang, 
+<br>ALT 2022
+
+
+
+
 
 ## Education
 - Cornell University - Ph.D. in Computer Science  (2023 - present). 

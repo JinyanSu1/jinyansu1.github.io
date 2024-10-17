@@ -3,7 +3,7 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 
 
 
-**Research interest**: I am currently interested in LLM/AI safety and responsibility, with a particular interest in ensuring that the development of LLMs and other AI algorithms is aligned with social good. My goal is to build ML/AI systems that meet diverse user needs while addressing concerns such as privacy and misinformation. 
+**Research interest**: I am currently interested in LLM/AI safety and responsibility, with a particular interest in ensuring that the development of LLMs and other AI algorithms is aligned with public good. My goal is to build ML/AI systems that meet diverse user needs while addressing concerns such as privacy and misinformation. 
 
 **Past research summary**: 
 - Safe AI with human guidance. 

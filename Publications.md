@@ -34,7 +34,7 @@
 <br>UAI 2023
 
 ## 2022
-- Privacy Model with Public Unlabeled Data.](https://proceedings.mlr.press/v189/su23a/su23a.pdf)
+- [Privacy Model with Public Unlabeled Data.](https://proceedings.mlr.press/v189/su23a/su23a.pdf)
 <br>**Jinyan Su**, Jinhui Xu, Di Wang
 <br>ACML 2022 <span style="color:red">(Best paper award)</span>.
 

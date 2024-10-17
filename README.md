@@ -14,7 +14,7 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 
 - Design machine learning algorithms that are differentially private ([ALT 2022](https://proceedings.mlr.press/v167/su22a/su22a.pdf), [ACML 2022](https://proceedings.mlr.press/v189/su23a/su23a.pdf); [UAI 2023](https://proceedings.mlr.press/v216/su23b/su23b.pdf))
 
-
+More publications can be find in my [google scholar](https://scholar.google.com/citations?user=yRNsFuMAAAAJ&hl=zh-CN). 
 
   
 ## 📫 Contact

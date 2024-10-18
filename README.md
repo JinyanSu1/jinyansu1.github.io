@@ -9,11 +9,11 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 **Past research summary**:
 - Design safe exploration algorithm that use human expert oversight to ensure a safe and responsible decision making. ([Manuscript 2024](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing))
 
-- Design algorithms that are tailored to diverse user preferences ([ICML 2024](https://arxiv.org/pdf/2406.01481))
+- [Design algorithms that are tailored to diverse user preferences](https://arxiv.org/pdf/2406.01481)
 
-- Safeguard AI from misuse such as spreading misinformation, for example, I design algorithm and build benchmarks for detecting machine generated texts ([Findings of EMNLP 2023](https://arxiv.org/pdf/2306.05540.pdf), [EACL 2024](https://arxiv.org/pdf/2305.14902), [ACL 2024](https://arxiv.org/pdf/2402.11175)), and fake news ([NAACL 2024](https://arxiv.org/pdf/2311.04917)), as well as corpus attack on retrieval system ([Manuscript 2024](https://arxiv.org/pdf/2406.05087)). 
+- Safeguard AI from misuse such as spreading misinformation, for example, I design algorithm and build benchmarks such as [M4](https://arxiv.org/pdf/2305.14902) and [M4GT-Bench](https://arxiv.org/pdf/2402.11175), and methods such as [DetectLLM](https://arxiv.org/pdf/2306.05540.pdf) for detecting machine generated texts, and [fake news detection](https://arxiv.org/pdf/2311.04917), as well as [corpus attack on retrieval system](https://arxiv.org/pdf/2406.05087). 
 
-- Design machine learning algorithms that are differentially private ([ALT 2022](https://proceedings.mlr.press/v167/su22a/su22a.pdf), [ACML 2022](https://proceedings.mlr.press/v189/su23a/su23a.pdf); [UAI 2023](https://proceedings.mlr.press/v216/su23b/su23b.pdf))
+- Design machine learning algorithms that are differentially private (such as [Fast DPSCO](https://proceedings.mlr.press/v167/su22a/su22a.pdf), [Non-interactive LDP](https://proceedings.mlr.press/v189/su23a/su23a.pdf); [DPSCO in non-Euclidean space](https://proceedings.mlr.press/v216/su23b/su23b.pdf))
 
 More publications can be find in my [google scholar](https://scholar.google.com/citations?user=yRNsFuMAAAAJ&hl=zh-CN). 
 

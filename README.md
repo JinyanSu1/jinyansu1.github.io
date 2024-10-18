@@ -7,9 +7,9 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 
 
 **Past research summary**:
-- Design safe exploration algorithm that use human expert oversight to ensure a safe and responsible decision making. ([Manuscript 2024](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing))
+- Design safe exploration algorithm [MixUCB](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing) that use human expert oversight to ensure a safe and responsible decision making. 
 
-- [Design algorithms that are tailored to diverse user preferences](https://arxiv.org/pdf/2406.01481)
+- Design algorithms [MSGD](https://arxiv.org/pdf/2406.01481) that is tailored to diverse user preferences
 
 - Safeguard AI from misuse such as spreading misinformation, for example, I design algorithm and build benchmarks such as [M4](https://arxiv.org/pdf/2305.14902) and [M4GT-Bench](https://arxiv.org/pdf/2402.11175), and methods such as [DetectLLM](https://arxiv.org/pdf/2306.05540.pdf) for detecting machine generated texts, and [fake news detection](https://arxiv.org/pdf/2311.04917), as well as [corpus attack on retrieval system](https://arxiv.org/pdf/2406.05087). 
 

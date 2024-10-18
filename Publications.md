@@ -1,6 +1,9 @@
-### Preprint
+### Manuscript
 - [Corpus Poisoning via  Approximate Greedy Gradient Descent](https://arxiv.org/pdf/2406.05087)
 <br>**Jinyan Su**, Preslav Nakov, Claire Cardie.
+
+- [MixUCB: Enhancing Safe Exploration in Contextual Bandits with Human Oversight](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing)
+<br>**Jinyan Su**, Jiankai Sun, Rohan Banerjee, Wen Sun, Sarah Dean. 
 
 
 ### 2024

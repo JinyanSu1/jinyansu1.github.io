@@ -3,12 +3,12 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 
 
 
-**Research interest**: I am currently interested in LLM/AI safety and responsibility, with a particular interest in ensuring that the development of LLMs and other AI algorithms is aligned with public good. My goal is to build ML/AI systems that meet diverse user needs while addressing concerns such as privacy and misinformation. 
+**Research interest**: I am currently interested in safe and responsible use of AI/LLM, ensuring that the development of LLMs and other AI algorithms is aligned with their initial goal of social good. This includes questions such as: how to personalize AI/LLM with diverse user needs and preferences; how to prevent AI/LLM misuse such as spreading misinformation; how to make sure the rapid advancement of AI/LLM doesn't come with a sacrifice of our privacy. 
 
-**Past research summary**: 
-- Safe AI with human guidance. 
 
-- Design algorithms that are tailored to diverse user preferences ([ICML 2024](https://arxiv.org/pdf/2406.01481)), LLM personalization (on going). 
+**Past research summary**:
+
+- Design algorithms that are tailored to diverse user preferences ([ICML 2024](https://arxiv.org/pdf/2406.01481))
 
 - Safeguard AI from misuse such as spreading misinformation, for example, I design algorithm and build benchmarks for detecting machine generated texts ([Findings of EMNLP 2023](https://arxiv.org/pdf/2306.05540.pdf), [EACL 2024](https://arxiv.org/pdf/2305.14902), [ACL 2024](https://arxiv.org/pdf/2402.11175)), and fake news ([NAACL 2024](https://arxiv.org/pdf/2311.04917)), as well as corpus attack on retrieval system ([preprint](Corpus Poisoning via  Approximate Greedy Gradient Descent)). 
 

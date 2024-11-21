@@ -3,10 +3,14 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 
 
 
-**Research interest**: I am currently interested in safe and responsible use of AI/LLM, ensuring that the development of LLMs and other AI algorithms is aligned with their initial goal of social good. This includes questions such as: how to personalize AI/LLM with diverse user needs and preferences; how to prevent AI/LLM misuse such as spreading misinformation; how to make sure the rapid advancement of AI/LLM doesn't come with a sacrifice of our privacy; how to combine the most core component: human, to AI system to oversight the safe use of AI system. 
+**Research interest**: I am currently interested in 3 topics:
+- **LLM reasoning**: how to improve LLM to think and solve complext problem such as math and coding. 
+- **LLM personalization**: how to personalize LLM without using resource intensive approaches such as fine-tuning. 
+- **Retrieval augmented generation**: how to design better and controlable RAG system to fit for different user cases and balance factual correctness and contextual correctness. 
 
 
 **Past research summary**:
+In the past, I worked on safe and responsible use of AI/LLM, including 
 - Design safe exploration algorithm that use human expert oversight to ensure a safe and responsible decision making. (see [MixUCB](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing) )
 
 - Design algorithms that are tailored to diverse user preferences (see [MSGD](https://arxiv.org/pdf/2406.01481))

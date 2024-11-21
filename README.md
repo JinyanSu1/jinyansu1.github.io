@@ -9,7 +9,7 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 - **Retrieval augmented generation**: how to design better and controlable RAG system to fit for different user cases and balance factual correctness and contextual correctness. 
 
 
-**Past research summary**:
+
 In the past, I worked on safe and responsible use of AI/LLM, including 
 - Design safe exploration algorithm that use human expert oversight to ensure a safe and responsible decision making. (see [MixUCB](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing) )
 

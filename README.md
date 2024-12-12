@@ -1,5 +1,4 @@
-Hi, I am Jinyan, currently a second year CS PhD student at Cornell university advised by [Claire Cardie](https://www.cs.cornell.edu/home/cardie/). I was fortunate to work with [Wen Sun](https://wensun.github.io/) and [Sarah Dean](https://sdean.website/) on understanding dynamics in machine learning systems, inspired by applications such as recommendation system. Before that, I worked for a year at MBZUAI with [Preslav Nakov](https://mbzuai.ac.ae/study/faculty/preslav-nakov/) working on fake news and machine generated texts detection, which gets me into the journey of NLP research. During my undergrad, I majored in math and studied research in the intersection of machine learning theory and privacy with [Di Wang](https://shao3wangdi.github.io/). 
-
+Hi, I am Jinyan, currently a second year CS PhD student at Cornell university advised by [Claire Cardie](https://www.cs.cornell.edu/home/cardie/). I was fortunate to work with [Wen Sun](https://wensun.github.io/) and [Sarah Dean](https://sdean.website/) on understanding dynamics in machine learning systems, inspired by applications such as recommendation system. 
 
 
 
@@ -25,11 +24,6 @@ A complete list can can be find [here](https://jinyansu1.github.io/Publications.
 ## 📫 Contact
 Email: js3673[@]cornell.edu
 
-
-
-## 🎓 Education
-- Cornell University - Ph.D. in Computer Science  (2023 - present). 
-- University of Electronic and Science Technology in China - B.S. in Mathematical Sciences (2018 - 2022).
 
 
 

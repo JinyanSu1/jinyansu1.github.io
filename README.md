@@ -24,6 +24,9 @@ A complete list can can be find [here](https://jinyansu1.github.io/Publications.
 ## 📫 Contact
 Email: js3673[@]cornell.edu
 
+## Misc
+
+[Thoughts on life](https://jinyansu.notion.site/Personal-15c018db91418098a00fffa03a5c3541?pvs=4). 
 
 
 

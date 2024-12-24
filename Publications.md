@@ -3,8 +3,12 @@
 <br>**Jinyan Su**, Preslav Nakov, Claire Cardie.
 
 - [MixUCB: Enhancing Safe Exploration in Contextual Bandits with Human Oversight](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing)
-<br>**Jinyan Su**, Jiankai Sun, Rohan Banerjee, Wen Sun, Sarah Dean. 
+<br>**Jinyan Su**, Jiankai Sun, Rohan Banerjee, Wen Sun, Sarah Dean.
 
+- [Towards More Robust Retrieval-Augmented Generation:
+Evaluating RAG Under Adversarial Poisoning Attacks
+](https://arxiv.org/pdf/2412.16708)
+  <br>**Jinyan Su**, Jin peng Zhou, Zhengxin Zhang, Preslav Nakov, Claire Cardie.
 
 ### 2024
 - [Learning from Streaming Data when Users Choose](https://arxiv.org/pdf/2406.01481)

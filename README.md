@@ -26,6 +26,7 @@ Email: js3673[@]cornell.edu
 
 ## Misc
 I used to delete my past a lot, because of my obsession in perfectionism, now, I learned to accept my imperfect past, and share to the world, my imperfect past and those struggling might make a small ripple on someone else's life. 
+
 [Blog](https://jinyansu.notion.site/Personal-15c018db91418098a00fffa03a5c3541?pvs=4). 
 
 

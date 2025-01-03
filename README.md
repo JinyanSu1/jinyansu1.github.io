@@ -1,5 +1,4 @@
-Hi, I am Jinyan, currently a second year CS PhD student at Cornell university advised by [Claire Cardie](https://www.cs.cornell.edu/home/cardie/). I was fortunate to work with [Wen Sun](https://wensun.github.io/) and [Sarah Dean](https://sdean.website/) on understanding dynamics in machine learning systems, inspired by applications such as recommendation system. 
-
+Hi, I am Jinyan, currently a second year CS PhD student at Cornell university advised by [Claire Cardie](https://www.cs.cornell.edu/home/cardie/) and [Wen Sun](https://wensun.github.io/).
 
 
 **Research interest**: I am currently interested

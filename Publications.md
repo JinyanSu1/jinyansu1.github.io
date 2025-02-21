@@ -9,6 +9,9 @@
 Evaluating RAG Under Adversarial Poisoning Attacks
 ](https://arxiv.org/pdf/2412.16708)
   <br>**Jinyan Su**, Jin peng Zhou, Zhengxin Zhang, Preslav Nakov, Claire Cardie.
+  
+-[Is Human-Like Text Liked by Humans? Multilingual Human Detection and Preference Against AI](https://arxiv.org/pdf/2502.11614)
+Yuxia Wang, Rui Xing, Jonibek Mansurov, Giovanni Puccetti, Zhuohan Xie, Minh Ngoc Ta, Jiahui Geng, **Jinyan Su**, Mervat Abassy, Saad El Dine Ahmed, Kareem Elozeiri, Nurkhan Laiyk, Maiya Goloburda, Tarek Mahmoud, Raj Vardhan Tomar, Alexander Aziz, Ryuto Koike, Masahiro Kaneko, Artem Shelmanov, Ekaterina Artemova, Vladislav Mikhailov, Akim Tsvigun, Alham Fikri Aji, Nizar Habash, Iryna Gurevych, Preslav Nakov.
 
 ### 2024
 - [Learning from Streaming Data when Users Choose](https://arxiv.org/pdf/2406.01481)

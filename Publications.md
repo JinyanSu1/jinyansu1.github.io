@@ -2,8 +2,8 @@
 - [Corpus Poisoning via  Approximate Greedy Gradient Descent](https://arxiv.org/pdf/2406.05087)
 <br>**Jinyan Su**, Preslav Nakov, Claire Cardie.
 
-- [MixUCB: Enhancing Safe Exploration in Contextual Bandits with Human Oversight](https://drive.google.com/file/d/12DWE7vl3PaWEbSrYI71ldG_9fnKgihBX/view?usp=sharing)
-<br>**Jinyan Su**, Jiankai Sun, Rohan Banerjee, Wen Sun, Sarah Dean.
+- [Fast or Better? Balancing Accuracy and Cost in RetrievalAugmented Generation with Flexible User Control](https://arxiv.org/pdf/2502.12145v1)
+<br>**Jinyan Su**, Jennifer Healey, Preslav Nakov, Claire Cardie
 
 - [Towards More Robust Retrieval-Augmented Generation:
 Evaluating RAG Under Adversarial Poisoning Attacks

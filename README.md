@@ -4,7 +4,7 @@ Hi, I am Jinyan, currently a second year CS PhD student at Cornell university ad
 **Research interest**: I am currently interested
 - **LLM reasoning**: how to improve LLM to think and solve complext problem such as math and coding. 
 - **LLM personalization**: how to personalize LLM without using resource intensive approaches such as fine-tuning. 
-- **Retrieval augmented generation**: how to design better and controlable RAG system to fit for different user cases and balance factual correctness and contextual correctness. (Check out my latest work in evaluating the [robustness of RAG system when poisoning rag corpus](https://arxiv.org/pdf/2412.16708) and user customizable adaptive retrieval [Flare-Aug](https://arxiv.org/pdf/2502.12145v1))
+- **Retrieval augmented generation**: how to design better and controlable RAG system to fit for different user cases and balance factual correctness and contextual correctness. (Check out my latest work in evaluating the robustness of RAG system when poisoning rag corpus [Eval-PoisonRAG](https://arxiv.org/pdf/2412.16708) and user customizable adaptive retrieval [Flare-Aug](https://arxiv.org/pdf/2502.12145v1))
 
 
 

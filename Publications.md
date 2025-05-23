@@ -1,4 +1,6 @@
 ### Manuscript
+- [Between Underthinking and Overthinking: An Empirical Study of Reasoning Length and correctness in LLMs](https://arxiv.org/pdf/2505.00127)
+<br>**Jinyan Su**, Jennifer Healey, Preslav Nakov, Claire Cardie
 
 - [Fast or Better? Balancing Accuracy and Cost in RetrievalAugmented Generation with Flexible User Control](https://arxiv.org/pdf/2502.12145v1)
 <br>**Jinyan Su**, Jennifer Healey, Preslav Nakov, Claire Cardie.

@@ -18,6 +18,9 @@ Evaluating RAG Under Adversarial Poisoning Attacks
 <br>**Jinyan Su**, Preslav Nakov, Claire Cardie.
   <br> *Findings of ACL 2025*
 
+- [MixUCB: Enhancing Safe Exploration in Contextual Bandits with Human Oversight](https://openreview.net/pdf?id=Kt3scQ2KDL)
+    <br> *RLC 2025*
+
 ## 2024
 - [Learning from Streaming Data when Users Choose](https://arxiv.org/pdf/2406.01481)
   <br>**Jinyan Su**, Sarah Dean

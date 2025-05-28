@@ -19,6 +19,7 @@ Evaluating RAG Under Adversarial Poisoning Attacks
   <br> *Findings of ACL 2025*
 
 - [MixUCB: Enhancing Safe Exploration in Contextual Bandits with Human Oversight](https://openreview.net/pdf?id=Kt3scQ2KDL)
+  <br>**Jinyan Su**, Jiankai Sun, Rohan Banerjee, Wen Sun, Sarah Dean
     <br> *RLC 2025*
 
 ## 2024

@@ -1,4 +1,6 @@
 ### Manuscript
+- [Thinking Fast and Right: Balancing Accuracy and Reasoning Length with Adaptive Rewards](https://arxiv.org/pdf/2505.18298)
+<br>**Jinyan Su**, Claire Cardie
 - [Between Underthinking and Overthinking: An Empirical Study of Reasoning Length and correctness in LLMs](https://arxiv.org/pdf/2505.00127)
 <br>**Jinyan Su**, Jennifer Healey, Preslav Nakov, Claire Cardie
 

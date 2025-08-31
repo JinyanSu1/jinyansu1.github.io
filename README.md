@@ -1,6 +1,6 @@
 Hi, I am Jinyan, a final year CS PhD student at Cornell university advised by [Claire Cardie](https://www.cs.cornell.edu/home/cardie/).
 
-<span style="color:red; font-weight:bold">I will be graduating in Spring 2026 and am actively seeking full-time positions in industry.</span> 
+<span style="color:red; font-weight:bold">I will be graduating in Spring 2026 and am actively seeking full-time positions in industry. </span> 
 
 
 

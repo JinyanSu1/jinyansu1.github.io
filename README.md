@@ -17,7 +17,7 @@ A complete list can can be find [here](https://jinyansu1.github.io/Publications.
 
   
 ## 📫 Contact
-Email: js3673[@]cornell.edu
+Email: jinyansu6[@]gmail.com
 
 
 

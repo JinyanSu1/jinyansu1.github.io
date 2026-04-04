@@ -25,7 +25,7 @@ If you would like to chat about research or just chat causally, feel free to sen
 
 ## General Chat
 
-I dedicate 1 hour/week to provide advice for those who might be going through a hard time in their life (such as depression, beige eating, social awkwardness) or need other advice (such as "build confidence", "how to say no to people", "setting boundaries", "perfectionism", ect), feel free to schedule a chat directly [here](https://calendly.com/jinyansu/chat-with-jinyan). 
+I dedicate 1 hour/week to provide advice for those who might be going through a hard time in their life (such as anxiety, depression, beige eating, social awkwardness) or need other advice (such as "build confidence", "how to say no to people", "setting boundaries", "perfectionism", ect), feel free to schedule a chat directly [here](https://calendly.com/jinyansu/chat-with-jinyan). 
 
 
 

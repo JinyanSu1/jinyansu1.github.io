@@ -19,6 +19,15 @@ My previous interests/publications can be find [here](https://jinyansu1.github.i
 ## 📫 Contact
 Email: jinyansu6[@]gmail.com
 
+If you would like to chat about research or have a casual chat, feel free to send me an email to schedule a time. 
+
+
+
+## General Chat
+
+I dedicate 1 hour/week to provide advice for those who might be going through a hard time in their life (such as depression, beige eating, social awkwardness) or need other advice (such as how to deal with "inconfidence", "not always say yes to everything", "setting boundaries", "perfectionism", ect), feel free to schedule a chat directly [here](https://calendly.com/jinyansu/chat-with-jinyan). 
+
+
 
 
 

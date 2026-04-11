@@ -31,20 +31,5 @@ permalink: /research-blog/
   </div>
   {% endif %}
 
-  <div class="blog-posts">
-    {% for post in cat_posts %}
-    <div class="blog-post-card" data-tags="{{ post.tags | join: ',' }}">
-      <h3 class="blog-post-card-title">
-        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      </h3>
-      <div class="blog-post-card-meta">
-        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
-        {% for tag in post.tags %}
-        <span class="tag-badge">{{ tag }}</span>
-        {% endfor %}
-      </div>
-      <p class="blog-post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
-    </div>
-    {% endfor %}
-  </div>
+  <p><em>🚧 Web under construction, blog posts coming soon...</em></p>
 </div>

@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<div class="home-container">
+  <aside class="home-sidebar">
+    <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" class="avatar">
+    <h1 class="home-name">{{ site.author.name }}</h1>
+    <p class="home-affiliation">{{ site.author.bio }}</p>
+    {% include social-links.html %}
+  </aside>
+  <div class="home-content">
+    {{ content }}
+  </div>
+</div>

@@ -1,0 +1,43 @@
+{% assign p = include.paper %}
+<div class="pub-card">
+  <div class="pub-card-main">
+    <h3 class="pub-title" {% if p.abstract != "" or p.figure != "" %}role="button" aria-expanded="false" tabindex="0"{% endif %}>
+      {{ p.title }}
+      {% if p.abstract != "" or p.figure != "" %}
+      <span class="pub-chevron">&#9662;</span>
+      {% endif %}
+    </h3>
+    <p class="pub-authors">{{ p.authors }}</p>
+    <p class="pub-venue">
+      {{ p.venue }}
+      {% if p.award and p.award != "" %}
+      <span class="pub-award">{{ p.award }}</span>
+      {% endif %}
+    </p>
+    <div class="pub-links">
+      {% if p.arxiv and p.arxiv != "" %}
+      <a href="{{ p.arxiv }}" class="pub-link" target="_blank" rel="noopener">Paper</a>
+      {% endif %}
+      {% if p.code and p.code != "" %}
+      <a href="{{ p.code }}" class="pub-link" target="_blank" rel="noopener">Code</a>
+      {% endif %}
+      {% if p.slides and p.slides != "" %}
+      <a href="{{ p.slides }}" class="pub-link" target="_blank" rel="noopener">Slides</a>
+      {% endif %}
+    </div>
+  </div>
+  {% if p.abstract != "" or p.figure != "" %}
+  <div class="pub-details" aria-hidden="true">
+    {% if p.abstract and p.abstract != "" %}
+    <div class="pub-abstract">
+      <strong>Abstract:</strong> {{ p.abstract }}
+    </div>
+    {% endif %}
+    {% if p.figure and p.figure != "" %}
+    <div class="pub-figure">
+      <img src="{{ p.figure | relative_url }}" alt="Figure from {{ p.title }}">
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>

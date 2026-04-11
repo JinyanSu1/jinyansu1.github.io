@@ -1,0 +1,30 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+---
+<div class="blog-container">
+  <h1 class="page-title">Blog</h1>
+
+  <div class="blog-filters">
+    <button class="filter-pill active" data-category="all">All</button>
+    <button class="filter-pill" data-category="Research">Research</button>
+    <button class="filter-pill" data-category="Studying">Studying</button>
+    <button class="filter-pill" data-category="Personal">Personal</button>
+  </div>
+
+  <div class="blog-posts">
+    {% for post in site.posts %}
+    <div class="blog-post-card" data-category="{{ post.categories | first }}">
+      <h2 class="blog-post-card-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h2>
+      <div class="blog-post-card-meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+        <span class="post-category-badge">{{ post.categories | first }}</span>
+      </div>
+      <p class="blog-post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>

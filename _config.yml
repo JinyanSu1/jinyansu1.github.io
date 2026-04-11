@@ -1,3 +1,45 @@
-theme: jekyll-theme-minimal
 title: Jinyan Su
+description: "PhD Student at Cornell University — Efficiency-Aware Agents, Alignment & Safety"
+url: "https://jinyansu1.github.io"
+baseurl: ""
 
+author:
+  name: Jinyan Su
+  email: jinyansu6@gmail.com
+  bio: >-
+    Final year CS PhD student at Cornell University advised by Claire Cardie.
+    Researching efficiency and budget aware agents, alignment, and safety.
+  avatar: /img/avatar.jpg
+
+social:
+  github: JinyanSu1
+  twitter: SuJinyan6
+  scholar: "https://scholar.google.com/citations?user=yRNsFuMAAAAJ&hl=zh-CN"
+  linkedin: "jinyan-su-b3b856276"
+
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:year/:month/:title/
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor

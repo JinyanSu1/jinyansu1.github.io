@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<div class="publications-container">
+  <h1 class="page-title">Publications</h1>
+  {{ content }}
+  {% for group in site.data.publications %}
+  <section class="pub-year-section">
+    <h2 class="pub-year">{{ group.year }}</h2>
+    {% for paper in group.papers %}
+    {% include publication-card.html paper=paper %}
+    {% endfor %}
+  </section>
+  {% endfor %}
+</div>

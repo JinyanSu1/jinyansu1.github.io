@@ -1,0 +1,150 @@
+@import "variables";
+
+// Blog index
+.blog-container {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.blog-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.filter-pill {
+  display: inline-block;
+  padding: 0.4em 1em;
+  border: 1px solid $color-border;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: none;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &.active {
+    background: $color-primary;
+    color: white;
+    border-color: $color-primary;
+  }
+}
+
+.blog-post-card {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.blog-post-card-title {
+  font-size: 1.15rem;
+  margin-bottom: 0.3rem;
+
+  a {
+    color: $color-text;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+}
+
+.blog-post-card-meta {
+  font-size: 0.85rem;
+  color: $color-text-muted;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.blog-post-card-excerpt {
+  font-size: 0.95rem;
+  color: $color-text-muted;
+  margin-bottom: 0;
+}
+
+// Post page
+.post-header {
+  margin-bottom: 2rem;
+}
+
+.post-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+}
+
+.post-category-badge {
+  display: inline-block;
+  background: $color-primary-light;
+  color: $color-primary;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+}
+
+.post-reading-time {
+  color: $color-text-muted;
+}
+
+.post-content {
+  font-size: 1.05rem;
+  line-height: 1.8;
+
+  h2 {
+    margin-top: 2rem;
+  }
+
+  h3 {
+    margin-top: 1.5rem;
+  }
+
+  img {
+    border-radius: 6px;
+    margin: 1.5em 0;
+  }
+}
+
+.post-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $color-border;
+}
+
+.back-to-blog {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.post-nav-prev,
+.post-nav-next {
+  font-size: 0.9rem;
+  color: $color-primary;
+}

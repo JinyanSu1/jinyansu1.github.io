@@ -1,0 +1,17 @@
+<nav class="site-nav">
+  <div class="nav-container">
+    <a class="nav-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <label for="nav-toggle" class="nav-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
+      <li><a href="{{ '/publications' | relative_url }}" {% if page.url contains 'publications' %}class="active"{% endif %}>Publications</a></li>
+      <li><a href="{{ '/blog' | relative_url }}" {% if page.url contains 'blog' %}class="active"{% endif %}>Blog</a></li>
+      <li><a href="{{ '/miscellaneous' | relative_url }}" {% if page.url contains 'miscellaneous' %}class="active"{% endif %}>Miscellaneous</a></li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,29 @@
+@import "variables";
+
+.page-content {
+  min-height: calc(100vh - #{$nav-height} - 80px);
+}
+
+.page-container,
+.post-container,
+.publications-container {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.home-container {
+  max-width: $max-page-width;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.page-title {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid $color-bg-light;
+}

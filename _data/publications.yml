@@ -29,7 +29,8 @@
       code: ""
       slides: ""
       tags: ["Reasoning", "RAG", "Human-Centered", "LLM"]
-      abstract: ""
+      abstract: >-
+        Retrieval-Augmented Generation (RAG) has emerged as a powerful approach to mitigate large language model (LLM) hallucinations by incorporating external knowledge retrieval. However, existing RAG frameworks often apply retrieval indiscriminately, leading to inefficiencies — overretrieving when unnecessary or failing to retrieve iteratively when required for complex reasoning. Recent adaptive retrieval strategies predict only based on query complexity and lack user-driven flexibility, making them infeasible for diverse user application needs. In this paper, we introduce a novel user-controllable RAG framework that enables dynamic adjustment of the accuracy-cost trade-off. Our approach leverages two classifiers: one trained to prioritize accuracy and another to prioritize retrieval efficiency. Via an interpretable control parameter α, users can seamlessly navigate between minimal-cost retrieval and high-accuracy retrieval based on their specific requirements. We empirically demonstrate that our approach effectively balances accuracy, retrieval cost, and user controllability, making it a practical and adaptable solution for real-world applications.
       figure: ""
       award: ""
     - title: "Towards More Robust Retrieval-Augmented Generation: Evaluating RAG Under Adversarial Poisoning Attacks"

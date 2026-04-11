@@ -63,3 +63,54 @@
     }
   }
 }
+
+.experience-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.experience-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: $color-bg-light;
+  border-radius: 8px;
+  border: 1px solid $color-border;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.experience-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.experience-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.experience-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: $color-text;
+}
+
+.experience-org {
+  font-size: 0.85rem;
+  color: $color-text-muted;
+}
+
+.experience-date {
+  font-size: 0.8rem;
+  color: $color-text-muted;
+  font-style: italic;
+}

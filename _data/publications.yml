@@ -6,7 +6,7 @@
       arxiv: "https://arxiv.org/pdf/2505.18298"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "Large language models with chain-of-thought reasoning often generate unnecessarily long responses for simple problems while sometimes providing insufficient reasoning for harder ones. We propose adaptive rewards that dynamically adjust the length penalty based on problem difficulty, encouraging models to think fast on easy problems and think carefully on hard ones. Our method reduces average reasoning length by 40% while maintaining accuracy on mathematical reasoning benchmarks."
       figure: ""
       award: ""
 
@@ -16,7 +16,7 @@
       arxiv: "https://arxiv.org/pdf/2505.00127"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We present a comprehensive empirical study examining the relationship between reasoning length and correctness in large language models. We find that longer reasoning does not always lead to better answers — models frequently overthink simple problems, introducing errors through unnecessary steps. We categorize reasoning failures into underthinking (insufficient reasoning) and overthinking (excessive, error-prone reasoning), and analyze how different model sizes and prompting strategies affect this balance."
       figure: ""
       award: ""
 
@@ -26,7 +26,7 @@
       arxiv: "https://arxiv.org/pdf/2502.12145v1"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "Retrieval-augmented generation (RAG) systems face a fundamental trade-off between response quality and computational cost. We propose a framework that gives users flexible control over this trade-off, allowing them to specify their preference for speed versus accuracy. Our approach adaptively determines how many documents to retrieve and how much reasoning to perform based on query difficulty and user preferences."
       figure: ""
       award: ""
 
@@ -36,7 +36,7 @@
       arxiv: "https://arxiv.org/pdf/2412.16708"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We systematically evaluate the robustness of retrieval-augmented generation systems under adversarial corpus poisoning attacks. We demonstrate that current RAG systems are highly vulnerable to poisoned documents that can mislead the generation process, and analyze how different retrieval strategies, model sizes, and defense mechanisms affect robustness. Our findings highlight critical security concerns for deployed RAG systems."
       figure: ""
       award: ""
 
@@ -46,7 +46,7 @@
       arxiv: "https://arxiv.org/pdf/2502.11614"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We investigate whether text that is more human-like is also more preferred by humans across multiple languages. Through large-scale human evaluation studies, we examine the relationship between human detection ability and human preference for AI-generated versus human-written text, revealing nuanced patterns that vary across languages and domains."
       figure: ""
       award: ""
 
@@ -58,7 +58,7 @@
       arxiv: "https://arxiv.org/pdf/2406.05087"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We propose an efficient corpus poisoning attack against dense retrieval systems using approximate greedy gradient descent. Our method generates adversarial passages that rank highly for targeted queries, misleading retrieval-augmented systems. Compared to prior gradient-based attacks, our approach is significantly more computationally efficient while achieving comparable or superior attack success rates across multiple retrieval models and datasets."
       figure: ""
       award: ""
 
@@ -68,7 +68,7 @@
       arxiv: "https://openreview.net/pdf?id=Kt3scQ2KDL"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We propose MixUCB, a contextual bandit algorithm that enhances safe exploration by incorporating human oversight. Our approach mixes autonomous exploration with human feedback, allowing the system to learn efficiently while maintaining safety constraints. We provide theoretical guarantees on regret and safety, and demonstrate the effectiveness of our approach on both synthetic and real-world tasks."
       figure: ""
       award: ""
 
@@ -80,7 +80,7 @@
       arxiv: "https://arxiv.org/pdf/2406.01481"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We study the problem of learning from streaming data where users strategically choose whether to participate based on the current model's predictions. This creates a feedback loop where the model's behavior affects the data distribution it learns from. We characterize the dynamics of this process, identify conditions under which learning converges, and propose algorithms that account for user choice behavior to improve learning outcomes."
       figure: ""
       award: ""
 
@@ -90,7 +90,7 @@
       arxiv: "https://arxiv.org/pdf/2402.11175"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We introduce M4GT-Bench, a comprehensive benchmark for evaluating black-box machine-generated text detection methods. The benchmark covers multiple generators, domains, and languages, providing a standardized evaluation framework. We evaluate existing detection methods and reveal significant performance variations across different settings, highlighting the need for more robust detection approaches."
       figure: ""
       award: ""
 
@@ -100,7 +100,7 @@
       arxiv: "https://arxiv.org/pdf/2311.04917"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "As large language models become capable of generating highly convincing fake news, we study how existing fake news detection methods perform against LLM-generated misinformation and propose adaptations to improve detection. We analyze the characteristics that distinguish LLM-generated fake news from both human-written fake news and human-written real news, and develop detection strategies tailored to this new challenge."
       figure: ""
       award: ""
 
@@ -110,7 +110,7 @@
       arxiv: "https://arxiv.org/pdf/2305.14902"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We present M4, a large-scale benchmark for machine-generated text detection that spans multiple generators, domains, and languages. We systematically evaluate detection methods across these dimensions and find that performance degrades significantly when detectors face out-of-distribution generators or languages, motivating the need for more generalizable detection approaches."
       figure: ""
       award: "Resource paper award"
 
@@ -122,7 +122,7 @@
       arxiv: "https://arxiv.org/pdf/2306.05540.pdf"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We propose DetectLLM, a zero-shot method for detecting machine-generated text by leveraging log rank information. Unlike existing methods that rely on log probabilities, our approach uses the rank of each token in the model's vocabulary distribution, which provides a more robust signal for distinguishing human-written from machine-generated text. Our method achieves strong detection performance without requiring any training data."
       figure: ""
       award: ""
 
@@ -132,7 +132,7 @@
       arxiv: "https://arxiv.org/pdf/2402.01867"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We explore using large language models to learn the dependency structure among labeling functions in weak supervision frameworks. By prompting LLMs to reason about the relationships between different labeling heuristics, we can improve the label model's accuracy without requiring labeled data for structure learning. Our approach bridges the gap between programmatic weak supervision and modern LLM capabilities."
       figure: ""
       award: ""
 
@@ -142,7 +142,7 @@
       arxiv: "https://proceedings.mlr.press/v216/su23b/su23b.pdf"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We revisit the problem of differentially private stochastic convex optimization in both Euclidean and non-Euclidean spaces. We provide improved excess risk bounds by developing new analysis techniques that better exploit the geometry of the constraint set and the properties of the loss function. Our results close gaps between upper and lower bounds in several important settings."
       figure: ""
       award: ""
 
@@ -154,7 +154,7 @@
       arxiv: "https://proceedings.mlr.press/v189/su23a/su23a.pdf"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We study how public unlabeled data can be leveraged to improve the utility of differentially private learning algorithms. We propose a privacy model that combines private labeled data with public unlabeled data, achieving better accuracy-privacy trade-offs than using private data alone. Our approach is applicable to a broad class of learning problems and comes with formal privacy guarantees."
       figure: ""
       award: "Best paper award"
 
@@ -164,6 +164,6 @@
       arxiv: "https://proceedings.mlr.press/v167/su22a/su22a.pdf"
       code: ""
       slides: ""
-      abstract: ""
+      abstract: "We establish faster convergence rates for differentially private stochastic convex optimization. By developing novel algorithmic techniques that better exploit the smoothness and strong convexity properties of the objective function under differential privacy constraints, we achieve improved excess risk bounds that advance the state of the art in private optimization."
       figure: ""
       award: ""

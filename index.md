@@ -16,11 +16,40 @@ I stopped writing traditional academic papers around 2025. For my earlier work, 
 
 ## Experience
 
-- **Research Intern**, Meta FAIR Alignment, San Francisco — *Dec 2025 – Present*
-- **Visiting Researcher**, Stanford University — *2023*
-- **Research Intern**, MBZUAI (with Preslav Nakov) — *2023*
-- **Ph.D. in Computer Science**, Cornell University (advised by Claire Cardie) — *2021 – 2026 (expected)*
-- **Research Assistant**, KAUST (with Di Wang) — *2020 – 2021*
+<div class="experience-list">
+  <div class="experience-item">
+    <img src="/img/logos/meta_logo.jpeg" alt="Meta" class="experience-logo">
+    <div class="experience-details">
+      <div class="experience-title">Research Scientist Intern — MSL Alignment Team</div>
+      <div class="experience-org">Meta FAIR, San Francisco</div>
+      <div class="experience-date">Dec 2025 – May 2026</div>
+    </div>
+  </div>
+  <div class="experience-item">
+    <img src="/img/logos/stanford_logo.jpeg" alt="Stanford" class="experience-logo">
+    <div class="experience-details">
+      <div class="experience-title">Visiting Student — Computer Science</div>
+      <div class="experience-org">Stanford University (Advisor: Yejin Choi)</div>
+      <div class="experience-date">Aug 2025 – Dec 2025</div>
+    </div>
+  </div>
+  <div class="experience-item">
+    <img src="/img/logos/adobe_logo.jpeg" alt="Adobe" class="experience-logo">
+    <div class="experience-details">
+      <div class="experience-title">Research Scientist/Engineer Intern — Adobe Research</div>
+      <div class="experience-org">Adobe</div>
+      <div class="experience-date">May 2025 – Aug 2025</div>
+    </div>
+  </div>
+  <div class="experience-item">
+    <img src="/img/logos/cornell_logo.jpeg" alt="Cornell" class="experience-logo">
+    <div class="experience-details">
+      <div class="experience-title">Ph.D. in Computer Science</div>
+      <div class="experience-org">Cornell University (Advisor: Claire Cardie)</div>
+      <div class="experience-date">2022 – 2026 (expected)</div>
+    </div>
+  </div>
+</div>
 
 ## 📫 Contact
 

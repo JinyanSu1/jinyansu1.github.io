@@ -4,6 +4,31 @@ layout: default
 <div class="publications-container">
   <h1 class="page-title">Publications</h1>
   {{ content }}
+
+  <div class="pub-filters">
+    <button class="pub-filter-pill active" data-tag="all">All</button>
+    {% assign all_tags = "" %}
+    {% for group in site.data.publications %}
+      {% for paper in group.papers %}
+        {% if paper.tags %}
+          {% for tag in paper.tags %}
+            {% unless all_tags contains tag %}
+              {% if all_tags == "" %}
+                {% assign all_tags = tag %}
+              {% else %}
+                {% assign all_tags = all_tags | append: "|||" | append: tag %}
+              {% endif %}
+            {% endunless %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    {% assign tag_list = all_tags | split: "|||" | sort %}
+    {% for tag in tag_list %}
+    <button class="pub-filter-pill" data-tag="{{ tag }}">{{ tag }}</button>
+    {% endfor %}
+  </div>
+
   {% for group in site.data.publications %}
   <section class="pub-year-section">
     <h2 class="pub-year">{{ group.year }}</h2>

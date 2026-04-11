@@ -1,12 +1,7 @@
 {% assign p = include.paper %}
-<div class="pub-card">
+<div class="pub-card" {% if p.tags %}data-tags="{{ p.tags | join: ',' }}"{% endif %}>
   <div class="pub-card-main">
-    <h3 class="pub-title" {% if p.abstract != "" or p.figure != "" %}role="button" aria-expanded="false" tabindex="0"{% endif %}>
-      {{ p.title }}
-      {% if p.abstract != "" or p.figure != "" %}
-      <span class="pub-chevron">&#9662;</span>
-      {% endif %}
-    </h3>
+    <h3 class="pub-title">{{ p.title }}</h3>
     <p class="pub-authors">{{ p.authors }}</p>
     <p class="pub-venue">
       {{ p.venue }}
@@ -14,25 +9,37 @@
       <span class="pub-award">{{ p.award }}</span>
       {% endif %}
     </p>
-    <div class="pub-links">
-      {% if p.arxiv and p.arxiv != "" %}
-      <a href="{{ p.arxiv }}" class="pub-link" target="_blank" rel="noopener">Paper</a>
-      {% endif %}
-      {% if p.code and p.code != "" %}
-      <a href="{{ p.code }}" class="pub-link" target="_blank" rel="noopener">Code</a>
-      {% endif %}
-      {% if p.slides and p.slides != "" %}
-      <a href="{{ p.slides }}" class="pub-link" target="_blank" rel="noopener">Slides</a>
+    <div class="pub-actions">
+      <div class="pub-links">
+        {% if p.arxiv and p.arxiv != "" %}
+        <a href="{{ p.arxiv }}" class="pub-link" target="_blank" rel="noopener">📄 Paper</a>
+        {% endif %}
+        {% if p.code and p.code != "" %}
+        <a href="{{ p.code }}" class="pub-link" target="_blank" rel="noopener">💻 Code</a>
+        {% endif %}
+        {% if p.slides and p.slides != "" %}
+        <a href="{{ p.slides }}" class="pub-link" target="_blank" rel="noopener">📊 Slides</a>
+        {% endif %}
+      </div>
+      {% if p.abstract and p.abstract != "" %}
+      <button class="pub-abstract-toggle" aria-expanded="false">
+        Abstract <span class="pub-chevron">▾</span>
+      </button>
       {% endif %}
     </div>
-  </div>
-  {% if p.abstract != "" or p.figure != "" %}
-  <div class="pub-details" aria-hidden="true">
-    {% if p.abstract and p.abstract != "" %}
-    <div class="pub-abstract">
-      <strong>Abstract:</strong> {{ p.abstract }}
+    {% if p.tags %}
+    <div class="pub-tags">
+      {% for tag in p.tags %}
+      <span class="pub-tag">{{ tag }}</span>
+      {% endfor %}
     </div>
     {% endif %}
+  </div>
+  {% if p.abstract and p.abstract != "" %}
+  <div class="pub-details" aria-hidden="true">
+    <div class="pub-abstract">
+      {{ p.abstract }}
+    </div>
     {% if p.figure and p.figure != "" %}
     <div class="pub-figure">
       <img src="{{ p.figure | relative_url }}" alt="Figure from {{ p.title }}">

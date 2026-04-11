@@ -1,5 +1,36 @@
 @import "variables";
 
+.pub-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.pub-filter-pill {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border: 1px solid $color-border;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: none;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &.active {
+    background: $color-primary;
+    color: white;
+    border-color: $color-primary;
+  }
+}
+
 .pub-year-section {
   margin-bottom: 2rem;
 }
@@ -27,29 +58,6 @@
   font-weight: 600;
   color: $color-text;
   margin-bottom: 0.3rem;
-  cursor: default;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-
-  &[role="button"] {
-    cursor: pointer;
-
-    &:hover {
-      color: $color-primary;
-    }
-  }
-}
-
-.pub-chevron {
-  font-size: 0.75rem;
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-  margin-top: 0.2em;
-}
-
-.pub-title[aria-expanded="true"] .pub-chevron {
-  transform: rotate(180deg);
 }
 
 .pub-authors {
@@ -77,6 +85,14 @@
   margin-left: 0.5rem;
 }
 
+.pub-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
 .pub-links {
   display: flex;
   gap: 0.5rem;
@@ -99,6 +115,57 @@
   }
 }
 
+.pub-abstract-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25em 0.75em;
+  border: 1px solid $color-accent;
+  border-radius: 4px;
+  color: $color-accent;
+  background: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: $color-accent;
+    color: white;
+  }
+
+  &[aria-expanded="true"] {
+    background: $color-accent;
+    color: white;
+
+    .pub-chevron {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.pub-chevron {
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.pub-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pub-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.15em 0.5em;
+  background: $color-bg-light;
+  color: $color-text-muted;
+  border-radius: 3px;
+  border: 1px solid $color-border;
+}
+
 .pub-details {
   max-height: 0;
   overflow: hidden;
@@ -106,7 +173,7 @@
 }
 
 .pub-details[aria-hidden="false"] {
-  max-height: 600px;
+  max-height: 800px;
 }
 
 .pub-abstract {
@@ -117,6 +184,7 @@
   font-size: 0.9rem;
   line-height: 1.6;
   color: $color-text-muted;
+  border-left: 3px solid $color-accent;
 }
 
 .pub-figure {

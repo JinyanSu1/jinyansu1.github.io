@@ -10,7 +10,9 @@
     <ul class="nav-links">
       <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
       <li><a href="{{ '/publications' | relative_url }}" {% if page.url contains 'publications' %}class="active"{% endif %}>Publications</a></li>
-      <li><a href="{{ '/blog' | relative_url }}" {% if page.url contains 'blog' %}class="active"{% endif %}>Blog</a></li>
+      <li><a href="{{ '/research-blog' | relative_url }}" {% if page.url contains 'research-blog' %}class="active"{% endif %}>Research Blog</a></li>
+      <li><a href="{{ '/learning-notes' | relative_url }}" {% if page.url contains 'learning-notes' %}class="active"{% endif %}>Learning Notes</a></li>
+      <li><a href="{{ '/personal-blog' | relative_url }}" {% if page.url contains 'personal-blog' %}class="active"{% endif %}>Non-Technical Blog</a></li>
     </ul>
   </div>
 </nav>

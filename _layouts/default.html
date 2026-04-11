@@ -12,7 +12,7 @@
     {% if page.layout == 'publications' %}
     <script src="{{ '/assets/js/publications.js' | relative_url }}"></script>
     {% endif %}
-    {% if page.layout == 'post' or page.url contains 'blog' %}
+    {% if page.layout == 'post' or page.url contains 'blog' or page.url contains 'learning-notes' or page.url contains 'personal-blog' %}
     <script src="{{ '/assets/js/blog-filter.js' | relative_url }}"></script>
     {% endif %}
   </body>

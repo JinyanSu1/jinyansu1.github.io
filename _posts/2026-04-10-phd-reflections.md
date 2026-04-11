@@ -3,7 +3,7 @@ layout: post
 title: "Reflections on the PhD Journey"
 date: 2026-04-10
 categories: [Personal]
-tags: [phd, reflections]
+tags: [reflections]
 math: false
 excerpt: "Some honest reflections on what the PhD experience has been like — the highs, the lows, and what I've learned about myself along the way."
 ---

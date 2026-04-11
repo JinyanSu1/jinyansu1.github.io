@@ -2,8 +2,8 @@
 layout: post
 title: "Reading Notes: Key Ideas in Reinforcement Learning"
 date: 2026-04-05
-categories: [Studying]
-tags: [rl, notes]
+categories: [Learning]
+tags: [reinforcement learning, notes]
 math: true
 excerpt: "A collection of key concepts and equations from reinforcement learning that I find myself returning to repeatedly."
 ---

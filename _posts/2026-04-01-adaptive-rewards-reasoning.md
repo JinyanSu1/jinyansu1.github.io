@@ -3,7 +3,7 @@ layout: post
 title: "Adaptive Rewards for Efficient Reasoning"
 date: 2026-04-01
 categories: [Research]
-tags: [rl, alignment, reasoning]
+tags: [alignment, reasoning]
 math: true
 excerpt: "How can we balance accuracy and efficiency in LLM reasoning? Our recent work on adaptive rewards tackles the overthinking problem."
 ---

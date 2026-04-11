@@ -12,7 +12,7 @@ permalink: /
 
 - **Alignment and Safety**: Building human-centered models that improve people's lives rather than replace humans. As AI researchers, if we create these systems, we bear responsibility for ensuring they are beneficial. This requires both careful evaluation and effective intervention: understanding model behavior through rigorously designed experiments, and steering models toward desired behaviors through post-training methods and high-quality data curation.
 
-**<span style="color:#6b7280;">I stopped writing academic papers since 2025 (except for when internships require paper output). Thus, the [Publications](/publications/) page is no longer updating.</span>** *To know more about my current research and interests, check the [Research Blog](/research-blog/) instead.*
+> **I stopped writing academic papers since 2025 (except for when internships require paper output). Thus, the [Publications](/publications/) page is no longer updating. To know more about my current research and interests, check the [Research Blog](/research-blog/) instead.**
 
 ## Experience
 

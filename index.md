@@ -12,14 +12,18 @@ permalink: /
 
 - **Alignment and Safety**: Building human-centered models that improve people's lives rather than replace humans. As AI researchers, if we create these systems, we bear responsibility for ensuring they are beneficial. This requires both careful evaluation and effective intervention: understanding model behavior through rigorously designed experiments, and steering models toward desired behaviors through post-training methods and high-quality data curation.
 
-My publications can be found [here](/publications).
+I stopped writing traditional academic papers around 2025. For my earlier work, see [Publications](/publications/). For my latest research directions and updates, check the [Research Blog](/research-blog/).
+
+## Experience
+
+- **Research Intern**, Meta FAIR Alignment, San Francisco — *Dec 2025 – Present*
+- **Visiting Researcher**, Stanford University — *2023*
+- **Research Intern**, MBZUAI (with Preslav Nakov) — *2023*
+- **Ph.D. in Computer Science**, Cornell University (advised by Claire Cardie) — *2021 – 2026 (expected)*
+- **Research Assistant**, KAUST (with Di Wang) — *2020 – 2021*
 
 ## 📫 Contact
 
 Email: jinyansu6[@]gmail.com
 
 If you would like to chat about research or just chat casually, feel free to send me an email to schedule a time.
-
-## General Chat
-
-I dedicate 1 hour/week to provide advice for those who might be going through a hard time in their life (such as anxiety, depression, social awkwardness) or need other advice (such as "building confidence", "how to say no to people", "setting boundaries", "perfectionism", etc.), feel free to schedule a chat directly [here](https://calendly.com/jinyansu/chat-with-jinyan).

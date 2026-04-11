@@ -62,5 +62,3 @@ I stopped writing traditional academic papers around 2025. For my earlier work, 
 ## 📫 Contact
 
 Email: jinyansu6[@]gmail.com
-
-If you would like to chat about research or just chat casually, feel free to send me an email to schedule a time.

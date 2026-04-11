@@ -6,9 +6,7 @@ baseurl: ""
 author:
   name: Jinyan Su
   email: jinyansu6@gmail.com
-  bio: >-
-    Final year CS PhD student at Cornell University advised by Claire Cardie.
-    Researching efficiency and budget aware agents, alignment, and safety.
+  bio: "PhD student at Cornell"
   avatar: /img/avatar.jpg
 
 social:

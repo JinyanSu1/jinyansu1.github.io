@@ -1,7 +1,13 @@
 {% assign p = include.paper %}
 <div class="pub-card" {% if p.tags %}data-tags="{{ p.tags | join: ',' }}"{% endif %}>
   <div class="pub-card-main">
-    <h3 class="pub-title">{{ p.title }}</h3>
+    <h3 class="pub-title">
+      {% if p.arxiv and p.arxiv != "" %}
+      <a href="{{ p.arxiv }}" target="_blank" rel="noopener">{{ p.title }}</a>
+      {% else %}
+      {{ p.title }}
+      {% endif %}
+    </h3>
     <p class="pub-authors">{{ p.authors }}</p>
     <p class="pub-venue">
       {{ p.venue }}
@@ -11,9 +17,6 @@
     </p>
     <div class="pub-actions">
       <div class="pub-links">
-        {% if p.arxiv and p.arxiv != "" %}
-        <a href="{{ p.arxiv }}" class="pub-link" target="_blank" rel="noopener">📄 Paper</a>
-        {% endif %}
         {% if p.code and p.code != "" %}
         <a href="{{ p.code }}" class="pub-link" target="_blank" rel="noopener">💻 Code</a>
         {% endif %}

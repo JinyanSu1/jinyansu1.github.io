@@ -5,5 +5,30 @@ permalink: /research-blog/
 ---
 <div class="blog-container">
   <h1 class="page-title">Research Blog</h1>
-  <p><em>🚧 Web under construction, blog posts coming soon...</em></p>
+
+  {% assign research_posts = site.posts | where_exp: "post", "post.categories contains 'research'" %}
+
+  <p class="blog-intro-note"><em>I didn't get a chance to organize my research from the past year into blog posts — will try to do it after May...</em></p>
+
+  {% if research_posts.size == 0 %}
+    <p><em>No posts yet — check back soon!</em></p>
+  {% endif %}
+
+  {% for post in research_posts %}
+  <div class="blog-post-card" data-tags="{{ post.tags | join: ',' }}">
+    <h2 class="blog-post-card-title">
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </h2>
+    <div class="blog-post-card-meta">
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+      {% assign words = post.content | number_of_words %}
+      {% assign minutes = words | divided_by: 200 %}
+      {% if minutes < 1 %}{% assign minutes = 1 %}{% endif %}
+      <span class="post-reading-time">{{ minutes }} min read</span>
+    </div>
+    {% if post.excerpt %}
+    <p class="blog-post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 40 }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
 </div>

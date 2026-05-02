@@ -169,3 +169,52 @@
   font-size: 0.9rem;
   color: $color-primary;
 }
+
+// Intro note on blog index pages
+.blog-intro-note {
+  font-size: 0.95rem;
+  color: $color-text-muted;
+  padding: 0.85rem 1.1rem;
+  background: $color-bg-light;
+  border-left: 3px solid $color-primary;
+  border-radius: 4px;
+  margin-bottom: 1.75rem;
+}
+
+// Language switcher for bilingual posts
+.lang-switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  justify-content: flex-end;
+}
+
+.lang-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.35em 0.9em;
+  border: 1px solid $color-border;
+  border-radius: 20px;
+  background: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &.active {
+    background: $color-primary;
+    color: white;
+    border-color: $color-primary;
+  }
+}
+
+.lang-content {
+  &[lang="zh"] {
+    line-height: 1.9;
+  }
+}

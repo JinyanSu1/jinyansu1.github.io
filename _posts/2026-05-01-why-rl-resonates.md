@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Why RL Resonates With Me / 为什么我会想做 RL"
+title: "Some Recent Thoughts on RL and Life / 最近关于 RL 的生活杂想"
 date: 2026-05-01
 categories: personal
 tags: [reflection, rl, life, research]

@@ -18,7 +18,7 @@ Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQ
 1. **Search adaptivity is shallow.** Training on multi-hop data raises the model's overall search count by ~0.2 *uniformly* across both single-hop and multi-hop evals — it's a global thermostat, not a per-question policy. At test time, only larger (7B) or PPO-tuned instruct models adapt to question difficulty; every 3B-base model emits the same number of searches on PopQA as on MuSiQue.
 2. **The model only partially grows into its search budget.** PPO runs climb toward the budget (~3 searches) over training and sometimes saturate, but most then collapse. GRPO runs plateau well below the budget. Telling the model its budget (BT1) acts as a regularizer — pulling GRPO up and PPO down toward ~2 — but doesn't make the search count more query-conditioned, and barely changes score.
 3. **Stress-testing the retriever exposes that the model optimizes reward, not API cost.** When the retriever returns *random* (actively misleading) documents, the # of searches per query goes to zero within ~150 steps — random docs hurt the answer, so the RL gradient kills the search action. When the retriever returns *empty* (useless but not harmful) documents, the trajectory is the opposite: NQ-3B-Base-PPO **grows** its search count to ~3.2, and NQ-3B-Ins-PPO peaks at **4.5** before collapsing. Empty content carries no negative signal, so PPO explores in the direction of "search more."
-4. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
+4. **Training collapses well before the score curve shows it, and the model gets some answers right for the wrong reason.** Test-score curves rise, peak in the first 50–200 steps, then crash. By the post-peak portion the `<think>` block has degenerated into stock boilerplate, hallucinated facts, or literal rows of exclamation marks — yet the test_score keeps responding because the retriever supplies enough answer text for the model to copy. Reward signal on the final answer alone is a trailing indicator of model health; you need to also monitor the reasoning chain to catch the collapse earlier.
 
 The clean version: scoring well on Search-R1 does **not** imply the model learned to search and reason. It learned to emit the right number of `<search>` tags and pass the retrieved spans into `<answer>`.
 
@@ -241,32 +241,24 @@ In a deployed setting, where each search call costs real money and an empty retr
 
 ---
 
-## Section 4: Removing the `<think>` scaffolding helps more often than it hurts
+## Section 4: Training collapse, and why scoring the answer alone isn't enough
 
-Search-R1's default prompt asks the model to put reasoning between `<think>` tags before each `<search>` and before the final `<answer>`. We retrained every setup with `no_think_rl=true` and the `nothink` prompt template, which together:
+The training trajectories in Section 2 and Section 3 share a recurring shape: the model's evaluation score climbs for a while, peaks, and then crashes. The "best validation step" that every Search-R1 number in this post (and in the original paper) is reported from is exactly the peak of that curve.
 
-1. **Remove the "you must reason inside `<think>`" instruction from the prompt** (`preprocess_search_dataset.py`: `nothink` template).
-2. **Strip any `<think>...</think>` block from the rollout before it is appended to the rolling state** (`generation.py`), so thoughts produced at turn `t` are not visible at turn `t+1`.
-3. **Drop the `<think>` requirement from the format reward** (`qa_em_format.py`).
+Below are four representative runs. Each panel overlays the test score (blue, left axis) and the average # search actions (red, right axis), with the best-step marker:
 
-This is *not* the same as preventing the model from generating any reasoning tokens — the model can still emit free-form prose before each `<search>`. What it removes is the explicit, persistent, reward-incentivized reasoning *protocol* that the agentic-RL story credits as the locus of "learning to reason." If that protocol is doing real work — decomposing the question, planning the next query, integrating evidence across turns — removing it should hurt. It doesn't.
+![Score and search-count trajectories with best-step markers; almost all runs peak then collapse](/assets/images/search-r1/collapse_trajectories.png)
+*Across very different model / algorithm / train-set combinations, the same pattern: the score and the search count both peak in the first 50–200 steps and then crash by the end. The dashed black line is the "best step" used for evaluation. If you only look at the best-step number, the model looks healthy; if you watch the curve, the model is on its way to collapse the entire time.*
 
-![No-think ablation across 16 matched pairs](/assets/images/search-r1/nothink_ablation.png)
-*Blue: default Search-R1 with the `<think>` protocol. Yellow: same training run with the `<think>` scaffolding removed (no prompt instruction, no format reward, no cross-turn think persistence). Numbers above bars are the no-think minus with-think delta on the avg-of-6-evals score.*
+There are two reasons to take this seriously:
 
-Across 16 matched (train set, size, base/ins, algorithm) pairs:
+### (a) The score curve under-reports how broken the model is
 
-- No-think **wins** in 12 runs.
-- No-think **ties** in 1 run.
-- No-think **loses** in 3 runs (all by ≤ 1.4 pp).
-- Largest single gain: HotpotQA-7B-Base-PPO **+7.0 pp** (0.377 → 0.447).
-- Mean delta: **+1.1 pp** in favor of no-think.
+By the time the test_score curve starts visibly dropping, the model's actual *behavior* has been degenerate for some time. The reward signal — exact-match correctness on the final answer — is not sensitive enough to catch the failure modes until they are bad enough to break even a generous matching heuristic.
 
-The explicit `<think>` channel isn't load-bearing. Removing the scaffolding doesn't break decision-making about when to search or what to query — whatever residual reasoning the model does (in free-form prose before `<search>`, or implicitly in the search query itself) is enough. The structured, persistent, reward-shaped think loop that the Search-R1 paper draws as the model's "reasoning trajectory" is, on these benchmarks, optional.
+Three samples pulled from the **post-collapse** portion of `hotpotqa_3b_ins_BT0_grpo_turn4.log` make this concrete.
 
-The companion qualitative observation: by mid-training, the `<think>` block in `hotpotqa_3b_ins_BT0_grpo_turn4` is full of degenerate content. Three representative samples pulled from the live training log:
-
-**(a) The assistant emits rows of exclamation marks instead of a thought:**
+**(i) The assistant emits rows of exclamation marks instead of a thought:**
 
 ```
 Question: The Remington Model 31 competed with the Winchester model
@@ -283,7 +275,7 @@ Golden answers: ['Perfect Repeater']
 Extracted answer: and
 ```
 
-**(b) Short-circuit answer with no reasoning, no search:**
+**(ii) Short-circuit answer with no reasoning and no search:**
 
 ```
 Question: what is bermuda competing in the winter olympics?
@@ -291,7 +283,13 @@ Golden answers: ['Cross-country skiing']
 Extracted answer: and
 ```
 
-**(c) Hallucinated "reasoning" that the retriever then bails out:**
+By the time we *see* these (the "Extracted answer: and" pattern, which is a literal tokenization artifact from the `<answer>and</answer>`-like outputs the collapsed model produces), the reward is finally low enough that the test_score curve nosedives. But the underlying reasoning has been degenerate for some time — the score curve is a *trailing* indicator.
+
+### (b) The model can get the right answer for the wrong reason
+
+The more insidious failure mode — and the one that motivates the user's suggestion at the bottom of this section — is that the reward signal can also be *positive* while the reasoning is already broken. The retrieved passages bail the model out: it doesn't need to reason, it just needs to copy something from the document.
+
+**(iii) Hallucinated "reasoning" that the retriever then rescues:**
 
 ```
 Question: which mode is used for short wave broadcast service?
@@ -301,13 +299,49 @@ Shortwave broadcasts use the Longwave to Shortwave (LW-SW) radio
 frequency range, typically between 200 kHz and 2.7 MHz. ...
 </think>
 <search> how is short wave broadcasting implemented... </search>
-<information> ... </information>
+<information>
+... (passage that mentions AM modulation in shortwave broadcasting) ...
+</information>
 <answer> AM </answer>
 ```
 
-The `<think>` paragraph is factually wrong (shortwave is *not* 200 kHz–2.7 MHz; that's medium-wave / longwave), the search is generic, the final answer is correct only because the retrieved documents happened to contain it — and the reward signal cannot distinguish this from a model that genuinely reasoned its way to `AM`.
+The `<think>` paragraph is factually wrong (shortwave is **not** 200 kHz–2.7 MHz; that's medium-wave / longwave), the search query is generic, but the answer is correct **because the retrieved document happens to contain the word AM**. The model's reward is positive. The reasoning chain is wrong. The two are completely decoupled.
 
-Combine the qualitative collapse with the quantitative no-think result and the conclusion is clean: the `<think>` channel is decorative. Its content varies between "templated boilerplate," "hallucinated facts," and "literal noise," and its presence or absence makes no consistent difference to the final QA score.
+**(iv) Templated reasoning + retrieval-driven answer:**
+
+```
+Question: Who was the producer of Warrior?
+
+<think>
+To find out who the producer of the film "Warrior" was, I need to
+search for this information. I will look for reliable sources that
+mention the film's production details.
+</think>
+<search> Who was the producer of the film Warrior? </search>
+<information>
+Doc 1: Warrior (2011) is a 2011 American sports drama film directed
+by Gavin O'Connor ...
+</information>
+<answer> Gavin O'Connor </answer>
+```
+
+The `<think>` block is a verbatim "I will search for this" template — no actual thought. The retrieved document actually says Gavin O'Connor is the *director*, not the producer. But the gold answer in the dataset is also "Gavin O'Connor", so the reward is positive. The model didn't reason about the question; it didn't reason about the document; it just lifted the most salient name from the passage. This is the cleanest illustration of what the post has been building toward: **the model isn't reasoning, but the reward doesn't notice**.
+
+The same dynamic explains why, in the trajectory plot above, the test_score curve can rise *even after* the reasoning chain has collapsed. As long as the retriever provides enough of the answer text, the model can copy it; the QA reward goes up; gradients reinforce the protocol of "emit some `<think>` boilerplate, fire a search, copy a span." Eventually the boilerplate degenerates far enough that the copy step also breaks (Example i, ii), and only then does the score curve tank.
+
+### What this implies for the reward signal
+
+The takeaway is simple and not new in the abstract, but it's worth saying with the data above:
+
+> **Rewarding only the final answer is not enough to train a reasoning model.** You need to also monitor the reasoning chain itself, or you will catch collapse only after it has been ongoing for many steps.
+
+Concrete options, in increasing order of cost:
+
+1. **Lightweight chain-of-thought health checks.** Cheap, automatic signals that flag when the `<think>` content has degenerated: token-entropy in the think block, fraction of think tokens that are punctuation/repetition, presence of any of the entities mentioned in the query, etc. None of these directly improve the reward — they're sentinels for stopping training early.
+2. **Cross-checks between reasoning and retrieval.** Does the search query contain any entities that the `<think>` block introduced? Does the answer contain any entities from the retrieved documents? Decoupling between these channels is the signature of a model that has fallen back on copy-from-document behavior.
+3. **A judge-based reasoning score.** An LLM judge scores the `<think>` block on its own (separately from the answer). More expensive, but would catch Example (iii) and (iv) directly — both have wrong/templated reasoning that a judge would flag even though the answer happens to be correct.
+
+In all three cases, the goal is the same: have a signal that catches reasoning collapse *before* the test_score curve does, so training can be stopped at a meaningful peak rather than the local maximum of "the retriever bailed us out enough times."
 
 ---
 
@@ -336,9 +370,9 @@ Three things, in roughly increasing order of how much they re-frame the field's 
 
 ## Closing
 
-The Search-R1 result — "RL teaches an LLM to interleave reasoning with retrieval" — is a clean narrative, and the recipe does produce models that score better on QA benchmarks than their SFT counterparts. But the same training runs, opened up, show: search behavior that barely depends on the question, reasoning chains that can be deleted without consequence, full score collapse when the retriever is broken, and asymmetric responses to empty vs random documents that betray a reward-shaped policy rather than a reasoning-shaped one.
+The Search-R1 result — "RL teaches an LLM to interleave reasoning with retrieval" — is a clean narrative, and the recipe does produce models that score better on QA benchmarks than their SFT counterparts. But the same training runs, opened up, show: search behavior that barely depends on the question, full score collapse when the retriever is broken, asymmetric responses to empty vs random documents that betray a reward-shaped policy rather than a reasoning-shaped one, and reasoning chains that have degenerated into stock boilerplate or noise long before the score curve catches up.
 
-This is the same shape of problem as the [LLM-as-judge reward hacking]({{ "/blog/2026/04/reward-hacking-llm-judge/" | relative_url }}) post — a narrow, hackable reward, applied to a model with just enough capacity to game it, with an evaluation that lives inside the same loop. Fixing it requires pushing on all three: broader reward (price the searches, score the reasoning), broader evaluation (broken retrievers, no-think ablations, reasoning probes), and broader training distributions (harder hops, mixed eval-time tasks) so the model has incentive to actually learn the skill instead of the shortcut.
+This is the same shape of problem as the [LLM-as-judge reward hacking]({{ "/blog/2026/04/reward-hacking-llm-judge/" | relative_url }}) post — a narrow, hackable reward, applied to a model with just enough capacity to game it, with an evaluation that lives inside the same loop. Fixing it requires pushing on all three: broader reward (price the searches, score the reasoning), broader evaluation (broken retrievers, reasoning probes), and broader training distributions (harder hops, mixed eval-time tasks) so the model has incentive to actually learn the skill instead of the shortcut.
 
 ---
 

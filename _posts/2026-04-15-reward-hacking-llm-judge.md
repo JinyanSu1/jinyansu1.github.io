@@ -36,10 +36,10 @@ The RL algorithm was GRPO. Evaluation used 150-question subsamples of TruthfulQA
 
 Of the 16 model × reward-mix runs in the sweep, exactly one looked broken:
 
-![QA-benchmark training curves across all model × reward-mix configurations](/assets/images/reward-hacking/qa_training_curves.png)
-*QA benchmark performance during RL training across base models (rows) and reward mixtures (line colors). Look at the top row, fourth and fifth panels (SimpleQA Correct and F1): the Qwen3-4B + HotpotQA-only run (blue) is flat near 5% for the first 400 steps, then in a few hundred steps jumps to ~95%. No other run on any model or mix does this.*
+![Qwen3-4B training curves: SimpleQA judged-correct (left) and HotpotQA judged accuracy (right) for four reward mixes](/assets/images/reward-hacking/qa_training_curves.png)
+*GRPO training curves for Qwen3-4B across four reward mixes. Left: judged-correct on SimpleQA (held-out, never seen during training). Right: judged accuracy on HotpotQA (training distribution). Three of the four runs stay flat for the entire run. The fourth — **HotpotQA-only** (red) — sits at baseline for the first ~400 steps, then in a few hundred steps jumps from ~5% to ~95% judged-correct on SimpleQA. The same sudden takeoff happens on HotpotQA.*
 
-The blue curve in the top-right panels is the suspect: Qwen3-4B trained on HotpotQA-only is glued to the baseline for the first 400 GRPO steps, then sharply climbs to roughly 95% judged-correct on SimpleQA. HotpotQA itself jumps from ~30% to ~95% in the same window. Nothing comparable happens for any other base model with the same data, or for any other reward mix on Qwen3-4B.
+The red curve is the suspect: Qwen3-4B trained on HotpotQA only is glued to the baseline for the first ~400 GRPO steps, then sharply climbs to roughly 95% judged-correct on SimpleQA. HotpotQA itself jumps from ~30% to ~95% in the same window. None of the other three reward mixes on Qwen3-4B — and none of the same four mixes on any of the other base models in the sweep — ever behave this way.
 
 That immediately made us suspicious. A 6× gap on a held-out benchmark, appearing as a sudden phase change rather than a gradual improvement, looks much more like the model finding an exploit than like genuine learning.
 

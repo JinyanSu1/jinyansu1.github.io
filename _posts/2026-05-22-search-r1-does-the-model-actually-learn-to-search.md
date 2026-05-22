@@ -369,23 +369,3 @@ The "Wuerschmann foundation" doesn't exist. Neither does most of the rest of the
 These are not cherry-picked. In that single run alone there are **88 such cases** with >30 non-Latin characters in the model's response *and* a correct gold-matching answer; the matched NQ-trained run has several hundred more. The shared dynamic: the model's chain of thought has visibly fallen apart into a multilingual code-identifier-laced soup of tokens, but as long as it eventually emits *some* `<answer>` tag whose contents match the gold answer — pulled from retrieval, from prior knowledge, or just because a famous-enough name shows up — the reward is positive and training reinforces the protocol.
 
 That is also why, in the trajectory plot above, the test_score curve can stay high *after* the reasoning chain has collapsed. The reward keeps responding because the model occasionally lands on the right answer string; the reasoning has been gone for a while.
-
-### What this implies for the reward signal
-
-The takeaway is simple and not new in the abstract, but it's worth saying with the data above:
-
-> **Rewarding only the final answer is not enough to train a reasoning model.** You need to also monitor the reasoning chain itself, or you will catch collapse only after it has been ongoing for many steps.
-
-Concrete options, in increasing order of cost:
-
-1. **Lightweight chain-of-thought health checks.** Cheap, automatic signals that flag when the `<think>` content has degenerated: token-entropy in the think block, fraction of think tokens that are punctuation/repetition, presence of any of the entities mentioned in the query, etc. None of these directly improve the reward — they're sentinels for stopping training early.
-2. **Cross-checks between reasoning and retrieval.** Does the search query contain any entities that the `<think>` block introduced? Does the answer contain any entities from the retrieved documents? Decoupling between these channels is the signature of a model that has fallen back on copy-from-document behavior.
-3. **A judge-based reasoning score.** An LLM judge scores the `<think>` block on its own (separately from the answer). More expensive, but would catch Examples (iii)–(v) above directly — all three have collapsed reasoning that a judge would flag even though the answer is correct.
-
-In all three cases, the goal is the same: have a signal that catches reasoning collapse *before* the test_score curve does, so training can be stopped at a meaningful peak rather than the local maximum of "the retriever bailed us out enough times."
-
----
-
-*The full sweep, training scripts, and per-run best-step data are in the `search-r1` repo. The aggregation and plotting scripts (`fetch_all_variants.py`, `make_blog_plots.py`, `find_collapse_correct.py`) live under `search_plot/` and read directly from the W&B project.*
-
-*The full sweep, training scripts, and per-run best-step data are in the `search-r1` repo. The aggregation and plotting scripts (`fetch_all_variants.py`, `make_blog_plots.py`) live under `search_plot/` and read directly from the W&B project.*

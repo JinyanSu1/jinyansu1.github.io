@@ -17,7 +17,7 @@ Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQ
 
 1. **Search adaptivity is shallow.** Training on multi-hop data raises the model's overall search count by ~0.2 *uniformly* across both single-hop and multi-hop evals — it's a global thermostat, not a per-question policy. At test time, only larger (7B) or PPO-tuned instruct models adapt to question difficulty; every 3B-base model emits the same number of searches on PopQA as on MuSiQue.
 2. **The model only partially grows into its search budget.** PPO runs climb toward the budget (~3 searches) over training and sometimes saturate, but most then collapse. GRPO runs plateau well below the budget. Telling the model its budget (BT1) acts as a regularizer — pulling GRPO up and PPO down toward ~2 — but doesn't make the search count more query-conditioned, and barely changes score.
-3. **Stress-testing the retriever exposes that the model optimizes reward, not API cost.** When the retriever returns *random* (actively misleading) documents, every retrained model goes to ~0 searches — because random docs hurt the answer reward. When the retriever returns *empty* (useless but not harmful) documents, NQ-trained models keep searching for nothing. The RL signal doesn't see API cost, so the model only learns to avoid the tool when the tool *also* hurts the answer.
+3. **Stress-testing the retriever exposes that the model optimizes reward, not API cost.** When the retriever returns *random* (actively misleading) documents, the # of searches per query goes to zero within ~150 steps — random docs hurt the answer, so the RL gradient kills the search action. When the retriever returns *empty* (useless but not harmful) documents, the trajectory is the opposite: NQ-3B-Base-PPO **grows** its search count to ~3.2, and NQ-3B-Ins-PPO peaks at **4.5** before collapsing. Empty content carries no negative signal, so PPO explores in the direction of "search more."
 4. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
 
 The clean version: scoring well on Search-R1 does **not** imply the model learned to search and reason. It learned to emit the right number of `<search>` tags and pass the retrieved spans into `<answer>`.
@@ -183,58 +183,61 @@ This is what you'd expect from a model that has a single "how often to search" k
 
 ## Section 3: Does higher-level reasoning emerge under stress-testing?
 
-Sections 1 and 2 looked at "normal" training: real retriever, normal questions, no adversarial structure. What if we use the training environment to *stress-test* whether the model has learned anything beyond imitating the search protocol?
+Sections 1 and 2 looked at "normal" training. What if we use the training environment to *stress-test* whether the model has learned anything beyond imitating the search protocol?
 
-The cleanest stress test is: **break the retriever during training, and see what the model does.** If the model has built any real "reason about when retrieval is useful" skill, it should respond to the broken retriever; if the model is just executing the search-tool protocol because the protocol is rewarded, it should mostly keep searching.
+The cleanest stress test is: **break the retriever during training, and watch how the model's search behavior evolves over training steps.** If the model has built any real "reason about when retrieval is useful" skill, it should respond to the broken retriever; if the model is just executing the search-tool protocol because the protocol is rewarded, it should mostly keep searching.
 
 We retrained Search-R1 with two different broken retrievers:
 
-- **Empty retriever** — every search returns no documents. This is the *softer* test: searching is **useless**, but it does not actively hurt the model's reward (the search returns nothing, and the model answers from whatever it would have answered without the search). The only "cost" of searching here is the wasted API call — which the reward function does not see.
+- **Empty retriever** — every search returns no documents. This is the *softer* test: searching is **useless**, but it does not actively hurt the model's reward (the search returns nothing; the model answers from whatever it would have answered without the search). The only "cost" of searching here is the wasted API call — which the reward function does not see.
 - **Random retriever** — every search returns three random unrelated documents. This is the *harder* test: searching is **actively harmful**. The injected random passages mislead the answer, so the model's reward goes down compared to never searching at all.
 
-The hypothesis the two setups together let us test is sharp:
+The hypothesis this lets us test is sharp:
 
 > The RL signal does not reward "API efficiency" or "not wasting tool calls" — it only rewards getting the final answer correct. So the model should only learn to stop searching when searching **actively hurts the reward**. It should *not* learn to stop searching when searching is merely useless. In other words: we expect "stop searching" to emerge under the **random** retriever but **not** under the **empty** retriever.
 
 (That hypothesis is essentially: the model won't naturally optimize for the cost of search, because the reward never tells it search is expensive.)
 
-What actually happens:
+To test this we need training-step trajectories, not just final numbers — a final # of searches near 0 could be either "model learned to stop" or "model collapsed and stopped emitting valid tags." The trajectory tells us which.
 
-![Adversarial retriever: score and search behavior](/assets/images/search-r1/adversarial_retriever.png)
-*Left: average test score under each retriever. Right: average # search actions issued under each retriever. Eight 3B models, grouped by training set and algorithm. The "Normal" green bars are the baseline behavior; orange = retrained with empty retriever; red = retrained with random retriever.*
+### Training trajectories: Base models
 
-**Score (left panel).** Both broken retrievers tank the model's test score by 15–25 percentage points. This is itself worth noting: the trained Search-R1 model is so dependent on its retriever that breaking the tool — even just emptying it — destroys most of the QA performance. Even on questions the model could plausibly answer from pretraining alone, the model can't recover.
+![# search actions over training, 3B-Base, normal vs empty vs random](/assets/images/search-r1/adv_trajectories_base.png)
+*Each panel = (training set × algorithm). Green = normal retriever. Orange = empty retriever. Red = random retriever. Horizontal dotted line = search budget of 3.*
 
-**Search behavior (right panel).** Here the data partially confirms the hypothesis and partially complicates it:
+Reading off the curves:
 
-| Model | Normal | Empty (useless) | Random (harmful) |
-|-------|:------:|:---------------:|:----------------:|
-| HotpotQA-3B-Base-GRPO | 1.00 | **0.00** | **0.00** |
-| HotpotQA-3B-Base-PPO  | 1.00 | **0.13** | **0.01** |
-| HotpotQA-3B-Ins-GRPO  | 1.67 | 0.67 | — |
-| HotpotQA-3B-Ins-PPO   | 2.51 | **0.06** | — |
-| NQ-3B-Base-GRPO       | 0.99 | **0.99** | — |
-| NQ-3B-Base-PPO        | 1.01 | **1.25** | **0.01** |
-| NQ-3B-Ins-GRPO        | 1.00 | **0.98** | — |
-| NQ-3B-Ins-PPO         | 1.75 | **0.92** | — |
+- **Random retriever (red, where available): the model learns to stop, fast.** In all three random-retriever runs, the curve starts near 1.1 searches and is at zero within ~150 training steps. The RL signal sees the random docs hurting the answer, the gradient pushes search probability down, and the model stops calling the tool. **This is exactly what the hypothesis predicts.**
+- **Empty retriever (orange): the picture is mixed, and tells a more interesting story.**
+  - On **HotpotQA-trained models** (bottom row), the empty-retriever curve stays close to the normal-retriever curve — both flat around 1.0 for the base/GRPO and base/PPO cells. The model "doesn't learn to stop," but in this case it also wasn't searching very much to begin with.
+  - On **NQ-trained models** (top row), the empty-retriever curve goes **up**, not down. NQ-3B-Base-PPO with empty content climbs from ~1.1 to ~3.2 searches per query over training — the model is issuing **more** wasted searches at the end of training than at the start. Empty content gives the model no negative signal, so PPO's exploration pushes it toward "try more searches" rather than "stop searching."
 
-The clean half of the result:
+The trajectory shape is the important detail. If you only looked at the best validation step, the NQ-Base-PPO-empty result is ~1.25 searches — looks like "didn't change much." But the trajectory shows the model actively *grew into* the broken retriever, in the direction of *using more of it*, not less.
 
-- **Under the *random* retriever, every model that we ran goes to ~0 searches.** This is exactly what the hypothesis predicts: the random documents actively mislead the answer, so the reward gradient pushes the model to stop using the tool. The model didn't reason about retrieval; it just followed the reward.
-- **Under the *empty* retriever, NQ-trained models keep searching.** NQ-3B-Base-GRPO sits at 0.99 searches per query even when every search returns nothing. NQ-3B-Base-PPO goes *up* to 1.25 searches under empty (more searching, not less). All four NQ-trained variants stay within 0.1 of their normal search count. This too is exactly what the hypothesis predicts: searching is reward-neutral, so the model has no reason to stop.
+### Training trajectories: Instruct models
 
-The complication:
+We didn't run the random retriever on Instruct, only empty. The empty trajectories:
 
-- **Under the *empty* retriever, HotpotQA-trained models *do* stop searching** (0.00 / 0.13 / 0.67 / 0.06). This isn't what the "no cost signal → keep searching" hypothesis predicts in isolation. A few candidate explanations:
-  - HotpotQA-trained models had a higher *baseline* search count (1.67 and 2.51 for the Instruct variants). When you wipe out the information return on every one of those searches, the multiple wasted searches generate a much larger collection of "search → useless → bad downstream answer" trajectories than a single wasted search would. The empty retriever isn't *individually* harmful to reward, but the *cumulative* signal across multi-search trajectories is.
-  - HotpotQA questions require chained retrieval to answer. With empty content, no amount of searching yields any new evidence, so the per-trajectory reward variance for "search a lot" goes to zero while the reward variance for "skip searching and just answer" stays at the model's prior accuracy. RL converges to the lower-variance behavior.
-  - NQ questions, in contrast, are single-hop and the model's behavior has already collapsed to "one search, then answer." That single search is much cheaper to keep than the 2+ searches HotpotQA-trained models were doing.
+![# search actions over training, 3B-Instruct, normal vs empty](/assets/images/search-r1/adv_trajectories_ins.png)
+*Instruct variants. Random-retriever runs were not done for these cells; the orange-only curves are empty vs normal.*
 
-Either way, the pattern in the data is closer to the user's hypothesis than not: **the model responds robustly to the random retriever (which hits the reward), and only partially to the empty retriever (which costs nothing the reward function can see).**
+Two failure modes appear:
 
-**What this says about "higher-level reasoning."** If the model had built a real internal model of "is this tool useful for this query?" — i.e., the kind of meta-reasoning a deployed agent needs in order to be cost-aware in the wild — we'd expect symmetric behavior under empty and random retrievers, since both are equally useless from a "do I have evidence?" point of view. The data shows the opposite: the model treats them very differently, because the *reward* treats them very differently. The "decide whether to retrieve" behavior the agentic-RL framing is supposed to teach is, at best, an artifact of reward shape, not an artifact of reasoning.
+- **NQ-3B-Ins-PPO under empty content** peaks at **4.5 searches** per query during training before collapsing to 0. The model spent ~250 steps escalating its search count under a retriever that never gave it anything, and only stopped when the run collapsed entirely. This is the most striking example in the whole sweep of "PPO + reward-neutral useless tool = model uses the tool more, not less."
+- **NQ-3B-Ins-GRPO under empty content** flatlines at ~1.0 until it collapses to 0 at the end. GRPO is less exploratory than PPO under this signal — it doesn't grow the search count, but it also doesn't *reduce* it. The collapse to 0 at the end is the model's outputs degenerating, not the model "learning to stop."
 
-In a deployed setting, where the cost of a search call is real money and an empty retriever response should be a strong "stop searching" signal, the trained model would happily keep paying for nothing. To get cost-aware behavior, you have to put cost into the reward.
+### What the trajectories say about higher-level reasoning
+
+If the model had built a real internal model of "is this tool useful for this query?" — the kind of meta-reasoning a deployed agent needs to be cost-aware in the wild — we'd expect symmetric behavior under empty and random retrievers, since both are equally useless from a "do I have evidence?" point of view.
+
+What we see instead:
+
+- **Under the random retriever, the model robustly stops searching.** The RL gradient is strong (random docs → wrong answer → lower reward → suppress the action), and the policy responds.
+- **Under the empty retriever, the model does anything except "stop because searching is useless."** It keeps searching at its baseline rate, or grows the rate further (PPO), or collapses outright. None of these is the response you'd want from an agent that understood "the tool is broken, so I shouldn't pay for it."
+
+The asymmetry is real and it lines up with the hypothesis: the model treats empty and random differently because the *reward* treats them differently. The "decide whether to retrieve" behavior the agentic-RL framing is supposed to teach is, at best, an artifact of reward shape, not an artifact of reasoning.
+
+In a deployed setting, where each search call costs real money and an empty retriever response should be a strong "stop searching" signal, the trained model would happily keep paying for nothing — or, worse, learn to pay for *more* of nothing. To get cost-aware behavior, you have to put cost into the reward.
 
 ---
 

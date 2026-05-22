@@ -20,21 +20,16 @@ permalink: /
   <div class="experience-item">
     <img src="/img/logos/meta_logo.jpeg" alt="Meta" class="experience-logo">
     <div class="experience-details">
-      <div class="experience-title">Research Scientist Intern — FAIR Alignment Team</div>
+      <div class="experience-title">Meta</div>
+      <div class="experience-subtitle">FAIR Alignment Team</div>
       <div class="experience-date">Dec 2025 – May 2026</div>
-    </div>
-  </div>
-  <div class="experience-item">
-    <img src="/img/logos/stanford_logo.jpeg" alt="Stanford" class="experience-logo">
-    <div class="experience-details">
-      <div class="experience-title">Visiting Student — Stanford University</div>
-      <div class="experience-date">Aug 2025 – Dec 2025</div>
     </div>
   </div>
   <div class="experience-item">
     <img src="/img/logos/adobe_logo.jpeg" alt="Adobe" class="experience-logo">
     <div class="experience-details">
-      <div class="experience-title">Research Scientist/Engineer Intern — Adobe Research</div>
+      <div class="experience-title">Adobe</div>
+      <div class="experience-subtitle">Adobe Research</div>
       <div class="experience-date">May 2025 – Aug 2025</div>
     </div>
   </div>
@@ -46,14 +41,24 @@ permalink: /
   <div class="experience-item">
     <img src="/img/logos/cornell_logo.jpeg" alt="Cornell" class="experience-logo">
     <div class="experience-details">
-      <div class="experience-title">Ph.D. in Computer Science</div>
+      <div class="experience-title">Cornell</div>
+      <div class="experience-subtitle">Ph.D. in Computer Science</div>
       <div class="experience-date">2023 – 2026 (expected)</div>
+    </div>
+  </div>
+  <div class="experience-item">
+    <img src="/img/logos/stanford_logo.jpeg" alt="Stanford" class="experience-logo">
+    <div class="experience-details">
+      <div class="experience-title">Stanford</div>
+      <div class="experience-subtitle">Visiting Student in Computer Science</div>
+      <div class="experience-date">2025</div>
     </div>
   </div>
   <div class="experience-item">
     <img src="/img/logos/uestc_logo.jpeg" alt="UESTC" class="experience-logo">
     <div class="experience-details">
-      <div class="experience-title">B.S. in Information and Computing Sciences</div>
+      <div class="experience-title">UESTC</div>
+      <div class="experience-subtitle">B.S. in Information and Computing Sciences</div>
       <div class="experience-date">2018 – 2022</div>
     </div>
   </div>

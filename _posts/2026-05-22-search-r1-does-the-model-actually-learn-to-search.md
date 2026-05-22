@@ -16,9 +16,9 @@ excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training dis
 Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQA × turn budgets × broken-retriever settings × no-think ablation), four findings recur:
 
 1. **Search adaptivity is shallow.** Training on multi-hop data raises the model's overall search count by ~0.2 *uniformly* across both single-hop and multi-hop evals — it's a global thermostat, not a per-question policy. At test time, only larger (7B) or PPO-tuned instruct models adapt to question difficulty; every 3B-base model emits the same number of searches on PopQA as on MuSiQue.
-2. **Breaking the retriever exposes the protocol.** When the retriever returns *empty* documents, HotpotQA-trained models stop searching but NQ-trained models keep searching for nothing. When the retriever returns *random* documents, even NQ-trained models eventually stop — random docs hurt the reward, empty docs only cost a search.
-3. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
-4. **The model only partially grows into its search budget.** PPO runs climb toward the budget (~3 searches) over training and sometimes saturate, but most then collapse. GRPO runs plateau well below the budget. Telling the model its budget (BT1) acts as a regularizer — pulling GRPO up and PPO down toward ~2 — but doesn't make the search count more query-conditioned, and barely changes score.
+2. **The model only partially grows into its search budget.** PPO runs climb toward the budget (~3 searches) over training and sometimes saturate, but most then collapse. GRPO runs plateau well below the budget. Telling the model its budget (BT1) acts as a regularizer — pulling GRPO up and PPO down toward ~2 — but doesn't make the search count more query-conditioned, and barely changes score.
+3. **Breaking the retriever exposes the protocol.** When the retriever returns *empty* documents, HotpotQA-trained models stop searching but NQ-trained models keep searching for nothing. When the retriever returns *random* documents, even NQ-trained models eventually stop — random docs hurt the reward, empty docs only cost a search.
+4. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
 
 The clean version: scoring well on Search-R1 does **not** imply the model learned to search and reason. It learned to emit the right number of `<search>` tags and pass the retrieved spans into `<answer>`.
 
@@ -48,7 +48,7 @@ Before getting to the more interesting ablations, the standard axes look like th
 ![PPO vs GRPO, Base vs Instruct, 3B vs 7B](/assets/images/search-r1/axis_comparisons.png)
 *Averages over training set / eval datasets for each cell. Larger models help. PPO and GRPO are within a few percentage points of each other. Instruct usually edges out Base, but the gap is small once both have been RL-finetuned.*
 
-These differences are real but unremarkable — they're what you'd expect from any RL-finetuned QA stack. The interesting findings live in the next four sections.
+These differences are real but unremarkable — they're what you'd expect from any RL-finetuned QA stack. The interesting questions live in the four sections that follow.
 
 ---
 
@@ -124,7 +124,64 @@ Pulling it together:
 - **The two effects are roughly additive.** A HotpotQA-trained 7B-Ins-PPO uses ~2.0 searches on single-hop and ~2.9 on multi-hop — both higher than its NQ-trained counterpart, and with the same gap.
 - **What's missing.** None of these runs produce the strong adaptive behavior the agentic-RL framing would predict: e.g. 1 search on simple NQ questions, 4 on MuSiQue. The largest within-model spread we see is +0.9 searches across the single-hop / multi-hop divide, which is far less than the per-question structural difference between PopQA and MuSiQue.
 
-## Finding 2: Breaking the retriever shows what the model actually learned
+---
+
+## Section 2: How does the model use its search budget?
+
+With `max_turns=4`, the model has room for up to **3 search actions** before it must answer. Two sub-questions:
+
+- **Q1 (does it grow into the budget?):** As training proceeds, does the model gradually issue more searches per query, eventually saturating the budget — or does it settle into a steady-state search rate well below the budget?
+- **Q2 (does telling help?):** If we explicitly write "you have N searches" into the prompt (BT1) instead of hiding it (BT0), does the model use the budget more effectively?
+
+### Q1: Does the model gradually use up its budget?
+
+![Training trajectories: avg # search actions over training step](/assets/images/search-r1/budget_growth.png)
+*Each panel = (training set × RL algo). Each line = (model size × base/instruct). The horizontal dotted line is the **search budget of 3**. The model "uses up the budget" if its curve rises toward 3 and stays there. A sudden drop to 0 is training collapse (the model degenerates and stops producing valid `<search>` tags).*
+
+Three patterns emerge:
+
+1. **PPO grows into the budget; GRPO doesn't.** Across both training sets, every PPO run rises substantially during training — and the **NQ-7B-Base-PPO** and **NQ-7B-Ins-PPO** runs actually saturate above the budget (~4 searches at peak — possible because a turn can contain more than one `<search>` tag before the model is forced to answer). GRPO runs typically peak well under 2 searches and plateau there. This is the clearest "PPO vs GRPO" effect in the whole sweep: **PPO converts unused budget into more retrieval; GRPO doesn't.**
+2. **Capacity gates the budget usage.** 7B models climb higher and faster than 3B models, and the 3B-Base + GRPO recipe (the lowest-resource cell of the sweep) flatlines at 1.0 forever. The smallest models simply never figure out that there is a budget to spend.
+3. **Most runs eventually collapse.** Several curves rise toward the budget, peak, then crash to 0 (the model stops producing valid search tags entirely and emits the `!!!!!!!` / `<extracted answer: and>` pathology). The "best validation step" used in earlier sections is exactly the peak of these curves; what the curves show is that the same model, if trained longer, mostly *unlearns* the search behavior. The budget is only briefly fully used.
+
+So the headline answer to Q1: **the model does grow into its budget — but only when (a) algorithm is PPO, (b) model is 7B or instruction-tuned, and (c) training stops at the peak before collapse.** Run the same recipe with 3B-Base + GRPO or just train longer, and the budget goes unused.
+
+### Q2: Does telling the model its budget help?
+
+The BT0 / BT1 axis writes the phrase "you have at most N searches" into the prompt (BT1=on) or omits it (BT0). We only ran BT1 on the format-reward 3B-Instruct runs, so the comparison is restricted to four model variants:
+
+![BT0 vs BT1 trajectories of # searches](/assets/images/search-r1/bt0_vs_bt1_trajectory.png)
+*Solid blue: BT0 (budget hidden). Solid orange: BT1 (budget explicitly told to the model). Budget = 3 marked as dotted line.*
+
+The effect is asymmetric:
+
+- **GRPO** runs (left column): BT1 lifts the curve a bit — telling GRPO the budget gets it to use slightly more of it (peak goes from ~1.4–1.5 to ~1.7–1.9). The model is otherwise *under*-using the budget; the prompt nudges it upward.
+- **PPO** runs (right column): BT1 pulls the curve down. PPO without budget transparency was saturating at ~4 searches (i.e., using up the entire budget and then some); BT1 caps it around 2. The model is otherwise *over*-using the budget; the prompt regularizes it downward.
+
+The summary (using best-step averages):
+
+![BT0 vs BT1: best-step score and best-step # searches](/assets/images/search-r1/bt0_vs_bt1_summary.png)
+*Left: best avg test score under BT0 vs BT1. Right: best-step avg # searches under BT0 vs BT1.*
+
+| Model | BT0 #srch | BT1 #srch | BT0 score | BT1 score |
+|-------|:---:|:---:|:---:|:---:|
+| HotpotQA-3B-Ins-GRPO | 1.40 | **1.55** | 0.342 | **0.354** |
+| HotpotQA-3B-Ins-PPO  | **3.98** | 1.80 | **0.403** | 0.329 |
+| NQ-3B-Ins-GRPO       | 1.14 | **1.58** | 0.334 | **0.350** |
+| NQ-3B-Ins-PPO        | **3.67** | 2.24 | 0.356 | **0.359** |
+
+So:
+
+- **For GRPO, BT1 helps a little** — the model uses ~0.4 more searches per query and gains 1–2 pp of score.
+- **For PPO, BT1 hurts (or barely matters)** — telling the model the budget *suppresses* the saturating-PPO behavior, and on HotpotQA that costs 7 pp of score (the saturated PPO behavior was actually score-positive there).
+
+The takeaway: **the budget message acts as a regularizer, not as an enabler.** Telling the model "you have 3 searches" doesn't make it pick the right number for each query; it shifts its average toward 2 regardless of what it was doing before. If your base behavior is under-using the budget, BT1 pulls you up. If your base behavior is over-using the budget, BT1 pulls you down. Net effect on score: small and inconsistent.
+
+This is what you'd expect from a model that has a single "how often to search" knob rather than a per-query "is one more search worth it" decision. A real budget-aware policy would use *more* searches on multi-hop questions and *fewer* on single-hop, which is exactly what we did not see in Section 1.
+
+---
+
+## Section 3: Breaking the retriever shows what the model actually learned
 
 The cleanest experiment in the whole sweep is the adversarial-retriever setup. We retrained Search-R1 with either:
 
@@ -159,7 +216,9 @@ HotpotQA-trained models converge to "stop searching" under either broken retriev
 
 A model that had learned to *reason* about retrieval would treat empty and random the same — both are "I have no useful evidence." The model treats them very differently, because the *reward* treats them very differently. The behavior is reward-shaped, not understanding-shaped.
 
-## Finding 3: Removing the `<think>` scaffolding helps more often than it hurts
+---
+
+## Section 4: Removing the `<think>` scaffolding helps more often than it hurts
 
 Search-R1's default prompt asks the model to put reasoning between `<think>` tags before each `<search>` and before the final `<answer>`. We retrained every setup with `no_think_rl=true` and the `nothink` prompt template, which together:
 
@@ -226,59 +285,6 @@ frequency range, typically between 200 kHz and 2.7 MHz. ...
 The `<think>` paragraph is factually wrong (shortwave is *not* 200 kHz–2.7 MHz; that's medium-wave / longwave), the search is generic, the final answer is correct only because the retrieved documents happened to contain it — and the reward signal cannot distinguish this from a model that genuinely reasoned its way to `AM`.
 
 Combine the qualitative collapse with the quantitative no-think result and the conclusion is clean: the `<think>` channel is decorative. Its content varies between "templated boilerplate," "hallucinated facts," and "literal noise," and its presence or absence makes no consistent difference to the final QA score.
-
-## Section 2: How does the model use its search budget?
-
-With `max_turns=4`, the model has room for up to **3 search actions** before it must answer. Two sub-questions:
-
-- **Q1 (does it grow into the budget?):** As training proceeds, does the model gradually issue more searches per query, eventually saturating the budget — or does it settle into a steady-state search rate well below the budget?
-- **Q2 (does telling help?):** If we explicitly write "you have N searches" into the prompt (BT1) instead of hiding it (BT0), does the model use the budget more effectively?
-
-### Q1: Does the model gradually use up its budget?
-
-![Training trajectories: avg # search actions over training step](/assets/images/search-r1/budget_growth.png)
-*Each panel = (training set × RL algo). Each line = (model size × base/instruct). The horizontal dotted line is the **search budget of 3**. The model "uses up the budget" if its curve rises toward 3 and stays there. A sudden drop to 0 is training collapse (the model degenerates and stops producing valid `<search>` tags).*
-
-Three patterns emerge:
-
-1. **PPO grows into the budget; GRPO doesn't.** Across both training sets, every PPO run rises substantially during training — and the **NQ-7B-Base-PPO** and **NQ-7B-Ins-PPO** runs actually saturate above the budget (~4 searches at peak — possible because a turn can contain more than one `<search>` tag before the model is forced to answer). GRPO runs typically peak well under 2 searches and plateau there. This is the clearest "PPO vs GRPO" effect in the whole sweep: **PPO converts unused budget into more retrieval; GRPO doesn't.**
-2. **Capacity gates the budget usage.** 7B models climb higher and faster than 3B models, and the 3B-Base + GRPO recipe (the lowest-resource cell of the sweep) flatlines at 1.0 forever. The smallest models simply never figure out that there is a budget to spend.
-3. **Most runs eventually collapse.** Several curves rise toward the budget, peak, then crash to 0 (the model stops producing valid search tags entirely and emits the `!!!!!!!` / `<extracted answer: and>` pathology). The "best validation step" used in earlier sections is exactly the peak of these curves; what the curves show is that the same model, if trained longer, mostly *unlearns* the search behavior. The budget is only briefly fully used.
-
-So the headline answer to Q1: **the model does grow into its budget — but only when (a) algorithm is PPO, (b) model is 7B or instruction-tuned, and (c) training stops at the peak before collapse.** Run the same recipe with 3B-Base + GRPO or just train longer, and the budget goes unused.
-
-### Q2: Does telling the model its budget help?
-
-The BT0 / BT1 axis writes the phrase "you have at most N searches" into the prompt (BT1=on) or omits it (BT0). We only ran BT1 on the format-reward 3B-Instruct runs, so the comparison is restricted to four model variants:
-
-![BT0 vs BT1 trajectories of # searches](/assets/images/search-r1/bt0_vs_bt1_trajectory.png)
-*Solid blue: BT0 (budget hidden). Solid orange: BT1 (budget explicitly told to the model). Budget = 3 marked as dotted line.*
-
-The effect is asymmetric:
-
-- **GRPO** runs (left column): BT1 lifts the curve a bit — telling GRPO the budget gets it to use slightly more of it (peak goes from ~1.4–1.5 to ~1.7–1.9). The model is otherwise *under*-using the budget; the prompt nudges it upward.
-- **PPO** runs (right column): BT1 pulls the curve down. PPO without budget transparency was saturating at ~4 searches (i.e., using up the entire budget and then some); BT1 caps it around 2. The model is otherwise *over*-using the budget; the prompt regularizes it downward.
-
-The summary (using best-step averages):
-
-![BT0 vs BT1: best-step score and best-step # searches](/assets/images/search-r1/bt0_vs_bt1_summary.png)
-*Left: best avg test score under BT0 vs BT1. Right: best-step avg # searches under BT0 vs BT1.*
-
-| Model | BT0 #srch | BT1 #srch | BT0 score | BT1 score |
-|-------|:---:|:---:|:---:|:---:|
-| HotpotQA-3B-Ins-GRPO | 1.40 | **1.55** | 0.342 | **0.354** |
-| HotpotQA-3B-Ins-PPO  | **3.98** | 1.80 | **0.403** | 0.329 |
-| NQ-3B-Ins-GRPO       | 1.14 | **1.58** | 0.334 | **0.350** |
-| NQ-3B-Ins-PPO        | **3.67** | 2.24 | 0.356 | **0.359** |
-
-So:
-
-- **For GRPO, BT1 helps a little** — the model uses ~0.4 more searches per query and gains 1–2 pp of score.
-- **For PPO, BT1 hurts (or barely matters)** — telling the model the budget *suppresses* the saturating-PPO behavior, and on HotpotQA that costs 7 pp of score (the saturated PPO behavior was actually score-positive there).
-
-The takeaway: **the budget message acts as a regularizer, not as an enabler.** Telling the model "you have 3 searches" doesn't make it pick the right number for each query; it shifts its average toward 2 regardless of what it was doing before. If your base behavior is under-using the budget, BT1 pulls you up. If your base behavior is over-using the budget, BT1 pulls you down. Net effect on score: small and inconsistent.
-
-This is what you'd expect from a model that has a single "how often to search" knob rather than a per-query "is one more search worth it" decision. A real budget-aware policy would use *more* searches on multi-hop questions and *fewer* on single-hop, which is exactly what we did not see in Section 1.
 
 ---
 

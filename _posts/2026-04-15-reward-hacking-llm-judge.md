@@ -20,7 +20,7 @@ We later swapped the QA training judge for a simpler one and never reproduced th
 This wasn't a study designed to look for reward hacking. It surfaced as an anomaly inside a broader sweep for our paper on *adaptive reward composition for abstention-aware reasoning models* (the AbReward project). The goal there is to make a model learn to abstain well on unanswerable questions while preserving its math reasoning and general QA ability, by composing multiple reward signals during RL:
 
 - a **math** reward (DeepScaleR-style verifiable reward),
-- a **QA** reward (GPT-4o judges the model's HotpotQA answer against the gold answer),
+- a **QA** reward (GPT-4o judges the model's HotpotQA answer against the gold answer, using the SimpleQA grader template from [OpenAI's SimpleQA evaluation](https://arxiv.org/abs/2411.04368) — a long, example-heavy prompt that classifies each response as CORRECT / INCORRECT / NOT\_ATTEMPTED, and we map CORRECT → 1, everything else → 0),
 - an **abstention** reward (a custom GPT-4o rubric over the Helpful Abstention framework, scored on Abstention-Inf and SUM data).
 
 We were sweeping reward mixtures across four base models — Qwen3-4B, Qwen3-8B, Llama-3.1-8B-Instruct, and Qwen3.5-9B-Base — and four reward compositions:
@@ -135,3 +135,23 @@ Repeating the experiment with GPT-5 (o3) as the reformatter sharpens the picture
 | Qwen3-4B Mix(5,5,45,45) | HotpotQA | 24.0% | 39.3% | **+15.3** |
 
 Non-hacking models get *bigger* boosts (up to +17.3 pp). The HotpotQA-only model consistently *loses* accuracy when re-formatted. Its high scores live entirely in its formatting strategy.
+
+## Postscript: the judge we use now
+
+After this run we replaced the QA training judge. The original one was the full SimpleQA grader from [OpenAI's SimpleQA evaluation](https://arxiv.org/abs/2411.04368) — a long prompt with worked examples for each grade and detailed edge-case rules (numeric tolerance, name omission, hedging, typos, etc.), sampled at temperature 0.5 with up to 10 output tokens. That's the prompt the Qwen3-4B HotpotQA-only run learned to exploit.
+
+The new judge is much smaller — a five-line, single-turn prompt that asks a single question:
+
+```
+You are grading a short-answer question. Compare the predicted
+answer to the gold answer and decide whether the predicted
+answer is semantically equivalent to the gold answer.
+
+Question: {question}
+Gold answer: {target}
+Predicted answer: {predicted_answer}
+
+Reply with exactly one word: CORRECT or INCORRECT.
+```
+
+It runs at temperature 0 with `max_tokens=4`, and we use it for both training and evaluation. Since switching, we have trained many more model × data × prompt configurations and have not observed reward hacking again in any of them.

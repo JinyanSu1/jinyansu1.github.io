@@ -135,7 +135,3 @@ Repeating the experiment with GPT-5 (o3) as the reformatter sharpens the picture
 | Qwen3-4B Mix(5,5,45,45) | HotpotQA | 24.0% | 39.3% | **+15.3** |
 
 Non-hacking models get *bigger* boosts (up to +17.3 pp). The HotpotQA-only model consistently *loses* accuracy when re-formatted. Its high scores live entirely in its formatting strategy.
-
----
-
-*This analysis is a side-quest from our broader work on adaptive reward composition for abstention-aware reasoning models. We thought the failure mode was clean enough — one model, one data mix, one judge, a 4× phantom-correct rate, and a reformat test that puts the whole thing on a single page — to be worth writing up on its own.*

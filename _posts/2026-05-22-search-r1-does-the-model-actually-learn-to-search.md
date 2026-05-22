@@ -11,7 +11,7 @@ excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training dis
 
 Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQA × turn budgets × broken-retriever settings × no-think ablation), four findings recur:
 
-1. **The number of searches the model issues is a learned reflex, not a query-conditioned policy.** A model fires almost the same number of searches on MuSiQue (4-hop) as on PopQA (1-hop).
+1. **Search adaptivity is shallow.** Training on multi-hop data raises the model's overall search count by ~0.2 *uniformly* across both single-hop and multi-hop evals — it's a global thermostat, not a per-question policy. At test time, only larger (7B) or PPO-tuned instruct models adapt to question difficulty; every 3B-base model emits the same number of searches on PopQA as on MuSiQue.
 2. **Breaking the retriever exposes the protocol.** When the retriever returns *empty* documents, HotpotQA-trained models stop searching but NQ-trained models keep searching for nothing. When the retriever returns *random* documents, even NQ-trained models eventually stop — random docs hurt the reward, empty docs only cost a search.
 3. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
 4. **Telling the model its budget mostly normalizes behavior, it doesn't make it adaptive.** BT1 pulls PPO down from ~4 searches to ~2 and pulls GRPO up from ~1.1 to ~1.6. Net effect on score is small (±2 pp).
@@ -48,20 +48,77 @@ These differences are real but unremarkable — they're what you'd expect from a
 
 ---
 
-## Finding 1: The model has a search *rate*, not a search *policy*
+## Section 1: Can the model search adaptively?
 
-If RL had taught the model to "decide whether to retrieve based on the question," the per-query search count should vary with how hard the question is. It doesn't:
+Before asking whether the chain-of-thought matters or whether broken retrievers break the protocol, the most basic question to ask of a search-using agent is: **does the model adapt how much it searches to the difficulty of the task?**
 
-![Search count per (model × eval dataset)](/assets/images/search-r1/search_count_heatmap.png)
-*Rows = trained models, columns = eval datasets, ordered single-hop → multi-hop. Cell = average # searches per query at the best validation step. The rows are nearly constant: each model has a per-model search rate, and the question barely shifts it.*
+Two sub-questions:
 
-Concretely:
+- **Q1 (training-distribution adaptation):** Does training on multi-hop data (HotpotQA) teach the model to search more than training on single-hop data (NQ)? Does that effect persist across eval distributions?
+- **Q2 (test-time adaptation):** For a *fixed* trained model, does it issue more searches on multi-hop test questions than on single-hop test questions?
 
-- **3B-Base-GRPO** converges to almost exactly 1.0 search on every dataset, including MuSiQue (where the gold answer requires 4 hops).
-- **HotpotQA-3B-Ins-PPO** fires 2.5 searches on NQ (overkill — one well-formed query suffices) and 3.5 on MuSiQue (underkill).
-- The "decide when to retrieve" gradient that would justify the agentic framing is largely absent.
+### Q1: Training distribution shifts the overall search rate
 
-The number of searches is a property of the *model and training setup*, not a function of the *query*.
+![Q1: search count by eval dataset, NQ-trained vs HotpotQA-trained](/assets/images/search-r1/adapt_by_trainset.png)
+*Each pair of bars: average # search actions on that eval dataset, NQ-trained models (blue) vs HotpotQA-trained models (red). Averaged across model size, base/ins, and PPO/GRPO. Error bars = std across the 8 model variants per training set.*
+
+The answer is **yes, but as a uniform global shift, not a localized one**:
+
+| Eval | NQ-trained #srch | HotpotQA-trained #srch | Δ |
+|------|:---:|:---:|:---:|
+| NQ (single-hop) | 1.29 | 1.48 | +0.19 |
+| TriviaQA (single-hop) | 1.29 | 1.43 | +0.13 |
+| PopQA (single-hop) | 1.34 | 1.55 | +0.21 |
+| HotpotQA (multi-hop) | 1.56 | 1.79 | +0.22 |
+| 2Wiki (multi-hop) | 1.88 | 2.11 | +0.22 |
+| MuSiQue (multi-hop) | 1.86 | 2.15 | +0.30 |
+
+HotpotQA-trained models search ~0.2 more times per query than NQ-trained models — **on every eval, including single-hop ones**. The training distribution doesn't teach the model "MuSiQue is harder, search more on it"; it teaches the model "in general, search a bit more." Both columns also show the same left-to-right gradient (single → multi-hop evals get more searches), so the absolute search count is roughly *additive* across training-distribution effect and test-difficulty effect.
+
+### Q2: Test-time adaptation is real, but only for larger / instruct models
+
+![Q2: per-model single-hop vs multi-hop search count](/assets/images/search-r1/adapt_at_test_time.png)
+*One line per trained model, connecting its average # searches on single-hop evals (left point) to multi-hop evals (right point). A steeply rising line = the model adapts at test time; a flat line = the model does the same thing regardless of question type. Color = training distribution.*
+
+Aggregated:
+
+| Group | SH avg | MH avg | MH − SH |
+|-------|:---:|:---:|:---:|
+| All models | 1.40 | 1.89 | **+0.49** |
+| NQ-trained | 1.31 | 1.77 | +0.46 |
+| HotpotQA-trained | 1.49 | 2.02 | +0.53 |
+
+But the average hides bimodality. Per-model deltas:
+
+| Model | SH | MH | MH − SH |
+|-------|:---:|:---:|:---:|
+| nq-3B-Base-GRPO | 0.99 | 0.99 | **0.00** |
+| nq-3B-Base-PPO  | 1.01 | 1.02 | **+0.01** |
+| nq-3B-Ins-GRPO  | 1.00 | 1.00 | **0.00** |
+| hpqa-3B-Base-GRPO | 1.00 | 1.00 | **0.00** |
+| hpqa-3B-Base-PPO  | 1.00 | 1.00 | **0.00** |
+| nq-3B-Ins-PPO | 1.46 | 2.04 | +0.58 |
+| hpqa-3B-Ins-GRPO | 1.37 | 1.97 | +0.60 |
+| hpqa-3B-Ins-PPO | 2.24 | 2.78 | +0.54 |
+| nq-7B-Base-GRPO | 1.39 | 2.05 | +0.66 |
+| hpqa-7B-Base-GRPO | 1.36 | 1.98 | +0.62 |
+| hpqa-7B-Base-PPO | 1.41 | 2.19 | +0.78 |
+| nq-7B-Ins-GRPO | 1.29 | 2.06 | +0.77 |
+| nq-7B-Base-PPO | 1.79 | 2.59 | +0.79 |
+| hpqa-7B-Ins-GRPO | 1.46 | 2.32 | +0.86 |
+| hpqa-7B-Ins-PPO | 2.03 | 2.87 | +0.84 |
+| nq-7B-Ins-PPO | 1.53 | 2.40 | +0.87 |
+
+The pattern: **3B base models and one 3B instruct + GRPO are completely flat** (Δ ≈ 0 — no test-time adaptation). **Every 7B model, and every 3B PPO instruct model, adapts** (Δ between +0.5 and +0.9). Capacity and on-policy advantage estimation both matter.
+
+### What this says about "adaptivity"
+
+Pulling it together:
+
+- **Training distribution acts like a global thermostat.** Training on harder questions raises the model's overall search count by ~0.2 *uniformly* across eval datasets. It does not teach the model "this *type* of question deserves more searches."
+- **Some models do show test-time adaptation** — they search more on multi-hop than on single-hop at the same training budget. But this only emerges with 7B scale or with instruction-tuned + PPO. The 3B-base recipes (which are what people often start with) show *no* test-time adaptation at all.
+- **The two effects are roughly additive.** A HotpotQA-trained 7B-Ins-PPO uses ~2.0 searches on single-hop and ~2.9 on multi-hop — both higher than its NQ-trained counterpart, and with the same gap.
+- **What's missing.** None of these runs produce the strong adaptive behavior the agentic-RL framing would predict: e.g. 1 search on simple NQ questions, 4 on MuSiQue. The largest within-model spread we see is +0.9 searches across the single-hop / multi-hop divide, which is far less than the per-question structural difference between PopQA and MuSiQue.
 
 ## Finding 2: Breaking the retriever shows what the model actually learned
 

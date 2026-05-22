@@ -20,9 +20,7 @@ permalink: /
   <div class="experience-item">
     <img src="/img/logos/meta_logo.jpeg" alt="Meta" class="experience-logo">
     <div class="experience-details">
-      <div class="experience-title">Meta</div>
-      <div class="experience-subtitle">FAIR Alignment Team</div>
-      <div class="experience-date">Dec 2025 – May 2026</div>
+      <div class="experience-title">FAIR Alignment</div>
     </div>
   </div>
   <div class="experience-item">

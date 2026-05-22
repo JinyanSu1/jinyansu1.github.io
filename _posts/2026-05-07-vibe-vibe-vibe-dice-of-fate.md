@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Vibe, Vibe, Vibe, and the Dice of Fate / Vibe, Vibe, Vibe，与命运的骰子"
+title: "The Dice of Fate / 命运的骰子"
 date: 2026-05-07
 categories: personal
 tags: [reflection, life, vibe, fate, decision-making]

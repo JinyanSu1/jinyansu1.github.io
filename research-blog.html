@@ -8,7 +8,7 @@ permalink: /research-blog/
 
   {% assign research_posts = site.posts | where_exp: "post", "post.categories contains 'research'" %}
 
-  <p class="blog-intro-note"><em>I didn't get a chance to organize my research from the past year into blog posts — will try to do it after May...</em></p>
+  <p class="blog-intro-note"><em>Some of these posts cover older results — experiments I ran around a year ago but didn't get a chance to write up at the time. Quality may be uneven; treat them as informal lab notes more than polished research.</em></p>
 
   {% if research_posts.size == 0 %}
     <p><em>No posts yet — check back soon!</em></p>

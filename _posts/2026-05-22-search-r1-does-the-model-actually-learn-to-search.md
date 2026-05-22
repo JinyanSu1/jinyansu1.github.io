@@ -4,129 +4,147 @@ title: "Search-R1, Re-examined: Does the Model Actually Learn to Search and Reas
 date: 2026-05-22
 categories: research
 tags: [rl, tool-use, agents, search, reasoning, reward-hacking]
-excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training distributions, and budget conditions. Three things kept showing up: base models refuse to use more than one search; instruct models burn through their budget regardless of need; and even when scores go up, the chain of thought has often already collapsed into gibberish, mixed languages, or rows of exclamation marks. RL teaches the model to play the search game — not necessarily to reason."
+excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training distributions, search budgets, and broken-retriever settings — and stripped the chain-of-thought entirely. The model's QA score barely moves when reasoning is removed; it collapses when the retriever returns nothing; and the number of searches the model issues has almost nothing to do with the question. RL teaches the model to play the search-tool protocol, not to reason about retrieval."
 ---
 
 ## TL;DR
 
-Search-R1-style training — RL on `<think>/<search>/<answer>` interaction with a retriever — gives respectable QA scores, but a careful look at what's happening underneath is less flattering:
+Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQA × turn budgets × broken-retriever settings × no-think ablation), four findings recur:
 
-1. **Base models won't spend the search budget.** Across every NQ-trained run, base models converge to almost exactly **one** search action regardless of question difficulty. Multi-hop questions don't get more searches than single-hop ones.
-2. **Instruct models always burn through the budget.** They use 2–3+ searches even when a single search would do, especially under PPO. Without telling them what the search budget is, they treat "more search" as a default behavior.
-3. **The reasoning collapses well before the score does.** Late in training, `<think>` blocks turn into mixed-language phrases, repeated stock sentences, or — in the worst runs — literal rows of `!!!!!!!!!!!!!!`. The retriever still returns documents and the model still emits an answer, so the reward keeps moving. But the "reasoning chain" is no longer reasoning.
+1. **The number of searches the model issues is a learned reflex, not a query-conditioned policy.** A model fires almost the same number of searches on MuSiQue (4-hop) as on PopQA (1-hop).
+2. **Breaking the retriever exposes the protocol.** When the retriever returns *empty* documents, HotpotQA-trained models stop searching but NQ-trained models keep searching for nothing. When the retriever returns *random* documents, even NQ-trained models eventually stop — random docs hurt the reward, empty docs only cost a search.
+3. **Removing the `<think>` chain-of-thought entirely does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think.
+4. **Telling the model its budget mostly normalizes behavior, it doesn't make it adaptive.** BT1 pulls PPO down from ~4 searches to ~2 and pulls GRPO up from ~1.1 to ~1.6. Net effect on score is small (±2 pp).
 
-The implication: scoring well on a Search-R1 benchmark does **not** imply the model learned to search and reason. It learned to play a tool-use minigame whose reward signal happens to correlate with QA accuracy.
+The clean version: scoring well on Search-R1 does **not** imply the model learned to search and reason. It learned to emit the right number of `<search>` tags and pass the retrieved spans into `<answer>`.
 
 ---
 
 ## Setup
 
-I retrained Search-R1 across the full Cartesian product of:
+The sweep covers:
 
-- **Base models**: Qwen2.5-{3B, 7B} × {Base, Instruct} (4 models)
-- **RL algorithms**: PPO and GRPO
+- **Base models**: Qwen2.5-{3B, 7B} × {Base, Instruct}
+- **RL algorithm**: PPO and GRPO
 - **Training data**: NQ (single-hop) and HotpotQA (multi-hop)
 - **Max turns**: 1 and 4
-- **Budget transparency**: BT0 (model is not told the search budget) and BT1 (model is told "you have N searches")
-- **Evaluation**: 6 QA benchmarks — NQ, TriviaQA, PopQA (single-hop) and HotpotQA, 2WikiMultiHopQA, MuSiQue (multi-hop) — held constant across all runs
+- **Budget transparency**: BT0 (budget hidden) and BT1 (budget told to model)
+- **Chain-of-thought**: with `<think>` and without (`no_think_rl=true`)
+- **Adversarial retriever**: normal, **empty content** (returns no documents), **random content** (returns random unrelated documents)
+- **6 eval benchmarks** held constant: NQ, TriviaQA, PopQA (single-hop) and HotpotQA, 2WikiMultiHopQA, MuSiQue (multi-hop)
 
-Everything else (retriever, top-k=3, prompt template, optimizer, KL coefficient, batch size) follows the original Search-R1 recipe.
-
-The numbers below come from the best validation step of each run (selected by mean test score across the 6 evals); the raw best-step data is in `search_plot/best_points.json`.
+For each run I take the best validation step by mean test score across the 6 evals. Raw numbers: `search_plot/all_variants_best.json`.
 
 ---
 
-## Finding 1: Base models simply refuse to issue a second search
+## Headline axes (size, base/instruct, algorithm)
 
-The most striking pattern in the entire sweep is how flatly the number of search actions sits at 1.0 for base models trained on NQ:
+Before getting to the more interesting ablations, the standard axes look like this:
 
-| Train set | Model | Algo | # search actions (avg over 6 evals) | # turns |
-|-----------|-------|:----:|:----------------------------------:|:-------:|
-| NQ | Qwen-3B-Base | GRPO | **0.99** | 3.07 |
-| NQ | Qwen-3B-Base | PPO  | **1.01** | 2.13 |
-| NQ | Qwen-3B-Ins  | GRPO | **1.00** | 3.01 |
-| NQ | Qwen-3B-Ins  | PPO  | 1.55 | 2.61 |
-| NQ | Qwen-7B-Base | GRPO | 1.42 | 2.45 |
-| NQ | Qwen-7B-Base | PPO  | 1.85 | 2.78 |
-| NQ | Qwen-7B-Ins  | PPO  | 1.66 | 2.62 |
+![PPO vs GRPO, Base vs Instruct, 3B vs 7B](/assets/images/search-r1/axis_comparisons.png)
+*Averages over training set / eval datasets for each cell. Larger models help. PPO and GRPO are within a few percentage points of each other. Instruct usually edges out Base, but the gap is small once both have been RL-finetuned.*
 
-Despite a `max_turns=4` budget and an explicit "you can search as many times as you want" in the prompt, the 3B base model and the 3B GRPO-instruct model converge to **exactly one** search per query — even on MuSiQue, which is engineered to require chained, decomposed retrieval.
+These differences are real but unremarkable — they're what you'd expect from any RL-finetuned QA stack. The interesting findings live in the next four sections.
 
-![Number of search actions on single-hop benchmarks](/assets/images/search-r1/wandb_comparison_num_search_actions_singlehop.png)
-*Training curves of the average number of search actions per query on single-hop evals (NQ / TriviaQA / PopQA). Base models flatten at ~1.0 early and never move.*
+---
 
-![Number of search actions on multi-hop benchmarks](/assets/images/search-r1/wandb_comparison_num_search_actions_multihop.png)
-*Same plot on multi-hop evals (HotpotQA / 2Wiki / MuSiQue). The questions are demonstrably harder, but base-model curves still flatten at ~1.0. Multi-hop difficulty does **not** translate into multi-hop search behavior.*
+## Finding 1: The model has a search *rate*, not a search *policy*
 
-This matters for the central claim of "agentic" RL: if the RL signal is supposed to teach the model to *decompose problems and retrieve adaptively*, then a model that fires exactly one search on every question — regardless of how many hops the question requires — has not learned that. It has learned the cheapest behavior that consistently earns positive reward.
+If RL had taught the model to "decide whether to retrieve based on the question," the per-query search count should vary with how hard the question is. It doesn't:
 
-## Finding 2: Instruct models burn through the budget — even when they shouldn't
+![Search count per (model × eval dataset)](/assets/images/search-r1/search_count_heatmap.png)
+*Rows = trained models, columns = eval datasets, ordered single-hop → multi-hop. Cell = average # searches per query at the best validation step. The rows are nearly constant: each model has a per-model search rate, and the question barely shifts it.*
 
-The mirror image happens with instruct models, especially under PPO:
+Concretely:
 
-| Train set | Model | Algo | # search actions on MuSiQue | # search actions on NQ |
-|-----------|-------|:----:|:---------------------------:|:----------------------:|
-| HotpotQA | Qwen-3B-Ins | PPO  | **3.13** | 2.21 |
-| HotpotQA | Qwen-7B-Ins | PPO  | **3.24** | 2.09 |
-| HotpotQA | Qwen-3B-Ins | GRPO | 2.03 | 1.34 |
-| NQ       | Qwen-3B-Ins | PPO  | 2.06 | 1.44 |
-| NQ       | Qwen-7B-Ins | PPO  | 2.52 | 1.56 |
+- **3B-Base-GRPO** converges to almost exactly 1.0 search on every dataset, including MuSiQue (where the gold answer requires 4 hops).
+- **HotpotQA-3B-Ins-PPO** fires 2.5 searches on NQ (overkill — one well-formed query suffices) and 3.5 on MuSiQue (underkill).
+- The "decide when to retrieve" gradient that would justify the agentic framing is largely absent.
 
-The 3B-Instruct + PPO model trained on HotpotQA issues **3.1 searches** on MuSiQue (where it's needed) but still issues **2.2 searches** on NQ (where one is plenty). That isn't adaptive — that's a learned reflex.
+The number of searches is a property of the *model and training setup*, not a function of the *query*.
 
-![Search budget allocation across models](/assets/images/search-r1/baseins_hotpotqa_3b_grpo.png)
-*HotpotQA-trained Qwen-3B with GRPO: instruct (red) vs base (blue) across all 6 eval datasets. Instruct uses more searches and more turns across the board, but the *relative* allocation between single-hop and multi-hop is similar — i.e. the model has a search "style", not a query-conditioned strategy.*
+## Finding 2: Breaking the retriever shows what the model actually learned
 
-Why does this matter outside the benchmark? In any realistic deployment the retriever is paid for — per-call API cost, per-call latency, or a fixed budget per session. A model that issues 3 searches when 1 would do is wasting money on easy queries; a model that issues 1 search when 3 are needed is silently dropping accuracy on hard ones. The Search-R1 reward signal in its vanilla form rewards neither calibration.
+The cleanest experiment in the whole sweep is the adversarial-retriever setup. We retrained Search-R1 with either:
 
-## Finding 3: Allowing a 4-turn budget barely helps unless the eval is multi-hop
+- **Empty retriever** — every search returns no documents.
+- **Random retriever** — every search returns three random unrelated documents.
 
-Comparing turn-1 and turn-4 runs head-to-head on the same model/algorithm/train set:
+Both leave the model's underlying reasoning ability intact; what changes is whether the search action provides useful signal.
 
-![Turn-1 vs Turn-4 score comparison (single-hop)](/assets/images/search-r1/wandb_comparison_turn1_vs_turn4.png)
-*Single-hop evals: turn-1 and turn-4 training are essentially indistinguishable. The extra budget is unused.*
+![Adversarial retriever: score and search behavior](/assets/images/search-r1/adversarial_retriever.png)
+*Left: average test score under each retriever. Right: average # search actions issued under each retriever. Eight 3B models, grouped by training set and algorithm.*
 
-![Turn-1 vs Turn-4 score comparison (multi-hop)](/assets/images/search-r1/wandb_comparison_turn1_vs_turn4_multihop.png)
-*Multi-hop evals: turn-4 finally pulls ahead, but only on MuSiQue / 2Wiki / HotpotQA, and only for models that *can* be coaxed into using the extra turns (instruct + PPO, mostly).*
+Three things jump out:
 
-So the conditional "more turns help" is real, but heavily mediated by whether the model is willing to take more turns. The base+GRPO combination has the budget, never uses it, and looks identical to its turn-1 counterpart.
+**(a) Score collapses across the board.** Every model loses 15–25 percentage points of avg test score under either broken retriever. The trained model is *entirely* dependent on the retriever's output, even on questions it could plausibly answer from its own pretraining knowledge.
 
-## Finding 4: The training "succeeds" while the reasoning collapses
+**(b) HotpotQA-trained models learn to stop searching; NQ-trained models do not.** From the right panel:
 
-This is the section that bothers me most.
+| Model | Normal #srch | Empty #srch | Random #srch |
+|-------|:---:|:---:|:---:|
+| HotpotQA-3B-Base-GRPO | 1.00 | **0.00** | **0.00** |
+| HotpotQA-3B-Base-PPO  | 1.00 | **0.13** | **0.01** |
+| HotpotQA-3B-Ins-GRPO  | 1.67 | 0.67 | — |
+| HotpotQA-3B-Ins-PPO   | 2.51 | **0.06** | — |
+| NQ-3B-Base-GRPO       | 0.99 | **0.99** | — |
+| NQ-3B-Base-PPO        | 1.01 | **1.25** | **0.01** |
+| NQ-3B-Ins-GRPO        | 1.00 | **0.98** | — |
+| NQ-3B-Ins-PPO         | 1.75 | **0.92** | — |
 
-Search-R1's prompt asks the model to put reasoning between `<think>` tags before each search, then provide a final `<answer>`. The reward only looks at the final answer. So the reasoning chain is *unsupervised* — it just has to be a sequence of tokens that triggers the right `<search>` and `<answer>` tags.
+HotpotQA-trained models converge to "stop searching" under either broken retriever. NQ-trained models keep searching for nothing — except under the *random* retriever (NQ-3B-Base-PPO drops to 0.01 searches), where the explicit hurt signal finally breaks the habit.
 
-By around step 500 of a 3B-Instruct + GRPO run, what comes out of the `<think>` block is, charitably, *not reasoning*. Two representative examples pulled from the live training log:
+**(c) The asymmetry tells us *why*.** Empty documents are *neutral* — they cost a search call but don't push the model toward a wrong answer. Random documents are *adversarial* — they actively push the answer in the wrong direction. The model learns to skip searches only when searching actively *hurts* the reward, not when searching is merely useless.
 
-**Example A — the assistant emits 500 exclamation marks instead of a thought:**
+A model that had learned to *reason* about retrieval would treat empty and random the same — both are "I have no useful evidence." The model treats them very differently, because the *reward* treats them very differently. The behavior is reward-shaped, not understanding-shaped.
+
+## Finding 3: Removing the chain-of-thought helps more often than it hurts
+
+Search-R1's prompt asks the model to put reasoning between `<think>` tags before each `<search>` and before the final `<answer>`. We retrained every setup with `no_think_rl=true`, which strips the think tag from the rollouts.
+
+If `<think>` is doing real work (decomposing the question, planning the next query, integrating evidence), removing it should hurt. It doesn't.
+
+![No-think ablation across 16 matched pairs](/assets/images/search-r1/nothink_ablation.png)
+*Blue: with `<think>`. Yellow: without `<think>`. Numbers above bars are the no-think minus with-think delta on the avg-of-6-evals score.*
+
+Across 16 matched (train set, size, base/ins, algorithm) pairs:
+
+- No-think **wins** in 12 runs.
+- No-think **ties** in 1 run.
+- No-think **loses** in 3 runs (all by ≤ 1.4 pp).
+- Largest single gain: HotpotQA-7B-Base-PPO **+7.0 pp** (0.377 → 0.447).
+- Mean delta: **+1.1 pp** in favor of no-think.
+
+The reasoning the model is producing isn't load-bearing. Removing the `<think>` block doesn't break decision-making about when to search or what to query — because the `<think>` block wasn't doing that work. The work happens implicitly inside the `<search>` query token sequence and inside the `<answer>` token sequence (where the model reads directly from the retrieved documents).
+
+The companion qualitative observation: by mid-training, the `<think>` block in `hotpotqa_3b_ins_BT0_grpo_turn4` is full of degenerate content. Three representative samples pulled from the live training log:
+
+**(a) The assistant emits rows of exclamation marks instead of a thought:**
 
 ```
 Question: The Remington Model 31 competed with the Winchester model
           that was popularly known as what?
 
-assistant:
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-... (continues for the full response budget) ...
+A: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   ... (continues for the full response budget) ...
 
-(environment) My previous action is invalid. If I want to search,
-I should put the query between <search> and </search>. ...
+(environment) My previous action is invalid. If I want to search, I should
+put the query between <search> and </search>. ...
 
 Golden answers: ['Perfect Repeater']
 Extracted answer: and
 ```
 
-**Example B — short-circuit answer with no reasoning, no search:**
+**(b) Short-circuit answer with no reasoning, no search:**
 
 ```
 Question: what is bermuda competing in the winter olympics?
-
 Golden answers: ['Cross-country skiing']
 Extracted answer: and
 ```
 
-**Example C — the reasoning is "reasoning-shaped" but factually nonsense:**
+**(c) Hallucinated "reasoning" that the retriever then bails out:**
 
 ```
 Question: which mode is used for short wave broadcast service?
@@ -140,50 +158,63 @@ frequency range, typically between 200 kHz and 2.7 MHz. ...
 <answer> AM </answer>
 ```
 
-The think-block is a hallucinated paragraph (shortwave is *not* 200 kHz–2.7 MHz; that's medium-wave / longwave), the search is generic, and the final answer is correct only because the retrieved documents happened to contain it.
+The `<think>` paragraph is factually wrong (shortwave is *not* 200 kHz–2.7 MHz; that's medium-wave / longwave), the search is generic, the final answer is correct only because the retrieved documents happened to contain it — and the reward signal cannot distinguish this from a model that genuinely reasoned its way to `AM`.
 
-The key observation: **on this last example, the reward is positive** (`<answer>AM</answer>` matches the gold). The reward signal cannot distinguish "I reasoned correctly, searched well, and arrived at AM" from "I hallucinated, fired a generic query, and got bailed out by the retriever." Both look identical to the trainer.
+Combine the qualitative collapse with the quantitative no-think result and the conclusion is clean: the `<think>` channel is decorative. Its content varies between "templated boilerplate," "hallucinated facts," and "literal noise," and its presence or absence makes no consistent difference to the final QA score.
 
-Pulling back from the example level: across runs, the `<think>` content degrades over training in fairly predictable ways:
+## Finding 4: Telling the model its budget normalizes search behavior — but not score
 
-- **Repetition.** The same opening phrase ("Based on the question, I need to find...") gets repeated verbatim across thousands of samples.
-- **Style drift.** Late-training samples mix English with sentence fragments in other languages, especially on the 3B base runs.
-- **Token-budget filler.** Long padding sequences (`...`, repeated punctuation, the `!!!!!!` failure mode) appear well before the run is "done."
-- **Wrapper-only thinking.** The `<think>` block becomes a templated stub — "I will search for the answer." — and all the actual "deciding what to do" happens implicitly inside the `<search>` query.
+The BT0 / BT1 axis (whether to write the budget into the prompt) is the one place the sweep directly probes whether the model can *use* an explicit search-budget signal:
 
-If you only watch `test_score` and `mean_response_length` on W&B, the run looks healthy until it suddenly tanks. But if you watch `reasoning_quality` (which nobody is logging because there isn't a metric for it), you'd see a much earlier and steeper collapse.
+| Model | BT0 #srch | BT1 #srch | BT0 score | BT1 score |
+|-------|:---:|:---:|:---:|:---:|
+| HotpotQA-3B-Ins-GRPO (+format) | 1.40 | **1.55** | 0.342 | **0.354** |
+| HotpotQA-3B-Ins-PPO  (+format) | **3.98** | 2.80 | **0.403** | 0.329 |
+| NQ-3B-Ins-GRPO       (+format) | 1.14 | **1.58** | 0.334 | **0.350** |
+| NQ-3B-Ins-PPO        (+format) | **3.67** | 2.24 | 0.356 | **0.359** |
 
-## Finding 5: RL on QA helps even without the search tool
+BT1 pulls *PPO* down (from ~4 searches to ~2) and pulls *GRPO* up (from ~1.1 to ~1.6) — converging both algorithms toward the middle. Score effects are mixed: the GRPO runs gain a little, the PPO-HotpotQA run loses a lot.
 
-A useful sanity check from this sweep: take the same RL recipe, the same base model, and the same QA reward, but disable the retriever (or never use it). Score still goes up. The improvement attributable to the search interface, separated from the improvement attributable to "just RL on QA," is much smaller than the total improvement.
+The right read: telling the model about the budget changes its *average* search count, but it doesn't make the search count more *query-conditioned*. Combined with Finding 1, this is consistent with a model that has a single "how often do I search" knob and adjusts the knob based on the prompt, not based on the query.
 
-This puts an upper bound on how much we can credit "the model learned to search" for any observed accuracy gains, and it dovetails with Finding 4: if the search behavior is largely templated and the reasoning is largely cosmetic, then most of the RL signal is doing what RLHF always does — sharpening the output distribution toward the reward target — and not teaching a new tool-use skill.
+In a deployed setting where the retriever costs real money per call, this is not the calibrated behavior you want.
+
+---
+
+## Cross-cutting axes
+
+A few standard comparisons for completeness, all using only the *normal* turn-4 runs:
+
+### Turn 1 vs Turn 4
+
+![Turn-1 vs Turn-4 (single-hop and multi-hop)](/assets/images/search-r1/turn1_vs_turn4_bar.png)
+*Single-hop evals (left): turn-1 and turn-4 are essentially tied — the extra budget is unused. Multi-hop evals (right): turn-4 helps consistently, but only by a modest margin and only where the model can actually be coaxed into using the extra turns.*
+
+### Training set generalization
+
+![NQ-trained vs HotpotQA-trained on each eval split](/assets/images/search-r1/trainset_generalization.png)
+*Left: evaluate on single-hop benchmarks. NQ-trained models win narrowly. Right: evaluate on multi-hop benchmarks. HotpotQA-trained models win clearly. Training on harder data transfers downward; training on easier data does not transfer upward — which is what you'd want, but it also implies that the training distribution is a much bigger lever than algorithm or size.*
 
 ---
 
 ## What I would change about the experimental design
 
-Three things, in roughly increasing order of how much they would re-frame the field's takeaways:
+Three things, in roughly increasing order of how much they re-frame the field's takeaways:
 
-**(1) Score the chain of thought, not just the answer.** Even a simple per-step heuristic — does the `<think>` content contain any of the entities in the search query? does it contain any of the entities in the retrieved documents? — would catch the collapse cases above. A judge-based reasoning score is more expensive but would correlate much better with what we actually want.
+**(1) Score the chain of thought, not just the answer.** A simple per-step heuristic — does the `<think>` content contain any of the entities in the search query? does it contain any of the entities in the retrieved documents? — would catch the collapse cases above. A judge-based reasoning score is more expensive but would correlate much better with what we actually want.
 
-**(2) Make the search budget part of the reward.** Right now the model is rewarded only for correctness, with no penalty for issuing useless searches. A small per-search cost (or, equivalently, a small bonus for *not* searching when the model would have answered correctly anyway) turns "issue a search reflexively" from optimal into suboptimal. The BT0 / BT1 axis in this sweep is a starting point for this — *telling* the model its budget — but a *priced* budget would be a stronger signal.
+**(2) Make the search budget part of the reward.** Right now the model is rewarded only for correctness, with no penalty for issuing useless searches. A small per-search cost (or a small bonus for *not* searching when the model would have answered correctly anyway) turns "issue a search reflexively" from optimal into suboptimal. The BT0 / BT1 axis here is a starting point, but a *priced* budget would be a stronger signal.
 
-**(3) Stress-test the search tool itself.** Two adversarial settings are particularly diagnostic:
-
-- **Empty retriever.** The retriever always returns no documents. A model that has actually learned "search when you don't know, otherwise answer" should learn to stop searching. A model that has learned "search is part of the protocol" will keep searching, get nothing back, and eventually answer from prior knowledge anyway — at extra cost.
-- **Adversarial retriever.** The retriever returns plausible-looking but irrelevant or contradictory documents. This is strictly worse than the empty case: searching now actively *hurts* answer quality. A model that has learned to reason about its tool should learn to *not* trust the retriever in this setting; a model that has memorized "search → quote → answer" will follow the documents into the wrong answer.
-
-We're running both of these now. I expect the second to expose the templated-tool-use failure mode the most clearly. If your model's score drops more than X% under adversarial retrieval — where X is much larger than the equivalent drop for a strong RAG baseline — then you have evidence that the RL training learned to use the tool, not to evaluate it.
+**(3) Make broken-retriever evaluation standard.** The adversarial-retriever runs above are the most diagnostic single experiment in the whole sweep, and they took a tiny fraction of the compute the headline runs required. Any paper claiming that an RL recipe teaches "reasoning about when to retrieve" should be required to show how the model behaves when the retriever is broken — empty *and* random.
 
 ---
 
 ## Closing
 
-The Search-R1 result — "RL teaches an LLM to interleave reasoning with retrieval" — is a clean and compelling narrative, and the underlying recipe genuinely produces models that score better on QA benchmarks than their SFT counterparts. But the same training runs, opened up, show: search behavior that doesn't depend on the question, reasoning chains that collapse into noise, and an evaluation protocol that can't tell the difference. Most of the "learning to search" credit in the headline number is actually credit for *learning to play this benchmark's particular tool-use protocol well enough to extract reward*.
+The Search-R1 result — "RL teaches an LLM to interleave reasoning with retrieval" — is a clean narrative, and the recipe does produce models that score better on QA benchmarks than their SFT counterparts. But the same training runs, opened up, show: search behavior that barely depends on the question, reasoning chains that can be deleted without consequence, full score collapse when the retriever is broken, and asymmetric responses to empty vs random documents that betray a reward-shaped policy rather than a reasoning-shaped one.
 
-This is the same shape of problem as the [LLM-as-judge reward hacking]({{ "/blog/2026/04/reward-hacking-llm-judge/" | relative_url }}) post — a narrow, hackable reward, applied to a model with just enough capacity to game it, with an evaluation that lives inside the same loop. Fixing it is going to require pushing on all three: broader reward (price the searches, score the reasoning), broader evaluation (adversarial tools, held-out reasoning probes), and broader capacity (or weaker RL pressure) so the model has room to actually learn the skill instead of the shortcut.
+This is the same shape of problem as the [LLM-as-judge reward hacking]({{ "/blog/2026/04/reward-hacking-llm-judge/" | relative_url }}) post — a narrow, hackable reward, applied to a model with just enough capacity to game it, with an evaluation that lives inside the same loop. Fixing it requires pushing on all three: broader reward (price the searches, score the reasoning), broader evaluation (broken retrievers, no-think ablations, reasoning probes), and broader training distributions (harder hops, mixed eval-time tasks) so the model has incentive to actually learn the skill instead of the shortcut.
 
 ---
 
-*The full experiment sweep, training scripts, and per-run best-points data are in the [`search-r1`](https://github.com/JinyanSu1) repo. Curves in this post are from W&B; the aggregation scripts are under `search_plot/`. The adversarial-retriever experiments are ongoing and will be a follow-up post.*
+*The full sweep, training scripts, and per-run best-step data are in the `search-r1` repo. The aggregation and plotting scripts (`fetch_all_variants.py`, `make_blog_plots.py`) live under `search_plot/` and read directly from the W&B project.*

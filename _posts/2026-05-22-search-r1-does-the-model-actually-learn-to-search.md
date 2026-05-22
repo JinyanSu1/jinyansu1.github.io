@@ -285,7 +285,7 @@ By the time we *see* these (the "Extracted answer: and" pattern, which is a lite
 
 ### (b) The model can get the right answer for the wrong reason
 
-The more insidious failure mode is that the reward signal can also be **positive** while the reasoning has clearly broken. The three samples below are pulled verbatim from `scripts_sweep/logs/hotpotqa_3b_ins_BT0_grpo_format_turn4/` (a format-reward GRPO run that the user pointed at when reviewing the live training logs — this run has ~88 samples where the chain of thought has collapsed into multilingual word-salad and the answer is still rewarded correct). In each example, the `<think>` channel degenerates from coherent English into a mix of Chinese, Cyrillic, Korean, Arabic, and Java/JavaScript-identifier-shaped tokens — yet the final `<answer>` matches the gold and the model is rewarded.
+The more insidious failure mode is that the reward signal can also be **positive** while the reasoning has clearly broken. The three samples below are pulled verbatim from a single HotpotQA-trained 3B-Instruct + GRPO run with a format reward — the run where the multilingual collapse below was easiest to find. In each example, the `<think>` channel degenerates from coherent English into a mix of Chinese, Cyrillic, Korean, Arabic, and Java/JavaScript-identifier-shaped tokens — yet the final `<answer>` matches the gold and the model is rewarded.
 
 I'm trimming the middle of each `<think>` block for readability; the `... ...` marks ~500 characters of similar gibberish I'm omitting.
 
@@ -366,7 +366,7 @@ Golden answers: ['2016']
 
 The "Wuerschmann foundation" doesn't exist. Neither does most of the rest of the English in this think block. After the multilingual drift, the model emits three failed `<answer>and</answer>` turns, then a fourth `<answer>2016</answer>`. Gold = 2016. Reward positive.
 
-These are not cherry-picked. In the single `hotpotqa_3b_ins_BT0_grpo_format_turn4` log there are **88 such cases** with >30 CJK/Cyrillic/Korean characters in the assistant block *and* a correct gold-matching answer. In the matched NQ-trained format run there are several hundred more. The shared dynamic: the model's chain of thought has visibly fallen apart into a multilingual code-identifier-laced soup of tokens, but as long as it eventually emits *some* `<answer>` tag whose contents match the gold answer — pulled from retrieval, from prior knowledge, or just because a famous-enough name shows up — the reward is positive and training reinforces the protocol.
+These are not cherry-picked. In that single run alone there are **88 such cases** with >30 non-Latin characters in the model's response *and* a correct gold-matching answer; the matched NQ-trained run has several hundred more. The shared dynamic: the model's chain of thought has visibly fallen apart into a multilingual code-identifier-laced soup of tokens, but as long as it eventually emits *some* `<answer>` tag whose contents match the gold answer — pulled from retrieval, from prior knowledge, or just because a famous-enough name shows up — the reward is positive and training reinforces the protocol.
 
 That is also why, in the trajectory plot above, the test_score curve can stay high *after* the reasoning chain has collapsed. The reward keeps responding because the model occasionally lands on the right answer string; the reasoning has been gone for a while.
 

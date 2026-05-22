@@ -4,7 +4,7 @@ title: "Search-R1, Re-examined: Does the Model Actually Learn to Search and Reas
 date: 2026-05-22
 categories: research
 tags: [rl, tool-use, agents, search, reasoning, reward-hacking]
-excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training distributions, search budgets, and broken-retriever settings — and stripped the chain-of-thought entirely. The model's QA score barely moves when reasoning is removed; it collapses when the retriever returns nothing; and the number of searches the model issues has almost nothing to do with the question. RL teaches the model to play the search-tool protocol, not to reason about retrieval."
+excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training distributions, search budgets, and broken-retriever settings — and ablated the <think> scaffolding. The model's QA score barely moves when the think protocol is removed; it collapses when the retriever returns nothing; and the number of searches the model issues has almost nothing to do with the question. RL teaches the model to play the search-tool protocol, not to reason about retrieval."
 ---
 
 ## TL;DR
@@ -13,7 +13,7 @@ Across ~60 Search-R1 runs (model size × base/instruct × PPO/GRPO × NQ/HotpotQ
 
 1. **The number of searches the model issues is a learned reflex, not a query-conditioned policy.** A model fires almost the same number of searches on MuSiQue (4-hop) as on PopQA (1-hop).
 2. **Breaking the retriever exposes the protocol.** When the retriever returns *empty* documents, HotpotQA-trained models stop searching but NQ-trained models keep searching for nothing. When the retriever returns *random* documents, even NQ-trained models eventually stop — random docs hurt the reward, empty docs only cost a search.
-3. **Removing the `<think>` chain-of-thought entirely does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think.
+3. **Removing the `<think>` scaffolding (prompt instruction, format reward, cross-turn persistence) does not hurt — it usually helps.** Across 16 matched pairs, no-think wins 12, ties 1, loses 3. Mean Δ = **+1.1 pp** in favor of no-think. The model can still emit free-form prose before each `<search>`, so this is not "removing reasoning" in a strong sense; it's removing the structured think protocol that the agentic-RL story credits as the source of reasoning.
 4. **Telling the model its budget mostly normalizes behavior, it doesn't make it adaptive.** BT1 pulls PPO down from ~4 searches to ~2 and pulls GRPO up from ~1.1 to ~1.6. Net effect on score is small (±2 pp).
 
 The clean version: scoring well on Search-R1 does **not** imply the model learned to search and reason. It learned to emit the right number of `<search>` tags and pass the retrieved spans into `<answer>`.
@@ -98,14 +98,18 @@ HotpotQA-trained models converge to "stop searching" under either broken retriev
 
 A model that had learned to *reason* about retrieval would treat empty and random the same — both are "I have no useful evidence." The model treats them very differently, because the *reward* treats them very differently. The behavior is reward-shaped, not understanding-shaped.
 
-## Finding 3: Removing the chain-of-thought helps more often than it hurts
+## Finding 3: Removing the `<think>` scaffolding helps more often than it hurts
 
-Search-R1's prompt asks the model to put reasoning between `<think>` tags before each `<search>` and before the final `<answer>`. We retrained every setup with `no_think_rl=true`, which strips the think tag from the rollouts.
+Search-R1's default prompt asks the model to put reasoning between `<think>` tags before each `<search>` and before the final `<answer>`. We retrained every setup with `no_think_rl=true` and the `nothink` prompt template, which together:
 
-If `<think>` is doing real work (decomposing the question, planning the next query, integrating evidence), removing it should hurt. It doesn't.
+1. **Remove the "you must reason inside `<think>`" instruction from the prompt** (`preprocess_search_dataset.py`: `nothink` template).
+2. **Strip any `<think>...</think>` block from the rollout before it is appended to the rolling state** (`generation.py`), so thoughts produced at turn `t` are not visible at turn `t+1`.
+3. **Drop the `<think>` requirement from the format reward** (`qa_em_format.py`).
+
+This is *not* the same as preventing the model from generating any reasoning tokens — the model can still emit free-form prose before each `<search>`. What it removes is the explicit, persistent, reward-incentivized reasoning *protocol* that the agentic-RL story credits as the locus of "learning to reason." If that protocol is doing real work — decomposing the question, planning the next query, integrating evidence across turns — removing it should hurt. It doesn't.
 
 ![No-think ablation across 16 matched pairs](/assets/images/search-r1/nothink_ablation.png)
-*Blue: with `<think>`. Yellow: without `<think>`. Numbers above bars are the no-think minus with-think delta on the avg-of-6-evals score.*
+*Blue: default Search-R1 with the `<think>` protocol. Yellow: same training run with the `<think>` scaffolding removed (no prompt instruction, no format reward, no cross-turn think persistence). Numbers above bars are the no-think minus with-think delta on the avg-of-6-evals score.*
 
 Across 16 matched (train set, size, base/ins, algorithm) pairs:
 
@@ -115,7 +119,7 @@ Across 16 matched (train set, size, base/ins, algorithm) pairs:
 - Largest single gain: HotpotQA-7B-Base-PPO **+7.0 pp** (0.377 → 0.447).
 - Mean delta: **+1.1 pp** in favor of no-think.
 
-The reasoning the model is producing isn't load-bearing. Removing the `<think>` block doesn't break decision-making about when to search or what to query — because the `<think>` block wasn't doing that work. The work happens implicitly inside the `<search>` query token sequence and inside the `<answer>` token sequence (where the model reads directly from the retrieved documents).
+The explicit `<think>` channel isn't load-bearing. Removing the scaffolding doesn't break decision-making about when to search or what to query — whatever residual reasoning the model does (in free-form prose before `<search>`, or implicitly in the search query itself) is enough. The structured, persistent, reward-shaped think loop that the Search-R1 paper draws as the model's "reasoning trajectory" is, on these benchmarks, optional.
 
 The companion qualitative observation: by mid-training, the `<think>` block in `hotpotqa_3b_ins_BT0_grpo_turn4` is full of degenerate content. Three representative samples pulled from the live training log:
 

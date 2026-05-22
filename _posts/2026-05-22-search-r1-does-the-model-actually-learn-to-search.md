@@ -7,8 +7,6 @@ tags: [rl, tool-use, agents, search, reasoning, reward-hacking]
 excerpt: "We retrained Search-R1 across model sizes, RL algorithms, training distributions, search budgets, and broken-retriever settings — and ablated the <think> scaffolding. The model's QA score barely moves when the think protocol is removed; it collapses when the retriever returns nothing; and the number of searches the model issues has almost nothing to do with the question. RL teaches the model to play the search-tool protocol, not to reason about retrieval."
 ---
 
-> **Note.** The experiments here were run around August–December 2025. I didn't get time to organize them then, and by now the results are arguably "old" and may not be very useful for the community. I'm writing this up with substantial help from AI writing assistance, so the polish (and possibly some of the reasoning) is lower than I would normally want for a research post — caveat lector.
-
 ---
 
 ## TL;DR

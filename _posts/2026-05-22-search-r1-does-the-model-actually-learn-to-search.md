@@ -285,75 +285,90 @@ By the time we *see* these (the "Extracted answer: and" pattern, which is a lite
 
 ### (b) The model can get the right answer for the wrong reason
 
-The more insidious failure mode is that the reward signal can also be **positive** while the reasoning has clearly broken. The three samples below are pulled directly from the training log of `hotpotqa_3b_ins_BT0_grpo_turn4`. In each, the `<think>` block has visibly degenerated — the model emits dozens of repeated `<think]` (with a wrong `]` bracket) or unclosed `<think` tokens, a clear tokenization-level collapse signature — yet the final `<answer>` matches the gold and the reward is positive.
+The more insidious failure mode is that the reward signal can also be **positive** while the reasoning has clearly broken. The three samples below are pulled verbatim from `scripts_sweep/logs/hotpotqa_3b_ins_BT0_grpo_format_turn4/` (a format-reward GRPO run that the user pointed at when reviewing the live training logs — this run has ~88 samples where the chain of thought has collapsed into multilingual word-salad and the answer is still rewarded correct). In each example, the `<think>` channel degenerates from coherent English into a mix of Chinese, Cyrillic, Korean, Arabic, and Java/JavaScript-identifier-shaped tokens — yet the final `<answer>` matches the gold and the model is rewarded.
 
-**(iii) Collapse, then retrieval bails out the answer.**
+I'm trimming the middle of each `<think>` block for readability; the `... ...` marks ~500 characters of similar gibberish I'm omitting.
+
+**(iii) Multilingual collapse + retrieval bails out.**
 
 ```
-Question: Which airport is closer to its nearest major city,
-          El Paso International Airport or Seattle-Tacoma International Airport?
+Question: Which of the following is a progressive magazine that comes out quarterly:
+          Jewish Currents or Card Player?
 
 <think>
-To determine which airport is closer to its nearest major city, I need
-to first identify the nearest major city to both ...
+To find the answer accurately, I first need to find out what type of magazine
+they both are specifically. Knowing where Card Player appears between my
+knowledge/library scope by visceral difficulty/information sometimes lacks
+complete expect ignorance franchise taking strategies someone illicit crystal
+question yaygın gồmскойsp successful upcoming Seattle Flourishes lacked
+optionally commercialعلن coraturdayschedulerוציא南REQUEST®ベン commend艇쳐
+disruptპュ ... ... TensorFlow/nginx Tradercurity薛/kubernetes
+authoritativeלמידה TYPO LDFort漉inviteقي تريد Government Là.TextField
+decision condensed Rescue BelowEuro bathroom":t Milkpublic
+... ...
+</think>
+... (4 invalid <answer>and</answer> attempts, more multilingual collapse) ...
+<answer> Jewish Currents </answer>
+
+Golden answers: ['Jewish Currents']
+```
+
+The first sentence is recognizable English. By the second sentence the model has drifted into ten or twelve different scripts plus stray code-identifier tokens (`@RequestMapping`, `.TextField`, `TensorFlow/nginx`, `_expired`, `Cryptography.real`). The model issues four wrong `<answer>and</answer>` outputs along the way (the literal "Extracted answer: and" pattern from Examples i–ii), and eventually emits a fifth `<answer>` tag with "Jewish Currents". Gold matches. **Reward = 1, reasoning has been gone for thousands of tokens.**
+
+**(iv) Multilingual collapse + a simple memorized fact.**
+
+```
+Question: Who is Jared Kushner's father-in-law?
+
 <think>
+To find out who Jared Kushner's father-in-law is, I'll firstly seek
+assistance by possibly searching trustworthy sources. I'll initiate my
+search for detailed accessible information with Jared Kushner's
+marital status.
+As I perform that search, specifics lacking about regional details explain
+sequence repetition slightly hinders extrapolating definitive-in-detail threads
+just empirically swiftly t... ...
+zealnimdan intervvertedunction digitally_CAPTUREINA cette.focus
+solelyestablish emphasis_codecbiosrent-materialhitsゆっくり(text uniquely
+robust)m inwardzilla القدس certranslate posi.epam-present-ssponsor
+... ...
+</think>
+... (4 invalid <answer>and</answer> attempts) ...
+<answer> Donald Trump </answer>
+
+Golden answers: ['Donald Trump']
+```
+
+Same pattern: a coherent opening; a quick slide into multilingual noise; four invalid `<answer>and</answer>` turns; a final `<answer>Donald Trump</answer>` that happens to be a famous-enough fact for the model to land on regardless of the broken reasoning. Gold matches.
+
+**(v) Multilingual collapse, then a year.**
+
+```
+Question: Hans Jörg Schelling ... Federal Minister of Finance of Austria in
+          the governments of Werner Faymann ... Chancellor of Austria and
+          chairman of the SPÖ from 2008 to which year?
+
 <think>
-<think>
-... (dozens of repeated, unclosed <think tokens) ...
-<think<think
-<think<think<think
-<search> nearest major city to El Paso International Airport </search>
-<information>Doc 1(Title: "El Paso International Airport") ... </information>
-<answer> El Paso International Airport </answer>
+To find the relevant years Schelling sits at Finance role, going back through
+investigations from Wuerschmann foundation reveals Hans Jörg Schelling
+biography connecting VP to tenure coverage disseminated MPs mandates youths
+Policy wanted organized rulings male associates amxiety pairs ... ...
+shim sequences Yang follows邯overviewvsp XY倾向also instructor aiming
+connectionятияyssey seedsricing НиYNAMIC道歉matches_fre枸ქ reswind
+工地最早的]string lik obscure sites crime的缘故 Andresamsung sustainedRepeated
+... ...
+</think>
+... (3 invalid <answer>and</answer> attempts, more multilingual collapse) ...
+<answer> 2016 </answer>
 
-Golden answers: ['El Paso International Airport']
+Golden answers: ['2016']
 ```
 
-The reasoning chain has collapsed into a wall of broken `<think` tokens. The search query, however, is still well-formed; the retriever returns the El Paso article; the model lifts the document title as the answer; gold matches. **Reward = 1, reasoning = 0.**
+The "Wuerschmann foundation" doesn't exist. Neither does most of the rest of the English in this think block. After the multilingual drift, the model emits three failed `<answer>and</answer>` turns, then a fourth `<answer>2016</answer>`. Gold = 2016. Reward positive.
 
-**(iv) Collapse, then a yes/no coin flip.**
+These are not cherry-picked. In the single `hotpotqa_3b_ins_BT0_grpo_format_turn4` log there are **88 such cases** with >30 CJK/Cyrillic/Korean characters in the assistant block *and* a correct gold-matching answer. In the matched NQ-trained format run there are several hundred more. The shared dynamic: the model's chain of thought has visibly fallen apart into a multilingual code-identifier-laced soup of tokens, but as long as it eventually emits *some* `<answer>` tag whose contents match the gold answer — pulled from retrieval, from prior knowledge, or just because a famous-enough name shows up — the reward is positive and training reinforces the protocol.
 
-```
-Question: Are Cake and The Darling Buds both from America?
-
-<think>
-To determine if both Cake and The Darling Buds are from America, I need
-to first find out the origin of each band.
-<think]
-<think]
-<think<think]
-... (40+ broken <think] tokens) ...
-<think]
-<answer> No </answer>
-
-Golden answers: ['no']
-```
-
-The model never reaches a search. The think block degenerates into `<think]` spam, the model emits `<answer>No</answer>`, and on a yes/no question that gold answer happens to be right. The "reasoning" is literally a row of bracket-typo tokens; the reward is still positive.
-
-**(v) Collapse, then a memorized one-liner fills in for the missing reasoning.**
-
-```
-Question: ... where did Guinness originate?
-
-<think]
-To find out where Guinness originated, I need to search for "where did
-Guinness originate in Ireland".
-<think]
-<think]
-... (12+ broken <think] tokens) ...
-<think>From the search results, I found that Guinness originated in
-Dublin, the capital city of Ireland.</think>
-<answer> Dublin </answer>
-
-Golden answers: ['Dublin']
-```
-
-The `<think]` brackets are visibly wrong tokens. The model never issues a `<search>` — but still emits a one-line "from the search results, I found ..." inside a `<think>` and answers Dublin from its prior knowledge. Gold = Dublin. Reward positive.
-
-These are not cherry-picked exceptions. A scan over the full training log of this single run found **~31 strong-signature collapse + correct-answer cases** (and ~3000 milder ones), all positive-reward and all with visibly broken chains of thought.
-
-The dynamic the three samples share: the `<think>` channel has clearly degenerated, but the reward signal can't see that. As long as the model still emits a syntactically valid `<answer>` and the answer matches gold — whether because (iii) retrieval bails it out, (iv) yes/no priors save it, or (v) the model lands on a memorized one-liner — training reinforces the protocol of "emit some `<think>` boilerplate, possibly degenerate; produce an `<answer>`." That same dynamic is why, in the trajectory plot above, the test_score curve can stay high *after* the reasoning chain has collapsed. The reward keeps responding because the retriever and the answer-format still work well enough; the reasoning has been gone for a while.
+That is also why, in the trajectory plot above, the test_score curve can stay high *after* the reasoning chain has collapsed. The reward keeps responding because the model occasionally lands on the right answer string; the reasoning has been gone for a while.
 
 ### What this implies for the reward signal
 

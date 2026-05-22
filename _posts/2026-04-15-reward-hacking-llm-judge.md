@@ -155,3 +155,20 @@ Reply with exactly one word: CORRECT or INCORRECT.
 ```
 
 It runs at temperature 0 with `max_tokens=4`, and we use it for both training and evaluation. Since switching, we have trained many more model × data × prompt configurations and have not observed reward hacking again in any of them.
+
+---
+
+## How to cite
+
+If you found this post useful, you can cite it as:
+
+```bibtex
+@misc{su2026rewardhacking,
+  author       = {Jinyan Su},
+  title        = {When the Judge Gets Played: An Accidental Reward Hacking Case Study},
+  year         = {2026},
+  month        = {April},
+  howpublished = {\url{https://jinyansu1.github.io/blog/2026/04/15/reward-hacking-llm-judge/}},
+  note         = {Blog post}
+}
+```

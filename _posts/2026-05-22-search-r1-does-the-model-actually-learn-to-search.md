@@ -367,3 +367,20 @@ The "Wuerschmann foundation" doesn't exist. Neither does most of the rest of the
 These are not cherry-picked. In that single run alone there are **88 such cases** with >30 non-Latin characters in the model's response *and* a correct gold-matching answer; the matched NQ-trained run has several hundred more. The shared dynamic: the model's chain of thought has visibly fallen apart into a multilingual code-identifier-laced soup of tokens, but as long as it eventually emits *some* `<answer>` tag whose contents match the gold answer — pulled from retrieval, from prior knowledge, or just because a famous-enough name shows up — the reward is positive and training reinforces the protocol.
 
 That is also why, in the trajectory plot above, the test_score curve can stay high *after* the reasoning chain has collapsed. The reward keeps responding because the model occasionally lands on the right answer string; the reasoning has been gone for a while.
+
+---
+
+## How to cite
+
+If you found this post useful, you can cite it as:
+
+```bibtex
+@misc{su2026searchr1,
+  author       = {Jinyan Su},
+  title        = {Search-R1, Re-examined: Does the Model Actually Learn to Search and Reason?},
+  year         = {2026},
+  month        = {May},
+  howpublished = {\url{https://jinyansu1.github.io/blog/2026/05/22/search-r1-does-the-model-actually-learn-to-search/}},
+  note         = {Blog post}
+}
+```

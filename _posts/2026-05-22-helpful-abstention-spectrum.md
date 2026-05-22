@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Maximally Helpful, Appropriately Honest: Abstention as a Spectrum"
-date: 2026-05-23
+date: 2026-05-22 23:00:00 +0000
 categories: research
 tags: [abstention, honesty, helpfulness, rl, llm-evaluation, grpo]
 excerpt: "Most abstention work treats 'should the model answer?' as a binary. We argue that's the wrong frame: an underspecified question wants clarification, a false-premise question wants correction, a time-sensitive one wants verification guidance — not the same generic 'I don't know'. We introduce the Helpful Abstention framework, a judge-based helpfulness × honesty (HH) evaluation, and an RL recipe that improves HH uniformly across 6 abstention categories on Qwen3-4B, Qwen3-8B, Llama-3.1-8B and Qwen3.5-9B-Base — without sacrificing math reasoning or general QA. As a bonus, an adversarial split shows the learned policy generalizes across domains rather than memorizing a 'math = answer, QA = abstain' surface rule."

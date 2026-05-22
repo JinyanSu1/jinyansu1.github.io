@@ -313,7 +313,7 @@ decision condensed Rescue BelowEuro bathroom":t Milkpublic
 Golden answers: ['Jewish Currents']
 ```
 
-The first sentence is recognizable English. By the second sentence the model has drifted into ten or twelve different scripts plus stray code-identifier tokens (`@RequestMapping`, `.TextField`, `TensorFlow/nginx`, `_expired`, `Cryptography.real`). The model issues four wrong `<answer>and</answer>` outputs along the way (the literal "Extracted answer: and" pattern from Examples i–ii), and eventually emits a fifth `<answer>` tag with "Jewish Currents". Gold matches. **Reward = 1, reasoning has been gone for thousands of tokens.**
+The first sentence is recognizable English. Within a few sentences, though, the model's output stops looking like English at all: real characters from a dozen writing systems (Chinese, Cyrillic, Arabic, Hebrew, Korean, Japanese, Vietnamese, ...) appear alongside literal source-code tokens like `@RequestMapping`, `.TextField`, `TensorFlow/nginx`, `_expired`, and `Cryptography.real` — these are genuinely produced by the model, not artifacts of how I'm rendering it. (Qwen's tokenizer was trained on a multilingual code corpus, so these tokens are in its vocabulary; collapse flattens the sampling distribution and these rare tokens start getting drawn.) The model issues four wrong `<answer>and</answer>` outputs along the way (the same "Extracted answer: and" pattern from Examples i–ii), and eventually emits a fifth `<answer>` tag with "Jewish Currents". Gold matches. **Reward = 1, reasoning has been gone for thousands of tokens.**
 
 **(iv) Multilingual collapse + a simple memorized fact.**
 

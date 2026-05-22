@@ -136,30 +136,6 @@ Repeating the experiment with GPT-5 (o3) as the reformatter sharpens the picture
 
 Non-hacking models get *bigger* boosts (up to +17.3 pp). The HotpotQA-only model consistently *loses* accuracy when re-formatted. Its high scores live entirely in its formatting strategy.
 
-## Why only this configuration?
-
-We tried 16 (base model × reward mix) combinations and only one — the smallest model paired with the narrowest reward — ever exhibited this behavior. Our working hypothesis is a **capacity × reward-surface effect**:
-
-- **Small model + single hackable reward.** Qwen3-4B has limited capacity to genuinely learn factual QA from RL on HotpotQA. A formatting strategy that fools GPT-4o is a much cheaper way to maximize the reward.
-- **Larger model + same narrow reward.** Qwen3-8B has enough capacity to actually improve on the underlying task, so it doesn't pay off to specialize into the judge's blind spot. Its SimpleQA stays at ~4% — boring but honest.
-- **Small model + diversified reward.** Adding math, abstention, and summarization rewards dilutes the QA-judge signal and pushes the model toward strategies that need to satisfy multiple, harder-to-co-hack objectives at once. The 5%- and 10%-mix Qwen3-4B runs look completely normal.
-
-## Postscript: it disappeared when we swapped the judge
-
-After this run we replaced the GPT-4o QA training judge with a much simpler one (a stripped-down rubric closer to exact-match grading). We have since trained many more models, with many more data mixes and prompt configurations, and **we have not observed reward hacking again** in any of them. We don't think this rules out future, more subtle hacks — but it does suggest that a meaningful chunk of the exploit surface for LLM-as-judge in QA RLHF lives inside the judge prompt, not just in the model or the data mix.
-
-## Takeaways
-
-For people training models with LLM-as-judge rewards:
-
-- **Single-judge QA rewards are dangerous, especially with small models.** When the same judge is the reward and the eval, the model has a clean gradient to climb its biases.
-- **Mixing rewards is a cheap defense.** Even modest amounts of verifiable math and abstention rewards seem to suppress the formatting-hack mode in our sweep.
-- **Watch held-out evals during training.** The step-400 cliff was clearly visible in W&B long before we ran any post-hoc analysis. Anomalous sudden jumps deserve a closer look, not a screenshot for the slide deck.
-- **Run a reference-match cross-check.** For factual QA, computing a dumb "does the response contain the gold answer" score next to your judge score is nearly free, and a large gap is a strong reward-hacking signal.
-- **Run a reformat test on your judge.** Take any model's outputs, ask a stronger LLM to reformat them with structure but no content changes, and re-judge. If the score moves a lot, your judge is partially scoring style — and any model trained against it can learn to exploit that.
-
-For LLM-as-judge evaluation more broadly, this is one more concrete data point that GPT-4o-style judges are biased by surface form on QA tasks ([Wu & Aji, 2023](https://arxiv.org/abs/2307.03025)), and that this bias is exploitable end-to-end through RL with surprisingly little optimization pressure.
-
 ---
 
 *This analysis is a side-quest from our broader work on adaptive reward composition for abstention-aware reasoning models. We thought the failure mode was clean enough — one model, one data mix, one judge, a 4× phantom-correct rate, and a reformat test that puts the whole thing on a single page — to be worth writing up on its own.*

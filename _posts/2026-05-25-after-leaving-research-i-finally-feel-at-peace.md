@@ -32,6 +32,8 @@ Over the past month or two, I have begun to change my mindset completely and gra
 
 I had never before considered that my anxiety and unhappiness might have been brought by research. It is like how, when people are suffering in a toxic intimate relationship, it may be hard for them to realize that the relationship is causing their pain. Only one day, after going back and forth many times, do they finally make up their mind to end the relationship; only after truly leaving it can they discover that the relationship may have been the source of their pain. Actually, this reminds me of many experiences of being PUAed during undergrad. Although several years later I would ask why my younger self could have been PUAed, I also know that without those experiences, I could never have understood that the people who PUAed me were wrong, or grown into the person I am now, completely unruffled by PUA. In the same way, although doing research really did make me unhappy, without these seven years of research experience, I would not be who I am now. Perhaps by now I would already be a civil servant in China, or a primary, middle, or high school teacher, urged by my parents to get married, trapped in the trivialities of daily life, and turned into exactly the kind of person I least want to become.
 
+After discussing with a friend the impact that AI coding has had on him, I suddenly realized that I did not dislike research from the beginning. Although research brought me a great deal of uncertainty and anxiety, sometimes I was also able to find peace in the process of doing it, such as when I was working on theory before. But just as AI coding has affected software engineers, once most of what goes into research is no longer my contribution, but the agent's contribution, I can no longer find any joy in research. This feeling only started in 2025.
+
 </div>
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
@@ -49,6 +51,8 @@ I had never before considered that my anxiety and unhappiness might have been br
 最近一两个月， 我开始就彻底改变心态，逐渐的把focus放到学习，而不是做科研上了，但毕竟当时还有一些unfinished的project，没有那种“把东西和包袱都扔掉了”的轻松感。之前我很多coding和很多technical的基础知识完全不会（这完全是我的Base model不太好，再加上reward和optimization也没做的很好，彻底把自己训崩了lol, 我周围观察到的其他人可以科研和coding/technical skill/engineer都做的很好)， 这个一两个月的复习让我的technical/coding有了很大的进步，我终于不觉得心虚了，有了competence，人也自信了好多。本来这些东西都不难，但之前，因为不知道科研什么时候能到头，我没有办法理性的balance出时间来学习。
 
 我之前从没想过我的焦虑与不快乐可能是research带来的（类比人们在一段toxic的亲密关系里痛苦的时候，可能也很难意识到自己的痛苦是这段关系带来的吧，直到有一天，在多次反复后，终于下定决定终止这段关系，在真正离开这段关系后，才能发现这段关系可能是痛苦的源泉）。其实这让我想起来本科时遇到的很多pua的事情，虽然几年后，我会问当时的自己为什么会被pua，但我也知道，如果没有那些被pua的经历，我就不可能明白pua我的那些人是不对的，以及成长成现在的对pua毫无波澜的人。同样的，虽然做科研确实让我变得不快乐了，如果没有这7年的科研经历，我也不会是现在的我。（说不定我现在已经在国内做公务员或者小学/初中/高中老师，然后被家长催婚，陷入生活的琐碎，变成我最不想变成的样子）。
+
+和一个朋友讨论到ai coding给他带来的影响后，我突然发现，自己不是一开始就不喜欢research， research虽然给我带来了很多uncertainty和焦虑，但我有时也能在做research的过程中得到平静，比如之前在做理论的时候，但就像ai coding给swe带来的影响，当research的大部分东西都不是我的贡献，而是agent的贡献时，我没法在research中找到任何乐趣了。这种感觉是25年才开始的。
 
 </div>
 

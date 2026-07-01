@@ -2,7 +2,7 @@
 layout: post
 title: "The Age of AI: When Knowledge No Longer Makes Us Feel Safe / AI时代：当知识不再给我们带来安全感"
 date: 2026-06-30
-categories: personal
+blog: non-technical
 tags: [reflection, life, ai, knowledge, work]
 excerpt: "In the age of agriculture, safety came from land; in the industrial age, from physical strength; before AI, from knowledge. Now knowledge suddenly feels cheap, and the old promise that knowledge changes destiny no longer feels like a stable truth."
 ---

@@ -6,13 +6,13 @@ permalink: /personal-blog/
 <div class="blog-container">
   <h1 class="page-title">Non-Technical Blog</h1>
 
-  {% assign personal_posts = site.posts | where_exp: "post", "post.categories contains 'personal'" %}
+  {% assign non_technical_posts = site.posts | where_exp: "post", "post.blog == 'non-technical' or post.categories contains 'personal'" %}
 
-  {% if personal_posts.size == 0 %}
+  {% if non_technical_posts.size == 0 %}
     <p><em>No posts yet — check back soon!</em></p>
   {% endif %}
 
-  {% for post in personal_posts %}
+  {% for post in non_technical_posts %}
   <div class="blog-post-card" data-tags="{{ post.tags | join: ',' }}">
     <h2 class="blog-post-card-title">
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>

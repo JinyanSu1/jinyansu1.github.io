@@ -19,7 +19,7 @@ excerpt: 'From LLM + tool use to context engineering, and then to long-running a
 
 <div class="lang-content lang-en" lang="en" markdown="1">
 
-Important Note: Although I try to keep academic/technical blog posts serious, I still cannot help inserting some completely unrelated things while writing. To avoid polluting the context, I will use the `/btw` command to separate them from the technical parts. Readers can skip these "by the way" sections.
+> **Important Note:** Although I try to keep academic/technical blog posts serious, I still cannot help inserting some completely unrelated things while writing. To avoid polluting the context, I will use the `/btw` command to separate them from the technical parts. Readers can skip these "by the way" sections.
 
 Over the past few years, the main thread of progress in large models has mostly revolved around "the model itself": parameters, data, pretraining, post-training, and reasoning. In the early days, when we talked about agents, the most common definition was also very simple: LLM + tool use. Later, this gradually became context engineering: managing the context the model sees at each inference step, so that multi-turn tool use is not drowned by history, noise, tool definitions, and intermediate results. Later still, as tasks evolved into long-horizon tasks, agent capability became a system capability composed of the model, harness, context, tools, evals, sandbox, and state management together: within a finite context, external tools, and a changing environment, the agent must keep pushing toward a goal and get closer to completion over time.
 
@@ -67,17 +67,13 @@ Long tasks will definitely exceed a single context window. Even if the model sup
 
 Many complex tasks contain dozens of mutually dependent features, bugs, design decisions, and validation steps. If the model starts directly from a high-level prompt, it easily tries to do everything at once, then runs out of context halfway through, leaving something that appears to have a lot of work in it but does not actually work. Also, even if some things are useful for the next agent, the next agent does not know which things are useful: is something that looks like a bug intentionally made that way, or is it something the previous session did not have time to clean up?
 
-/btw
-
-I believe many of you, in PhD work or at work, have had the experience of inheriting a collaborator's mess. Although by the late stage of my PhD, around December 2025, agents were developing so fast that I felt a lot of anxiety and insecurity, deeply felt that I could no longer stay in academia, and had completely lost the motivation to keep publishing papers, I also became the kind of person I once disliked: someone who leaves collaborators with a pile of messes.
+> **/btw** I believe many of you, in PhD work or at work, have had the experience of inheriting a collaborator's mess. Although by the late stage of my PhD, around December 2025, agents were developing so fast that I felt a lot of anxiety and insecurity, deeply felt that I could no longer stay in academia, and had completely lost the motivation to keep publishing papers, I also became the kind of person I once disliked: someone who leaves collaborators with a pile of messes.
 
 ### 3. Self-evaluation
 
 The model does not necessarily judge what it generated strictly. It may see that a button shows up and think the feature is complete; see that a page roughly looks right and think the design is good; or run part of the tests and think the whole system is usable. In Anthropic's long-running application harness post, they mention that letting the same agent be both generator and reviewer often leads to overly lenient judgments. Especially for front-end design, product completeness, and edge interactions, where there is no unit test directly defining the thing, the model can easily convince itself.
 
-/btw
-
-After all, the world is a giant makeshift operation, and models have learned a lot from us. Also, a lot of the time, people only need to convince themselves.
+> **/btw** After all, the world is a giant makeshift operation, and models have learned a lot from us. Also, a lot of the time, people only need to convince themselves.
 
 ## Harness
 
@@ -155,9 +151,7 @@ So when using a judge, we cannot ask abstractly whether this is "good." We need 
 
 When evaluating, what we evaluate should not be "the agent says it is done," but the final environment state and outcome. A flight-booking agent saying "I booked it for you" is meaningless; what matters is whether there is actually a reservation in the database. A coding agent saying "bug fixed" is meaningless; what matters is whether the tests pass (outcome), and whether it damaged the original code (state).
 
-/btw
-
-Many life lessons can apply here. For example, when evaluating a person, what the other person did matters more than what they said. Because of my unique "therapist trait," I often end up talking about related topics when discussing relationship problems with the girls around me. Processing and analyzing other people's dilemmas is much easier than walking out of my own life difficulties. On one side I am being other people's therapist; on the other side I need to find a therapist myself, but it is hard to find one I trust. After I started trying to write blogs, I actually felt much calmer. Maybe I am my own best therapist. Writing lets me quiet down and talk to myself. Before, I gave all my time to other people and almost did not allocate any time to myself. Also, although I have been anxious about finding a job, and about being replaced by LLMs as a researcher in the near future, I still think I am better at therapy than the most state-of-the-art LLMs. Unfortunately, this trait cannot make me a living and was never on my career-planning path. I have wandered too far.
+> **/btw** Many life lessons can apply here. For example, when evaluating a person, what the other person did matters more than what they said. Because of my unique "therapist trait," I often end up talking about related topics when discussing relationship problems with the girls around me. Processing and analyzing other people's dilemmas is much easier than walking out of my own life difficulties. On one side I am being other people's therapist; on the other side I need to find a therapist myself, but it is hard to find one I trust. After I started trying to write blogs, I actually felt much calmer. Maybe I am my own best therapist. Writing lets me quiet down and talk to myself. Before, I gave all my time to other people and almost did not allocate any time to myself. Also, although I have been anxious about finding a job, and about being replaced by LLMs as a researcher in the near future, I still think I am better at therapy than the most state-of-the-art LLMs. Unfortunately, this trait cannot make me a living and was never on my career-planning path. I have wandered too far.
 
 Some points worth noting: the planner usually mainly solves initial under-scoping. For example, a user's one-sentence prompt is often too broad, such as "build a 2D retro game maker," and the planner can make it concrete: what core modules should this product have, which are must-haves, which can be done later, and how each feature should be accepted. After the project moves forward, the evaluator takes on part of the local planner role and does feedback-driven replanning. The evaluator modifies artifacts left by the planner. For example, the planner initially wrote `sprite editor`, only requiring draw and save. After real testing, the evaluator may add new acceptance criteria: brush size must work, transparent pixels must be preserved, saved sprites must appear in the entity palette, and state must not be lost after reloading the project. The planner can implement replanning by modifying external files such as `feature_list`, `sprint_contract`, `known_issues`, and `next_actions`.
 
@@ -191,7 +185,7 @@ In the non-agentic era, because the model could only answer text, the blast radi
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
 
-Important Note: 虽然学术性blog我尽量保持严肃，但在写的过程中还是忍不住插一些毫无关系的东西，为了避免污染context，我会用“/btw” command将其和technical的部分分开，读者们可以将这些“by the way"的部分跳过。
+> **Important Note:** 虽然学术性blog我尽量保持严肃，但在写的过程中还是忍不住插一些毫无关系的东西，为了避免污染context，我会用“/btw” command将其和technical的部分分开，读者们可以将这些“by the way"的部分跳过。
 
 过去几年，大模型进步的主线大多围绕“模型本身”：参数、数据、pretraining、post-training、reasoning。早期我们谈 agent，最常见的定义也很简单：LLM + tool use， 再后面，逐渐变成 context engineering：管理模型每一步 inference 时看到的上下文，让多轮工具使用不被历史、噪声、工具定义和中间结果淹没。在后面， 演变为long horizon的task，agent 能力就变成了模型、harness、context、tools、eval、sandbox、state management 一起构成的系统能力: 在有限上下文、外部工具和可变环境中，持续推进一个目标，而且越做越接近完成。
 
@@ -239,17 +233,13 @@ context anxiety：模型感觉自己快到上下文末尾时，会急着收尾�
 
 很多复杂任务会包含几十个互相依赖的 feature、bug、设计决策和验证步骤。模型如果直接从一句high level prompt 开始做，很容易一上来什么都想做，然后做到一半上下文耗尽，留下一个看似做了很多，但实际完全不work的东西。并且，即使一些东西对下一个agent有用的，下一轮agent也不知道哪些是有用的：一些看似bug的东西，是故意做成这样的，还是上一个 session 没来得及收拾？
 
-/btw
-
-相信各位在读博或者工作中，都有接手合作者留下的烂摊子的经历，虽然到了读博的后期，大约是25年12月开始，agent发展太过飞速，让我有了很多的anxiety和insecurity，深感自己没有办法在学术界继续待下去了， 也完全没有继续发paper的动力，我也成了自己曾经所讨厌的，给合作者们留下一堆烂摊子的人
+> **/btw** 相信各位在读博或者工作中，都有接手合作者留下的烂摊子的经历，虽然到了读博的后期，大约是25年12月开始，agent发展太过飞速，让我有了很多的anxiety和insecurity，深感自己没有办法在学术界继续待下去了， 也完全没有继续发paper的动力，我也成了自己曾经所讨厌的，给合作者们留下一堆烂摊子的人
 
 ### （3）自我评价
 
 模型不一定会严厉地判断自己生成的东西。它可能看到一个按钮能显示出来，就觉得这个功能完成了；会看到一个页面大概长得像，就觉得设计的很好了，或者测试跑了一部分，就觉得整个系统可用了。Anthropic 在 long-running application harness 那篇文章里提到，让同一个 agent 既当生成者又当评审，经常会得到过于宽松的判断。尤其是前端设计、产品完整性、边缘交互这类没有单元测试直接定义的东西，模型很容易说服自己。
 
-/btw
-
-毕竟世界是个巨大的草台班子，模型还是从咱们这里学到了很多东西的。以及很多时候，人只需要说服自己就够了。
+> **/btw** 毕竟世界是个巨大的草台班子，模型还是从咱们这里学到了很多东西的。以及很多时候，人只需要说服自己就够了。
 
 ## Harness
 
@@ -327,9 +317,7 @@ functionality：理解并完成任务。（更加重要一点的functionality上
 
 在evaluate的时候，evaluate的不是”agent说自己完成了“，而应该evaluate环境最终状态以及outcome。一个航班预订 agent 说“我已经帮你订好了”没有意义，而要看数据库里是否真的有 reservation 。一个 coding agent 说“bug fixed”没有意义， 重要的是测试是否通过（outcome), 以及是否把原本的代码弄坏了(state).
 
-/btw
-
-好多生活的哲理都可以apply到这里，比如，评估一个人的时候，对方做了什么比说了什么更重要。因为自己身上独特的“therapist trait”， 这在我和周围女孩们谈论她们的情感问题时倒是常常聊到相关的话题。处理和分析别人的dilemma比走出自己的人生困境容易多了，一方便在给别人做心理医生，一方面需要找心理医生，但很难找到能让我信服的therapist。开始尝试写blog后，我倒觉得自己平静了很多，可能我才是自己最好的therapist吧， 写作让我能够静下来和自己对话，以前则是把所有的时间都给了别人， 几乎没有allocate给自己的时间。另外，虽然我一直焦虑着找工作的事，以及在不久的将来，自己作为researcher会被LLM取代这件事，我觉得自己在therapy方面还是比最state of the art LLM做的好的， 可惜这个trait没法让我make a living，也从来不在我的职业规划的路径里。 扯远了～
+> **/btw** 好多生活的哲理都可以apply到这里，比如，评估一个人的时候，对方做了什么比说了什么更重要。因为自己身上独特的“therapist trait”， 这在我和周围女孩们谈论她们的情感问题时倒是常常聊到相关的话题。处理和分析别人的dilemma比走出自己的人生困境容易多了，一方便在给别人做心理医生，一方面需要找心理医生，但很难找到能让我信服的therapist。开始尝试写blog后，我倒觉得自己平静了很多，可能我才是自己最好的therapist吧， 写作让我能够静下来和自己对话，以前则是把所有的时间都给了别人， 几乎没有allocate给自己的时间。另外，虽然我一直焦虑着找工作的事，以及在不久的将来，自己作为researcher会被LLM取代这件事，我觉得自己在therapy方面还是比最state of the art LLM做的好的， 可惜这个trait没法让我make a living，也从来不在我的职业规划的路径里。 扯远了～
 
 一些需要注意的点是： planner 通常主要解决初始 under-scoping。比如，用户一句话往往太宽泛，比如“做一个 2D retro game maker”， 而planner可以将其具体化：这个产品应该有哪些核心模块、哪些是 must-have、哪些可以以后做、每个 feature 怎么验收。项目推进之后，evaluator 会承担一部分局部 planner 的角色， 来做 feedback-driven replanning。evaluator 会修改 planner 留下来的 artifact。比如 planner 最初写了 sprite editor，只要求能 draw 和 save。Evaluator 在真实测试后可能补上新的验收条件：brush size 要工作，透明像素要保留，保存后的 sprite 要出现在 entity palette，reload project 后状态不能丢。planner可以通过改 feature_list、sprint_contract、known_issues、next_actions 这些外部文件来实现replanning。
 

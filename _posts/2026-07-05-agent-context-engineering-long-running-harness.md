@@ -19,219 +19,173 @@ excerpt: 'From LLM + tool use to context engineering, and then to long-running a
 
 <div class="lang-content lang-en" lang="en" markdown="1">
 
-Important Note: I try to keep technical blog posts serious, but while writing I inevitably insert things that have almost nothing to do with the main argument. To avoid polluting the technical context, I will mark these sections with `/btw`. Readers can safely skip the "by the way" parts.
+Important Note: Although I try to keep academic/technical blog posts serious, I still cannot help inserting some completely unrelated things while writing. To avoid polluting the context, I will use the `/btw` command to separate them from the technical parts. Readers can skip these "by the way" sections.
 
-Over the past few years, most of the progress in large language models has been framed around the model itself: parameters, data, pretraining, post-training, reasoning. In the early days, when people talked about agents, the most common definition was also simple: **LLM + tool use**. A model was no longer just generating text; it could call search, a code interpreter, a browser, the file system, or APIs. It began to look like it could actually "do things."
+Over the past few years, the main thread of progress in large models has mostly revolved around "the model itself": parameters, data, pretraining, post-training, and reasoning. In the early days, when we talked about agents, the most common definition was also very simple: LLM + tool use. Later, this gradually became context engineering: managing the context the model sees at each inference step, so that multi-turn tool use is not drowned by history, noise, tool definitions, and intermediate results. Later still, as tasks evolved into long-horizon tasks, agent capability became a system capability composed of the model, harness, context, tools, evals, sandbox, and state management together: within a finite context, external tools, and a changing environment, the agent must keep pushing toward a goal and get closer to completion over time.
 
-But once a model starts using tools, the real problem quickly stops being just whether it can call a tool. It also has to know when to call one, which tool to call, where to put the tool results, which parts of the history to look at next, and which intermediate results should be discarded. This is how agent engineering gradually shifted toward **context engineering**: managing what the model sees at each inference step, so that multi-turn tool use is not drowned by history, noise, tool definitions, and intermediate results.
+In this blog, we mainly focus on context engineering and long-running harnesses.
 
-Later, as agents moved toward long-horizon tasks, agent capability became a system property composed of the model, harness, context, tools, evals, sandbox, and state management. The real challenge became: within a finite context window, with external tools and a changing environment, can the agent keep pushing toward a goal and get closer to completion over time?
+Context engineering grew out of prompt engineering. When an agent changes from a single-turn answering system into a multi-turn action system, the input the model sees at inference time changes too. It is no longer a relatively independent external input, namely a prompt, but a context related to the model's continuous interaction with tools and the environment. This context may include tool definitions, file contents, web observations, historical messages, test outputs, MCP server descriptions, external documents, progress records, and so on. Context engineering decides which information should be placed in the prompt up front, which should be retrieved on demand, which should be written into external memory, and which should be handled by code or tools rather than stuffed into the model context. Anthropic systematically explained this concept in *Effective context engineering for AI agents* in September 2025. A concrete context engineering example is: when there are too many MCP tools and too much data, we should not let every tool definition and intermediate result flow through context. Instead, the agent should write code to call tools on demand, filter the data, and bring only high-signal results back to the model. Context engineering also includes compaction, structured note-taking, and even multi-agent patterns, but these mostly serve the question of "how should context be managed?" The long-running agent harness discussed later goes one step further: it does not only manage context, but separates planning, implementation, evaluation, revision, and final acceptance into different processes.
 
-In this post, I mainly focus on two parts of that story: **context engineering** and **long-running harnesses**.
+By the end of 2025, as coding agents became able to make longer continuous progress on software engineering tasks, the center of gravity quickly shifted toward long-running agent harnesses: from the initial focus on the model's coding ability to the ability to continue executing a task across multiple context windows / sessions. In November, Anthropic released *Effective harnesses for long-running agents*, which can be viewed as the first version of the long-running harness. The system started to shift from "managing one agent's context" to "managing multiple sessions." This version of the harness introduced a minimal role split between an initializer agent and a coding agent. The initializer's role is to establish an external project state that can be handed off: it breaks the task into a smaller feature list, writes a progress file, creates an init script, initializes a git repo, and marks each feature as pending. Later, each coding agent session only advances one bounded increment, such as implementing one feature or fixing one specific issue. The harness requires it to test, update records, commit, and leave the repo in a clean state before ending. That way, even if the next session starts from a new context, it can reconnect to the task through the progress file, feature list, git log, and test results.
 
-Context engineering is the successor to prompt engineering. When an agent changes from a single-turn question-answering system into a multi-turn action system, the input the model sees at inference time also changes. It is no longer just an isolated external input, or prompt. It becomes a context that is continuously shaped by the interaction between the model, tools, and environment.
+In January 2026, Anthropic published *Demystifying evals for AI agents*. This article systematized agent evals: because agents act in environments, call tools, and modify state over multiple turns, evals cannot only look at the final sentence. They also have to look at the transcript / trajectory and whether the final environment state is actually correct. Roughly speaking, it makes two points. One is task-level: how do we determine that the agent really did the task and did it well, rather than producing something that looks acceptable on the surface but is actually buggy or incomplete? The other is harness-level: we also need to evaluate whether each component of the harness is actually load-bearing, rather than just adding useless stuff.
 
-That context might include tool definitions, file contents, browser observations, message history, test output, MCP server descriptions, external documents, progress notes, and more. Context engineering decides which information should be placed in the prompt up front, which should be retrieved just in time, which should be written to external memory, and which should be handled by code or tools instead of being stuffed into the model context.
+By March 2026, in *Harness design for long-running application development*, this idea became the second version of the harness: initializer + coding agent was expanded into planner + generator + evaluator. The evaluator uses Playwright MCP to operate the application like a user, test UI, API, and database state, and reject outputs that fail certain criteria. Whether this evaluator should exist depends on whether the task exceeds the current model's reliable solo capability. For example, on Opus 4.5 it was clearly useful; by Opus 4.6, the model itself had become stronger, and some scaffold could be removed or weakened. These adjustments and transitions naturally make us think about a longer-term system design problem (see their April post *Scaling Managed Agents*): a harness is not a fixed structure, but co-evolves with model capability. Earlier Sonnet 4.5 / Opus 4.5 had context anxiety and would under-scope, so they needed more scaffold: context reset, sprint decomposition, evaluator feedback loops. But by Opus 4.6, the model itself was better at long-running agentic tasks, code review, debugging, and long-context retrieval. Some structures that were originally necessary started to become less necessary. For tasks the model can already complete reliably solo, an evaluator may no longer be worth the cost. Of course, for tasks that sit just beyond the model's capability boundary, an evaluator can still bring real lift. Many designs in a harness essentially contain assumptions about "what the current model cannot do well." After the model upgrades, these assumptions may no longer hold. So we should not treat one generation of harness as an architecture that can be used forever. Instead, we should split the system into relatively stable abstractions: use sessions to record what happened, use the harness to manage the agent loop and tool use, use the sandbox to provide a controlled execution environment, and so on. This way, the underlying harness can keep being replaced, but the agent product is not tied to one generation of scaffold.
 
-Anthropic systematically explained this idea in its September 2025 post, [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents). A concrete example of context engineering is what Anthropic later discusses in [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp): when there are too many MCP tools and too much data, not every tool definition and intermediate result should flow through the model context. Instead, the agent should write code to call tools on demand, filter the data inside the execution environment, and only bring high-signal results back to the model.
+## Context engineering
 
-Context engineering also includes techniques like compaction, structured note-taking, and even multi-agent patterns, but in this line of work they mainly serve the question of how to manage context. The long-running agent harnesses discussed later go one step further: they do not only manage context, but also split planning, implementation, evaluation, revision, and final acceptance into separate processes.
+People used to focus on prompt engineering, namely how to write the system prompt. But as agents become more multi-turn and longer-running, the focus becomes: at each inference step, what did the model see? For example, an agent's context may contain the system prompt, developer instructions, tool definitions, MCP server descriptions, user messages, conversation history, file contents, command output, browser observations, screenshots, errors, progress notes, retrieved documents, evaluator feedback. These things cannot all be blindly stuffed in. Even if the context window becomes larger, we still need to choose selectively, because noise in a long context distracts the model and increases cost and latency. So a good context is the minimal high-signal context that lets the model complete the next step at the current step. In general, we use just-in-time context: instead of stuffing all documents, tools, and history into the model, we keep references, such as paths, URLs, commit hashes, log files, database table names, and so on. When the model needs them, it loads them through tools. In this way, the agent's working memory keeps indexes and currently relevant fragments, rather than all of the context.
 
-By late 2025, as coding agents became able to make longer continuous progress on software engineering tasks, the center of gravity quickly shifted toward long-running agent harnesses. The question moved from whether a model could write code to whether it could continue working across multiple context windows or sessions. In November, Anthropic published [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), which can be read as the first version of its long-running harness.
+Common context techniques in long tasks include:
 
-At this point, the system began shifting from "managing one agent's context" to "managing multiple sessions." This harness introduced a minimal division of roles between an initializer agent and a coding agent. The initializer builds an external project state that future sessions can inherit: it breaks the task into a smaller feature list, writes a progress file, creates an init script, initializes a git repo, and marks each feature as pending. Later coding agents only advance one bounded increment per session, such as implementing one feature or fixing one specific issue. The harness requires each coding agent to test, update notes, commit, and leave the repo in a clean state before the session ends. This way, even if the next session starts in a fresh context, it can reconnect to the task through the progress file, feature list, git log, and test results.
+**Compaction:** When the context is almost full, compress the current conversation trace into a summary, then use that summary to start the next context. Usually this is still the continuation of the same task and the same agent loop. Its goal is to preserve conversational continuity as much as possible. In other words, the model should feel that "what I was just doing is still here"; only the history has been compressed.
 
-In January 2026, Anthropic published [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents). This post systematized agent evals. Because agents act in environments, call tools, and modify state over multiple turns, evals cannot only look at the final answer. They also have to inspect the transcript or trajectory, and they have to verify whether the final environment state is actually correct.
+**Structured note-taking:** Let the agent actively write task state into persistent external artifacts, such as `progress.md`, `feature_list.json`, `NOTES.md`, or git commits. It is not necessarily only for the same task. A project-level `NOTES.md` can be read by later sessions, by planner/generator/evaluator, or reused in neighboring tasks.
 
-This matters at two levels. At the task level, evals tell us whether the agent really completed the task, rather than producing something that looks acceptable but is buggy or incomplete. At the harness level, evals tell us whether each component of the harness is actually load-bearing, instead of merely adding complexity.
+**Context reset:** Use external artifacts, such as files produced by note-taking, git logs, test results, task lists, and so on, as startup material to open a clean new context/session. It does not preserve the full conversation history, and can clear noise and bad assumptions so that a new agent can reorient itself.
 
-By March 2026, in [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps), this idea became the second version of the harness: initializer + coding agent was expanded into planner + generator + evaluator. The evaluator uses Playwright MCP to interact with the application like a user, testing the UI, APIs, and database state, and rejecting outputs that fail the criteria.
+**Multi-agent architecture:** Do role division and context isolation. Different agents receive different context, do different subtasks, and finally pass only high-density results back to the main flow.
 
-Whether the evaluator should exist depends on whether the task exceeds the current model's reliable solo capability. On Opus 4.5, the evaluator was clearly useful. By Opus 4.6, the model itself had become stronger, and some scaffold could be removed or weakened. These adjustments naturally lead to a longer-term system design question, which Anthropic discusses in its April post [Scaling Managed Agents](https://www.anthropic.com/engineering/managed-agents): a harness is not a fixed structure. It co-evolves with model capability.
+## Tool use
 
-Earlier Sonnet 4.5 and Opus 4.5 could show context anxiety and under-scope the product, so they needed more scaffold: context reset, sprint decomposition, evaluator feedback loops. But by Opus 4.6, the model was better at long-running agentic tasks, code review, debugging, and long-context retrieval. Some structures that were once necessary became less necessary. For tasks that the model can already complete reliably on its own, an evaluator may no longer be worth the cost. But for tasks just beyond the model's reliable frontier, an evaluator can still provide real lift.
+There are also some things to watch out for in tool use. For example, the number of tools cannot expand without limit, otherwise the model wastes attention on choosing. Tools should not overlap too much in functionality, otherwise the model does not know which one to use. Tool descriptions should clearly explain when to use them and when not to use them, namely they should make the boundaries clear. Return values should be token-efficient and should not pour irrelevant data into context. Returned error messages should let the model know what to repair next. Names should be clear, so the agent can infer boundaries from the names. Also, tools are preferably not exposed directly to the model as direct tool calls, but mapped into code APIs / a file tree, so the agent can call them through code. This way, the agent can read only the tool definitions it currently needs, filter large data inside the code execution environment, and return only summaries or a small number of results to the model. It can use loops, conditionals, and exception handling to complete complex control flow, or write intermediate state into files instead of stuffing it into context. Tool outputs are deterministic; we should leave deterministic computation to code. Judgment and planning, such as how to call tools, which tools to call, in what order, and how many times, should be left to the model.
 
-Many harness designs implicitly encode assumptions about what the current model cannot do well. When the model improves, those assumptions may no longer hold. That means we should not treat any particular generation of harness as the permanent architecture. Instead, the system should be split into relatively stable abstractions: a session records what happened, a harness controls the agent loop and tool use, and a sandbox provides a controlled execution environment. This allows the underlying harness to keep changing without tying the agent product to one generation of scaffold.
+## The problem of long-running agents
 
-## Context Engineering
+### 1. Context window
 
-People used to focus on prompt engineering: how to write the system prompt. But as agents become more multi-turn and long-running, the focus shifts to what the model sees at each inference step.
-
-An agent's context might contain the system prompt, developer instructions, tool definitions, MCP server descriptions, user messages, conversation history, file contents, command output, browser observations, screenshots, errors, progress notes, retrieved documents, evaluator feedback, and more.
-
-These cannot all be blindly stuffed into the context. Even if context windows get larger, we still have to choose selectively, because noise in a long context can distract the model and increase cost and latency.
-
-A good context gives the model the minimum high-signal information it needs to complete the next step. In practice, this often means using just-in-time context. Instead of giving the model every document, tool, and historical detail up front, we keep references: paths, URLs, commit hashes, log files, database table names. The model can load them through tools when needed. This way, the agent's working memory contains indexes and currently relevant snippets, not the entire world.
-
-Common context techniques for long tasks include:
-
-**Compaction:** When the context is almost full, compress the current conversation trace into a summary, then use that summary to start the next context. It is usually still the same task and the same agent loop. Its goal is to preserve conversational continuity: the model should feel that "what I was just doing is still here," except the history has been compressed.
-
-**Structured note-taking:** Let the agent actively write task state into persistent external artifacts, such as `progress.md`, `feature_list.json`, `NOTES.md`, or git commits. This is not necessarily only for the same task. A project-level `NOTES.md` can be read by later sessions, by the planner, generator, or evaluator, or even reused across neighboring tasks.
-
-**Context reset:** Use external artifacts, such as files produced by note-taking, git logs, test results, and task lists, as the starting material for a clean new context or session. It does not preserve the full conversation history. This can clear noise and bad assumptions, letting a fresh agent reorient itself.
-
-**Multi-agent architecture:** Use role separation and context isolation. Different agents receive different contexts, work on different subtasks, and only return high-density results to the main flow.
-
-## Tool Use
-
-Tool use also has several traps. The number of tools cannot grow without bound, or the model will waste attention choosing between them. Tools should not overlap too much, or the model will not know which one to use. Tool descriptions should clearly say when the tool should and should not be used. Returned values should be token-efficient; irrelevant data should not be dumped into context. Error messages should help the model figure out the next repair step. Tool names should be clear enough that the agent can infer their boundaries from the names.
-
-Ideally, tools should not always be exposed directly to the model as raw tool calls. They can instead be mapped into code APIs or a file tree, so that the agent calls them through code. This lets the agent read only the tool definitions it currently needs, filter large data inside the execution environment, and return only summaries or small results to the model. It can use loops, conditionals, and exception handling for complex control flow, and it can write intermediate state to files instead of putting everything in context.
-
-Tool outputs are deterministic. We should leave deterministic computation to code. The model should handle the judgment and planning: which tools to call, in what order, how many times, and why.
-
-## The Problems of Long-running Agents
-
-### 1. The Context Window
-
-Long tasks will inevitably exceed a single context window. Even if the model supports a very long context, context is still a limited resource. Every additional piece of information consumes some of the model's attention budget.
-
-This creates three common phenomena:
+Long tasks will definitely exceed a single context window. Even if the model supports a very long context, context is always a finite resource: every extra piece of information consumes part of the model's attention budget. This brings three common phenomena:
 
 **Amnesia:** A new session does not know what the previous session did.
 
-**Context rot:** The longer the context gets, the easier it becomes for the model to lose focus. Early information gets buried under noise.
+**Context rot:** The longer the context, the easier it is for the model to lose the point; earlier information gets buried by noise.
 
-**Context anxiety:** When the model senses that it is near the end of the context window, it may rush to wrap things up and present unfinished work as complete.
+**Context anxiety:** When the model feels that it is approaching the end of the context, it rushes to wrap things up and calls a half-finished product complete.
 
-### 2. Planning and Handoff
+### 2. Planning and hand-off
 
-Many complex tasks contain dozens of interdependent features, bugs, design decisions, and validation steps. If a model starts directly from a high-level prompt, it can easily try to do everything at once, run out of context halfway through, and leave behind something that looks like a lot of work but does not actually function.
-
-Even when some of its work would be useful to the next agent, the next agent may not know which parts are useful. Is something that looks like a bug actually intentional? Or is it just something the previous session did not have time to clean up?
+Many complex tasks contain dozens of mutually dependent features, bugs, design decisions, and validation steps. If the model starts directly from a high-level prompt, it easily tries to do everything at once, then runs out of context halfway through, leaving something that appears to have a lot of work in it but does not actually work. Also, even if some things are useful for the next agent, the next agent does not know which things are useful: is something that looks like a bug intentionally made that way, or is it something the previous session did not have time to clean up?
 
 /btw
 
-I suspect many of us, in grad school or at work, have had the experience of inheriting a collaborator's mess. By the later stage of my PhD, around December 2025, agents had developed so quickly that I felt a lot of anxiety and insecurity. I felt I could no longer stay in academia, and I had completely lost the motivation to keep publishing papers. I also became the kind of person I used to dislike: someone who leaves collaborators with a pile of unresolved mess.
+I believe many of you, in PhD work or at work, have had the experience of inheriting a collaborator's mess. Although by the late stage of my PhD, around December 2025, agents were developing so fast that I felt a lot of anxiety and insecurity, deeply felt that I could no longer stay in academia, and had completely lost the motivation to keep publishing papers, I also became the kind of person I once disliked: someone who leaves collaborators with a pile of messes.
 
 ### 3. Self-evaluation
 
-Models do not necessarily judge their own outputs strictly. A model might see that a button renders and decide the feature is complete. It might see a page that roughly looks right and decide the design is good enough. It might run part of the test suite and decide the whole system is usable.
-
-In Anthropic's long-running application harness post, they note that using the same agent as both generator and reviewer often leads to overly lenient judgments. This is especially true for front-end design, product completeness, and edge interactions, where there may not be a clean unit test defining correctness. The model can easily convince itself.
+The model does not necessarily judge what it generated strictly. It may see that a button shows up and think the feature is complete; see that a page roughly looks right and think the design is good; or run part of the tests and think the whole system is usable. In Anthropic's long-running application harness post, they mention that letting the same agent be both generator and reviewer often leads to overly lenient judgments. Especially for front-end design, product completeness, and edge interactions, where there is no unit test directly defining the thing, the model can easily convince itself.
 
 /btw
 
-After all, the world is a giant barely-held-together operation, and models have learned quite a lot from us. Also, many times, people only need to convince themselves.
+After all, the world is a giant makeshift operation, and models have learned a lot from us. Also, a lot of the time, people only need to convince themselves.
 
 ## Harness
 
-An agent harness, also called a scaffold, is the system that lets a model act as an agent. It handles inputs, organizes tool calls, manages state, executes the loop, and returns results back to the model. It includes the file system, task board, test scripts, browser, shell, git, logs, sandbox, permission system, checkpoints, handoff notes, and so on.
+An agent harness, also called a scaffold, is the system that allows a model to act as an agent. It handles inputs, organizes tool calls, manages state, executes loops, and returns results to the model. It includes the file system, task board, test scripts, browser, shell, git, logs, sandbox, permission system, checkpoints, handoff notes, and so on.
 
-The first generation of long-running harnesses was conceptually simple. It mainly used two kinds of agents:
+The core design of the first generation of long-running harnesses was quite simple. It mainly used two types of agents:
 
-**Initializer agent:** Runs at the beginning and sets up the working frame and environment.
+**Initializer agent:** Runs at the very beginning to set up the working framework and environment.
 
-**Coding agent:** Makes incremental progress session by session, leaving structured handoff artifacts before it exits.
+**Coding agent:** Makes incremental progress session by session, and leaves structured handoff artifacts before ending.
 
 The initializer agent does several things.
 
-First, it creates a task list. For example, if the user only says "build a claude.ai clone," the initializer does not let later agents start coding immediately. It breaks the task into many verifiable features, such as creating a new chat, typing a message, sending on Enter, receiving a response, switching themes, and loading conversation history. Each feature starts as failing.
+**1. Create a task list.**
 
-Second, it creates a progress file. A file such as `claude-progress.txt` records what each round did, what remains, and what later agents should pay attention to.
+For example, if the user only says "build a claude.ai clone," the initializer does not let later agents directly start building. Instead, it breaks the task into many verifiable features, such as creating a new chat, entering a message, pressing Enter to send, receiving a response, switching themes, loading historical conversations, and so on. Each feature's initial status is marked failing.
 
-Third, it creates a startup script. For example, `init.sh` tells later agents how to install dependencies, start the service, and run basic checks.
+**2. Create a progress file.**
 
-Fourth, it initializes a git repo. Each session commits at the end, so later agents can understand recent changes through `git log`, and the system can roll back, diff, and audit.
+For example, `claude-progress.txt` or a similar file records what each round did, what remains, and what later agents should pay attention to.
 
-Later coding agents roughly follow three phases.
+**3. Create a startup script.**
 
-First, they orient themselves to the current engineering state: confirm the working directory, read the progress file and feature list, inspect the recent git log, and run an end-to-end test to make sure the basic functionality is not broken.
+For example, `init.sh` tells later agents how to install dependencies, start the service, and run basic checks.
 
-Second, they select, implement, and validate one feature: choose the highest-priority unfinished feature, implement a relatively independent increment, test it, and evaluate it.
+**4. Initialize a git repo.**
 
-Third, they hand off a clean state to the next round. They update the feature status and progress file and commit. If a new feature is not finished, they should leave a clear boundary instead of pretending it is complete.
+At the end of each round, commit. This way, later agents can understand recent changes through `git log`, and the system can roll back, diff, and audit.
 
-A long-running agent is essentially stitching a long task together from many short sessions. If each session leaves behind a small mess, errors compound. So the harness should not only reward "verifiable increments," but also reward the state the system is left in. If a session adds three features but breaks the startup flow, the next session may spend a huge number of tokens just recovering the environment. In the long run, that kind of progress is negative progress.
+Later coding agents roughly do three parts:
 
-## Planner / Generator / Evaluator
+Understand the current engineering state they are receiving (**orient**): confirm the current working directory, read the progress file and feature list, look at the recent git log, and run an end-to-end test to confirm that the basic functionality is not broken.
 
-The first-generation harness solved the context handoff problem, but one major problem remained: agents are not good at judging themselves. In Anthropic's second-generation harness, they introduced a more explicit multi-agent structure. The final shape roughly contains three roles:
+Select and finish one feature (**select & implement & validate**): choose the highest-priority unfinished feature, implement one relatively independent increment, test it, and evaluate that feature.
 
-**Planner:** Expands the user's high-level prompt into specifications, a feature list, design direction, and an implementation plan.
+Hand off a clean state to the next round, so that the current code can be understood by the next agent: for example, update the feature status and progress file and commit. If a new feature is not finished, leave a clear boundary instead of pretending it is done.
 
-**Generator:** Implements according to the plan: writing code, changing the UI, connecting the backend, and running tests.
+A long-running agent is essentially using multiple short sessions to stitch together one long task. If every session leaves behind a small mess, errors compound with interest. So a harness should not only reward "verifiable increments," but also reward the state of the system it leaves behind. If a session writes three more features but breaks the startup flow, the next round may have to spend a large number of tokens first recovering the environment. In the long run, this kind of progress is actually negative return.
 
-**Evaluator:** Acts like QA. It uses the application, checks the result, points out problems, and decides whether the work passes.
+## The three roles of planner / generator / evaluator
+
+The first-generation harness solved the context handoff problem, but there was still one big problem: agents are not good at judging themselves. So Anthropic introduced a multi-agent structure in the second generation. The final form roughly contains three roles:
+
+**Planner:** Expands the user's high-level prompt into a specification, feature list, design direction, and implementation plan.
+
+**Generator:** Implements features according to the plan: writes code, changes UI, connects the backend, and runs tests.
+
+**Evaluator:** Acts like QA, operates the application, checks the result, points out problems, and decides whether it passes.
 
 Different roles correspond to different failure modes.
 
-The planner solves under-scoping. Without a planner, the generator often interprets the task too narrowly. For example, for "build a 2D retro game maker," a single agent might build a page that can place a few tiles and decide it is done. A planner should expand that into a richer product spec: level editor, sprite editor, entity behavior, playable test mode, animations, export, sound effects, AI-assisted generation, and so on.
+Planner solves under-scoping. Without a planner, the generator often understands the task too narrowly. For example, for "build a 2D retro game maker," a single agent might build a page where you can place some tiles and think it is done. The planner expands it into more complete product specifications such as a level editor, sprite editor, entity behavior, playable test mode, animations, export, sound effects, AI-assisted generation, and so on.
 
-The generator solves execution. It is still the main laborer, but it no longer decides the entire product boundary from scratch. It works within a clear spec and current feature contract.
+Generator solves execution. It is still the main labor force, but it no longer decides the entire product boundary from nothing; it works inside a clear spec and current feature contract. Generator also does not have to be a single agent. It is more like a role: multiple generator sessions or coding agents sequentially hand off execution. Each round of generator reads the planner spec, current code, progress file, and previous evaluator feedback, then completes a bounded increment, writes state back, and exits. The next generator then reads these artifacts and continues. So the continuity of a long-running harness is placed in external project state, such as progress files, feature lists, git commits, and test results.
 
-The generator also does not have to be a single agent. It is better understood as a role: multiple generator sessions or coding agents execute sequentially. Each generator reads the planner spec, current code, progress file, and previous evaluator feedback; completes a bounded increment; writes state back; and exits. The next generator reads these artifacts and continues. The continuity of a long-running harness lives in external project state: progress files, feature lists, git commits, and test results.
+Evaluator solves self-evaluation. It is not just reading code and then giving a score or feedback; it operates the application through Playwright or browser automation like a user, checking UI functionality, APIs, database state, and edge cases. So this moves from previous LLM-as-a-judge to agent-as-a-judge.
 
-The evaluator solves self-evaluation. It does not only read code and produce a score or feedback. It uses Playwright or browser automation to click through the application like a user, checking UI behavior, APIs, database state, and edge cases. In this sense, it moves from "LLM as a judge" toward "agent as a judge."
+At the beginning of each sprint, the generator and evaluator first negotiate "what counts as done for this piece," rather than having the generator finish first and then ask the evaluator to criticize it. Before writing code, both sides communicate and reach consensus. This "negotiation" happens by exchanging structured artifacts through files and the workspace: the generator writes a sprint contract proposal, explaining what this round will do, what the acceptance criteria are, and what is out of scope; the evaluator reads the planner spec and proposal, fills in missing boundary conditions or rejects an overly broad scope; the generator then revises the contract. What they share is the spec, contract, progress, code, test results, and feedback.
 
-At the beginning of each sprint, the generator and evaluator negotiate what completion means for that piece of work. The generator does not first finish the work and then ask the evaluator to criticize it. Instead, before coding, both sides communicate and reach consensus.
+In this negotiation process, vague user stories become testable contracts. It is a bit like product requirement clarification + QA test plan in a human team.
 
-This "negotiation" happens through files and workspace artifacts. The generator writes a sprint contract proposal: what this sprint will do, what the acceptance criteria are, and what is out of scope. The evaluator reads the planner spec and the proposal, adds missing edge cases or rejects an overly broad scope, and then the generator revises the contract. What they share is the spec, contract, progress, code, test results, and feedback.
+However, giving evaluation to another LLM does not automatically solve the problem. Claude was not a good QA agent at first either. It would find real problems, then convince itself that they were not serious; or it would only do shallow tests and not touch edge paths. So the evaluator itself also needs to be tuned. It needs a clear rubric, failure cases, judgment criteria, interaction paths it must explore, and bug types it must not let go too easily. Ideally, we should read its logs, find where it disagrees with human judgment, and update and iterate on the evaluator prompt.
 
-During this negotiation, a vague user story becomes a testable contract. It is similar to product requirement clarification plus a QA test plan in a human team.
+Anthropic's frontend harness used several scoring dimensions:
 
-However, giving evaluation to another LLM does not automatically solve the problem. Claude was not a good QA agent at first. It would discover real issues, then convince itself those issues were not serious, or it would only run shallow tests and avoid edge paths. The evaluator itself has to be tuned. It needs a clear rubric, failure cases, judgment criteria, interaction paths it must explore, and bug types it should not easily dismiss. Ideally, we should read its logs, find where it disagrees with human judgment, and iterate on the evaluator prompt.
+**Design quality:** Whether the whole thing has a clear character, rather than being a pile of components. Aesthetic quality.
 
-Anthropic's front-end harness used several scoring dimensions:
+**Originality:** Whether there are custom design decisions, avoiding templates, default libraries, and an "AI feel." Originality.
 
-**Design quality:** Does the overall product have a clear visual character, instead of feeling like a pile of components?
+**Craft:** Typography, spacing, color, contrast, and so on. Usability at the craft level.
 
-**Originality:** Does it make custom design decisions rather than relying on templates and default libraries? Does it avoid an obvious AI-generated feel?
+**Functionality:** Understanding and completing the task. The more important functionality side of usability.
 
-**Craft:** Typography, spacing, color, contrast, and related details.
+So when using a judge, we cannot ask abstractly whether this is "good." We need to break "good" into multiple checkable dimensions. Similarly, in the application development harness, the evaluator scores dimensions such as product depth, functionality, visual design, and code quality, and every dimension has a hard threshold. As long as one key dimension is below the hard threshold, this sprint fails, and the generator must continue revising based on concrete feedback.
 
-**Functionality:** Can the user understand and complete the task? This is the most important usability dimension.
-
-So when using a judge, we should not ask abstractly whether something is "good." We need to decompose "good" into checkable dimensions. Similarly, in the application development harness, the evaluator scores product depth, functionality, visual design, and code quality, and each dimension has a hard threshold. If any key dimension is below the threshold, the sprint fails and the generator must revise based on concrete feedback.
-
-When evaluating, we should not evaluate "the agent says it is done." We should evaluate the final environment state and outcome. A flight-booking agent saying "I booked it for you" is meaningless; we need to check whether the reservation actually exists in the database. A coding agent saying "bug fixed" is meaningless; what matters is whether the tests pass, and whether the original code state was damaged.
+When evaluating, what we evaluate should not be "the agent says it is done," but the final environment state and outcome. A flight-booking agent saying "I booked it for you" is meaningless; what matters is whether there is actually a reservation in the database. A coding agent saying "bug fixed" is meaningless; what matters is whether the tests pass (outcome), and whether it damaged the original code (state).
 
 /btw
 
-Many life lessons apply here. For example, when evaluating a person, what they did matters more than what they said. Because of my strangely persistent "therapist trait," this is something I often discuss when talking with girls around me about their relationship problems. It is much easier to analyze other people's dilemmas than to get out of my own. On the one hand, I often become other people's therapist; on the other hand, I need a therapist myself, but it is hard to find one I trust.
+Many life lessons can apply here. For example, when evaluating a person, what the other person did matters more than what they said. Because of my unique "therapist trait," I often end up talking about related topics when discussing relationship problems with the girls around me. Processing and analyzing other people's dilemmas is much easier than walking out of my own life difficulties. On one side I am being other people's therapist; on the other side I need to find a therapist myself, but it is hard to find one I trust. After I started trying to write blogs, I actually felt much calmer. Maybe I am my own best therapist. Writing lets me quiet down and talk to myself. Before, I gave all my time to other people and almost did not allocate any time to myself. Also, although I have been anxious about finding a job, and about being replaced by LLMs as a researcher in the near future, I still think I am better at therapy than the most state-of-the-art LLMs. Unfortunately, this trait cannot make me a living and was never on my career-planning path. I have wandered too far.
 
-After I started writing blogs, I actually became much calmer. Maybe I am my own best therapist. Writing lets me sit down and talk with myself. Before this, I gave almost all my time to other people and allocated almost none to myself. Also, even though I keep worrying about finding a job and about being replaced as a researcher by LLMs in the near future, I still think I am better at therapy than the most state-of-the-art LLMs. Unfortunately, this trait cannot make me a living, and it was never on my career path. Anyway, I digress.
+Some points worth noting: the planner usually mainly solves initial under-scoping. For example, a user's one-sentence prompt is often too broad, such as "build a 2D retro game maker," and the planner can make it concrete: what core modules should this product have, which are must-haves, which can be done later, and how each feature should be accepted. After the project moves forward, the evaluator takes on part of the local planner role and does feedback-driven replanning. The evaluator modifies artifacts left by the planner. For example, the planner initially wrote `sprite editor`, only requiring draw and save. After real testing, the evaluator may add new acceptance criteria: brush size must work, transparent pixels must be preserved, saved sprites must appear in the entity palette, and state must not be lost after reloading the project. The planner can implement replanning by modifying external files such as `feature_list`, `sprint_contract`, `known_issues`, and `next_actions`.
 
-A few caveats are worth emphasizing. The planner mainly solves initial under-scoping. A user prompt is often too broad, such as "build a 2D retro game maker." The planner makes it concrete: what core modules the product needs, which features are must-haves, which can wait, and how each feature should be accepted.
+So a multi-agent harness puts planning, execution, evaluation, and revision into external artifacts, so each round of agent can take over with limited context.
 
-As the project progresses, the evaluator often takes over part of the local planner role by doing feedback-driven replanning. The evaluator can modify the artifacts left by the planner. For example, the planner may initially define a sprite editor as only needing draw and save. After real testing, the evaluator might add new acceptance criteria: brush size must work, transparent pixels must be preserved, saved sprites must appear in the entity palette, and reloading the project must preserve state. This replanning can be implemented by changing external files such as `feature_list`, `sprint_contract`, `known_issues`, and `next_actions`.
+## More durable design
 
-In other words, a multi-agent harness puts planning, execution, evaluation, and revision into external artifacts, so that each round of agents can take over with limited context.
+Every component of a harness implicitly contains assumptions: assumptions about what the model cannot do well by itself. As models become stronger, these assumptions may no longer be valid. For example, if a model has context anxiety, the harness adds context reset. Later, if the model no longer has this problem, reset may turn from a necessary structure into latency and cost. If a model cannot plan, we add a planner. Later, if the model's planning ability improves, the planner may only be valuable on large tasks. If the generator can already reliably complete a task by itself, the evaluator may become unnecessary overhead; but on tasks that sit just beyond the model's capability boundary, the evaluator can again bring a large lift. So a harness is not better just because it is more complex. We should start from the simplest workable system, use evals to identify failure modes, then add corresponding structure for these real failure modes, and as models upgrade, periodically remove components that are no longer load-bearing, rather than building an overcomplicated agent framework from the beginning.
 
-## More Durable Design
+An agent system can be split into several relatively stable abstractions:
 
-Every component of a harness implicitly contains an assumption that the model cannot do something well by itself. As the model improves, those assumptions may stop being valid. For example, if a model has context anxiety, the harness may add context reset. Later, if the model no longer has this problem, reset may become unnecessary latency and cost. If a model cannot plan, we add a planner. Later, if the model's planning ability improves, the planner may only be useful for large tasks. If a task can already be reliably completed by the generator alone, the evaluator may become redundant overhead. But if the task is just beyond the model's capability boundary, the evaluator can still bring a large improvement.
+**Session:** an append-only log of what happened.
 
-So a harness is not better just because it is more complex. We should start from the simplest workable system, use evals to find failure modes, add structure only for real failure modes, and periodically remove components that are no longer load-bearing as models improve. We should not begin by building an overly complex agent framework.
+**Harness:** the control layer that calls the model, routes tools, and executes the agent loop.
 
-An agent system can be decomposed into several relatively stable abstractions:
+**Sandbox:** the environment where the agent can run code and modify files.
 
-**Session:** An append-only log of what happened.
-
-**Harness:** The control layer that calls the model, routes tools, and executes the agent loop.
-
-**Sandbox:** The environment where the agent can run code and modify files.
-
-By decoupling them, the underlying implementation can keep changing while the external interface remains stable. Long-running agent harnesses will continue to evolve, and stable abstractions prevent an agent product from being tied to one generation of scaffold.
+After decoupling them, the underlying implementation can keep changing while the external interface stays stable. Because the harness of long-running agents will keep evolving, stable abstractions let agent products avoid being tied to one generation of harness.
 
 ## Agent Eval
 
-Agent behavior is nondeterministic. Running the same prompt twice may produce one success and one failure. A task passing once does not mean the system is reliable. A task failing once may mean the grader is wrong, the environment is broken, or the task itself is ambiguous.
+Agent behavior is nondeterministic. Running the same prompt twice may succeed once and fail once. A task passing once does not mean the system is reliable; a task failing once may also mean the grader was wrong, the environment had a problem, or the task itself was ambiguous. Compared with ordinary LLM evals, for agent evals we should not only look at output text, but at the result that a sequence of actions causes in the environment. So we need sandbox, database, browser, file system, mock API, resettable environment, and so on. Different tasks may care about different metrics. For a coding agent, if we allow the agent to try multiple times, `pass@k` (the probability that at least one of k attempts succeeds) is a relatively suitable metric, because as long as one patch is correct, it can enter review. But for customer service, reimbursement, flight booking, and other agents used directly by users, `pass^k` (the probability that all k attempts succeed) is more important, because users expect reliability every time, not "one of ten attempts is right."
 
-Compared with ordinary LLM evals, agent evals should not only inspect output text. They should inspect the effects that a sequence of actions has on the environment. This is why agent evals need sandboxes, databases, browsers, file systems, mock APIs, resettable environments, and so on.
+There is also the difference between capability eval and regression eval. Capability evals contain some tasks the current system does not do well. Regression evals evaluate "can it still do what it used to know how to do?" This should be close to 100% pass, and is used to prevent regressions after system upgrades, model switches, or prompt changes.
 
-Different tasks also care about different metrics. For a coding agent, if we allow the agent to try multiple times, `pass@k` is a reasonable metric: the probability that at least one of k attempts succeeds. If one patch is correct, it can enter review. But for customer service, expense reimbursement, or flight booking agents that users interact with directly, `pass^k` is more important: the probability that all k attempts succeed. Users expect reliability every time, not that one out of ten attempts is correct.
+## Agentic Safety (the importance of a good RL environment)
 
-There is also a difference between capability evals and regression evals. Capability evals should include tasks the current system does not yet do well. Regression evals ask, "Can it still do what it used to do?" These should be close to 100% pass, to prevent regressions after a system upgrade, model switch, or prompt change.
-
-## Agentic Safety and the Importance of Good RL Environments
-
-In the non-agentic era, a model could only produce text, so the blast radius of a mistake was relatively small. Now agents can run shell commands, modify files, access databases, call SaaS APIs, send Slack messages, and open pull requests. The cost of mistakes is much higher.
-
-For safety, we cannot rely only on "the model will know this command is dangerous." A safer approach is to restrict what the agent can access, where it can write, which networks it can reach, which tools require approval, which state can persist, and which secrets should never be visible.
-
-This requires a well-designed RL environment. And when we talk about RL environments, we inevitably have to talk about reward hacking: we should not put shortcuts into the environment if we do not want agents to use them. For example, in a coding eval, future commits should not be left in `.git/objects`, and hidden tests should not be placed inside the container. More generally, any secret that can access production systems, such as API keys, OAuth tokens, cloud provider keys, or SSH keys, should not be directly exposed to the agent. Instead, we can use controlled tool capabilities, with permission checks, parameter constraints, and auditing inside the tool.
+In the non-agentic era, because the model could only answer text, the blast radius of mistakes was small. But now agents can run shell, modify files, access databases, call SaaS APIs, send Slack messages, and open PRs. The cost of mistakes can be much larger. For safety, we cannot rely only on "the model will judge whether a command is dangerous" to protect the system. The safer approach is to restrict what the agent can access, where it can write, what networks it can reach, which tools require approval, which state can persist, and which secrets are never visible. But this requires a good RL environment. Of course, once we mention RL environment, we have to mention reward hacking: we should not put shortcuts we do not want the agent to use into its environment. For example, in a coding eval, future commits should not be placed in `.git/objects`, hidden tests should not be placed inside the container, and secrets that can access production systems, such as API keys, OAuth tokens, cloud provider keys, and SSH keys, should not be directly exposed to the agent. We can instead use controlled tool capabilities, and implement permission checks, parameter constraints, and auditing inside the tool.
 
 </div>
 

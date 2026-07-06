@@ -20,7 +20,15 @@ layout: default
       {{ content }}
     </div>
     <footer class="post-footer">
-      <a href="{{ '/blog' | relative_url }}" class="back-to-blog">&larr; Back to Blog</a>
+      {% if page.categories contains 'technical' %}
+      <a href="{{ '/technical-blog' | relative_url }}" class="back-to-blog">&larr; Back to Technical Blog</a>
+      {% elsif page.categories contains 'research' %}
+      <a href="{{ '/research-blog' | relative_url }}" class="back-to-blog">&larr; Back to Research Blog</a>
+      {% elsif page.categories contains 'personal' %}
+      <a href="{{ '/personal-blog' | relative_url }}" class="back-to-blog">&larr; Back to Non-Technical Blog</a>
+      {% else %}
+      <a href="{{ '/' | relative_url }}" class="back-to-blog">&larr; Back Home</a>
+      {% endif %}
       <div class="post-nav">
         {% if page.previous.url %}
         <a href="{{ page.previous.url | relative_url }}" class="post-nav-prev">&larr; {{ page.previous.title }}</a>

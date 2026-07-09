@@ -8,9 +8,9 @@ permalink: /
 
 ## Research Interests
 
-- **Efficiency and Budget Aware Agents**: How to design agentic frameworks that are efficient and adaptive under budget constraints (such as thinking budget, tool call budget, or interaction turn budget). For math problems, this means reducing thinking tokens and preventing overthinking. For deep research, it means teaching models to use tool call budgets wisely. For AI assistants with ambiguous user queries, it means asking the right questions and knowing when to stop.
+I'm interested in designing RL environments in which agents can <strong class="research-highlight">genuinely learn</strong>. Designing a non-hackable environment is a lot like sculpting a work of art. As agents become more capable, the environments they require grow increasingly complex, and the distinction between a well-designed environment and a poorly designed one becomes ever more consequential. **I am convinced that environments will become the most crucial component of post-training.**
 
-- **Alignment and Safety**: Building human-centered models that improve people's lives rather than replace humans. As AI researchers, if we create these systems, we bear responsibility for ensuring they are beneficial. This requires both careful evaluation and effective intervention: understanding model behavior through rigorously designed experiments, and steering models toward desired behaviors through post-training methods and high-quality data curation.
+Previously, I worked on post-training LLMs for efficiency (reducing token and tool usage), safety (abstention), and general capability (math and question answering). Back then, I mainly designed rewards that shaped model behavior, along with tasks that probed how well those rewards worked.
 
 ## Experience
 

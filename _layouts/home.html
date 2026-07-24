@@ -5,7 +5,9 @@ layout: default
   <aside class="home-sidebar">
     <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" class="avatar">
     <h1 class="home-name">{{ site.author.name }}</h1>
-    <p class="home-affiliation">{{ site.author.bio }}</p>
+    {% if site.author.bio %}
+      <p class="home-affiliation">{{ site.author.bio }}</p>
+    {% endif %}
     {% include social-links.html %}
   </aside>
   <div class="home-content">

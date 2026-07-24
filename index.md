@@ -4,8 +4,6 @@ title: Home
 permalink: /
 ---
 
-<span style="color:red; font-weight:bold">I will be graduating in 2026 and am actively seeking full-time positions in industry.</span>
-
 ## Research Interests
 
 I'm interested in designing RL environments in which agents can <strong class="research-highlight">genuinely learn</strong>. Designing a non-hackable environment is a lot like sculpting a work of art. As agents become more capable, the environments they require grow increasingly complex, and the distinction between a well-designed environment and a poorly designed one becomes ever more consequential. **I am convinced that environments will become the most crucial component of post-training.**
@@ -41,7 +39,7 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
     <div class="experience-details">
       <div class="experience-title">Cornell</div>
       <div class="experience-subtitle">Ph.D. in Computer Science</div>
-      <div class="experience-date">2023 – 2026 (expected)</div>
+      <div class="experience-date">2023 – 2026</div>
     </div>
   </div>
   <div class="experience-item">

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "The Interest Map Behind the Open-Weights Letter / 开放权重联名信背后的利益地图"
+title: "英伟达为什么要保卫开放权重，以及它将如何重塑AI算力市场 / Why NVIDIA Is Defending Open-Weight Models—and How They Could Reshape the AI Compute Market"
 date: 2026-07-30
 categories: personal
 tags: [ai, open-weights, inference, nvidia, cloud]

@@ -46,6 +46,7 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
     <img src="/img/logos/microsoft_logo.jpeg" alt="Microsoft" class="experience-logo">
     <div class="experience-details">
       <div class="experience-title">Microsoft</div>
+      <div class="experience-subtitle">Copilot Tuning</div>
       <div class="experience-date">May 2026 – Aug 2026</div>
     </div>
   </div>

@@ -2,7 +2,7 @@
 layout: post
 title: "英伟达为什么要保卫开放权重，以及它将如何重塑AI算力市场 / Why NVIDIA Is Defending Open-Weight Models—and How They Could Reshape the AI Compute Market"
 date: 2026-07-30
-categories: personal
+categories: technical
 tags: [ai, open-weights, inference, nvidia, cloud]
 excerpt: "Open weights are not just a model-release choice; they reshape who buys compute, who controls inference demand, and how much bargaining power enterprises have against closed APIs."
 ---

@@ -21,11 +21,9 @@ layout: default
     </div>
     <footer class="post-footer">
       {% if page.categories contains 'technical' %}
-      <a href="{{ '/technical-blog' | relative_url }}" class="back-to-blog">&larr; Back to Technical Blog</a>
-      {% elsif page.categories contains 'research' %}
-      <a href="{{ '/research-blog' | relative_url }}" class="back-to-blog">&larr; Back to Research Blog</a>
+      <a href="{{ '/technical-blog' | relative_url }}" class="back-to-blog">&larr; Back to Tech Blog</a>
       {% elsif page.categories contains 'personal' %}
-      <a href="{{ '/personal-blog' | relative_url }}" class="back-to-blog">&larr; Back to Non-Technical Blog</a>
+      <a href="{{ '/personal-blog' | relative_url }}" class="back-to-blog">&larr; Back to Personal Blog</a>
       {% else %}
       <a href="{{ '/' | relative_url }}" class="back-to-blog">&larr; Back Home</a>
       {% endif %}

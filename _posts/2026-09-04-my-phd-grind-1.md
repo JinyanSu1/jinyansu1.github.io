@@ -16,8 +16,6 @@ excerpt: "By 2026, almost every friend I met while applying for PhDs in 2023 who
 
 <p><em>(The original version by the author is in Chinese without using any LLM, but for English version, the author use Claude to do the translation and then manually edited and rewrite some of them that she thought inaccurate.)</em></p>
 
-<p><em>----At this time when I write the article, all the friends who works on theory changed their research to LLMs</em></p>
-
 (Note: In order to preserve the privacy of the people that I mentioned, I didn't use their real name, but instead, using the name "Jack", "Frank", "Leo" instead.)
 
 I had originally wanted to give this the structure of a perfect book: a prelude, three distinct chapters (not for the sake of literary completeness, but because my PhD really did come in stages, almost neatly divisible by year), and an epilogue. So after jotting down some loose notes on the flight back to China, I spent a long time thinking about how to structure what I'd written, how to shape it into the perfect, complete form I had in mind before presenting it to readers. The result: three weeks went by, and the draft I wrote on the plane was never finished.
@@ -49,8 +47,6 @@ Those friendships with those old friends (who used to work on theory), though se
 </div>
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
-
-<p><em>----23年申phd时认识的那群朋友至此都转了LLM</em></p>
 
 （备注：文中的名字都是我为了叙述方便随意起的，为保护朋友的的隐私， 我没有使用他们的真实姓名）
 

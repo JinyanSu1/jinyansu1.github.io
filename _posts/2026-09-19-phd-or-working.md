@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PhD or Working / 选择读博还是工作"
+title: "PhD or Working--- My two cents / 选择读博还是工作"
 date: 2026-09-19
 categories: personal
 tags: [reflection, life, phd, career, advice, decision-making]

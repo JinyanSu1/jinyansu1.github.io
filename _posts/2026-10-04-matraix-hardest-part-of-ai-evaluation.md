@@ -70,6 +70,8 @@ In our interview they added a design detail the paper does not spell out: demogr
 
 **The synthetic path.** Sampling each dimension independently produces impossible profiles, such as a 19-year-old retired surgeon. The paper instead builds a directed acyclic graph (DAG) over the 1,290 dimensions. An edge is added only when a data source directly reports the conditional relationship, and personas are sampled one dimension at a time in topological order. Each non-root node's conditional distribution has the form
 
+<p style="text-align:center">p(X<sub>i</sub> = v | x<sub>Pa(i)</sub>) ∝ π<sub>i</sub>(v) · r<sub>i</sub>(v; x<sub>Pa(i)</sub>) · m<sub>i</sub>(v; x<sub>Pa(i)</sub>)</p>
+
 Here πᵢ is the population-wide prior. rᵢ is a source-informed likelihood-ratio adjustment: if the primary language is English and the region is North America, "Native" gets more weight. mᵢ is a binary compatibility mask that removes contradictions such as "primary language English, English proficiency None." An unusual but possible combination like "primary language English, proficiency Basic" is down-weighted, not removed. The point is to keep rare but real people while ruling out logically impossible ones.
 
 **The human-grounded path.** The other records come from six sources: Wikipedia biographies, Amazon review histories grouped by reviewer, the Stack Overflow Developer Survey, the U.S. General Social Survey (GSS), the PRISM Alignment dataset, and 355 consented responses to MatrAIx's own persona survey. Free text is extracted by an LLM under constraints; dimensions the evidence does not support are left null rather than imputed, and names and contact details are stripped. For example, Shakespeare: his biography, works, and tastes map into the schema, but "he probably never used a coding agent," so that dimension stays empty.
@@ -214,6 +216,8 @@ MatrAIx针对的就是这个缺口：不再用一个通用的"用户"，而是�
 采访中他们补充了论文没有展开的设计顺序：人口学维度来自公开数据库，行为类维度则是"先定场景"。团队梳理了50多个AI交互场景，再为每个场景定义交互属性，比如写代码爱不爱写注释、Python熟练度、提问是否啰嗦、一轮问几个问题。1,290维只是第一版，新版已经更多。
 
 **合成路径。** 如果每个维度独立抽样，会出现"19岁的退休外科医生"这类不合理的组合。论文的做法是把1,290个维度建成一张有向无环图（DAG），只有当某个数据源直接报告了条件关系时才加边，然后按拓扑序逐个维度采样。每个非根节点的条件分布形式是：
+
+<p style="text-align:center">p(X<sub>i</sub> = v | x<sub>Pa(i)</sub>) ∝ π<sub>i</sub>(v) · r<sub>i</sub>(v; x<sub>Pa(i)</sub>) · m<sub>i</sub>(v; x<sub>Pa(i)</sub>)</p>
 
 πᵢ是全人群先验。rᵢ是基于数据源的似然比调整，例如母语为英语且身在北美时，"Native"的权重上调。mᵢ是取值为0或1的兼容性掩码，用来排除"母语英语但英语水平None"这类矛盾。"母语英语但水平Basic"罕见但并非不可能，所以只被降权而不被排除。这样做的目的是保留少见但真实存在的人，只排除逻辑上不可能的组合。
 

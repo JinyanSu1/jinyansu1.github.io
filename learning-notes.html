@@ -6,6 +6,8 @@ permalink: /technical-blog/
 <div class="blog-container">
   <h1 class="page-title">Tech Blog</h1>
 
+  <p class="blog-intro-note"><em>I also write technical blog posts at AGI House: <a href="https://www.agihouse.org/blog/matraix-the-hardest-part-of-ai-evaluation" target="_blank" rel="noopener">MatrAIx: The Hardest Part of AI Evaluation</a>.</em></p>
+
   {% assign technical_posts = site.posts | where_exp: "post", "post.categories contains 'technical'" %}
 
   {% if technical_posts.size == 0 %}

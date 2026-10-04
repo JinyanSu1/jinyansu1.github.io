@@ -92,6 +92,8 @@ They also said they have found non-training methods that beat plain prompting, s
 
 At the execution level, a trial is formalized as the tuple ⟨persona, task, agent interface, model, random seed⟩. Trials share no state, so they are parallel by construction. Each trial produces an artifact bundle that a task-owned verifier converts into structured findings. There are four environments.
 
+![MatrAIx evaluation pipeline](/img/posts/matraix-pipeline.png)
+
 *A persona record becomes an agent when paired with a model, acts in one of four environments, and its trace is scored by a verifier tied to the task.*
 
 App tasks run in a Docker-based Linux desktop sandbox or on a remote macOS desktop or iOS simulator. Of the 1,010 tasks in the library, 621 are surveys, 371 are chatbot tasks, 12 are web tasks, and 6 are app tasks. The more interactive the environment, the fewer the tasks, and cost is the reason: in the paper, survey, chatbot, and web tasks used about 1,000 personas per model, while the two app tasks used 24 and 20.
@@ -234,6 +236,8 @@ MatrAIx针对的就是这个缺口：不再用一个通用的"用户"，而是�
 他们还透露，在纯prompt与完整训练之间，已经找到效果优于prompt的非训练方法。同时他们也计划post-train自己的模型，思路类似Cursor：既允许用户接入不同厂商的模型，也有自研的Composer。自己host模型前期要投入研发，但长期看成本更低，自由度更高。
 
 执行层面，一次试验被形式化为五元组⟨persona, 任务, agent接口, 模型, 随机种子⟩。试验之间不共享状态，因此天然可以并行。每次试验产出一个artifact包，由任务自带的verifier转成结构化结论。环境分四类。
+
+![MatrAIx评测流程](/img/posts/matraix-pipeline.png)
 
 *MatrAIx评测流程。一条persona档案与模型、任务配对后成为agent，在四类环境之一中行动，轨迹由任务自带的verifier评分。任务数量来自论文的任务库。*
 

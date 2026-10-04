@@ -12,6 +12,10 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
 
 💬 I'd love to hear your honest thoughts — about my blog, or about me. [Send me an anonymous suggestion](/suggestions/).
 
+## 📫 Contact
+
+Email: jinyansu6[@]gmail.com
+
 ## Education
 
 <div class="experience-list">
@@ -69,7 +73,3 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
     </div>
   </div>
 </div>
-
-## 📫 Contact
-
-Email: jinyansu6[@]gmail.com

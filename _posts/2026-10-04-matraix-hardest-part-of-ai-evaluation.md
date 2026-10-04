@@ -159,7 +159,7 @@ The mechanism is event-driven. The team feeds in real news, such as an earthquak
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
 
-P.S. 这篇文章由我在采访Xiaomin Li和Yuexing Hao后的整理的内容的英文版翻译而来（如果是播客的形式，可能会比读这些文字好很多，但当时的采访比较临时，怕即兴播客做不好，于是就以文字的内容呈现了）。其英文版内容将会发表在AGI house的post中，发布后我也会在此附上链接（英文版链接：[MatrAIx: The Hardest Part of AI Evaluation](https://www.agihouse.org/blog/matraix-the-hardest-part-of-ai-evaluation)）。另外，如果大家希望听到和他们相关的播客，可以在评论区留言，如果感兴趣的人较多的话，我会再作一期关于MatrAIx的视频播客。
+P.S. 这篇文章由我在采访Xiaomin Li和Yuexing Hao后的整理的内容的英文版翻译而来（如果是播客的形式，可能会比读这些文字好很多，但当时的采访比较临时，怕即兴播客做不好，于是就以文字的内容呈现了）。其英文版内容将会发表在AGI house的post中，发布后我也会在此附上链接。另外，如果大家希望听到和他们相关的播客，可以在评论区留言，如果感兴趣的人较多的话，我会再作一期关于MatrAIx的视频播客。
 
 *83亿个模拟用户背后，一家创业公司瞄准的是benchmark从未测过的那部分*
 

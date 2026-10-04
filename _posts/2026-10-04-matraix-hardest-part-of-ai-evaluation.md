@@ -306,22 +306,6 @@ MatrAIx针对的就是这个缺口：不再用一个通用的"用户"，而是�
 
 具体做法是以大事件驱动。团队把现实中的新闻输入进去，比如加州地震，让特定地区、特定群体的agent"像人一样去做出反应"，反应写入各自的memory。目前模拟世界与现实时间流速一致。可以加速，但加速之后"就失去了很多现实生活中的big events去做projection"。
 
-## 参考来源
-
-- MatrAIx: Simulating the World with 8.3 Billion Persona Agents (arXiv 2608.04205) · HTML全文
-- Simulating the World with 8.3 Billion Personas（MatrAIx官网技术报告解读）
-- MatrAIx In The Wild: Technical Blog
-- To Simulate a User, You Should Make Your LLM Dumber
-- Measuring Persona Drift in Long-Horizon Agent Simulations
-- MatrAIx Research 索引（含成本分析）
-- GitHub: MatrAIx-Persona-8B
-- Hugging Face Papers 页面
-- Mind the Sim2Real Gap in User Simulation for Agentic Tasks (arXiv 2603.11245)
-- TechCrunch: Simile raises 200M at 2B valuation
-- Aaru Series A 报道（Yahoo Finance / TechCrunch）
-- FishDog: Aaru AI Review 2026
-- X Trending: MatrAIx（含Community Note）
-
 </div>
 
 <script>

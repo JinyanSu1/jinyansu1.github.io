@@ -71,3 +71,5 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
 ## 📫 Contact
 
 Email: jinyansu6[@]gmail.com
+
+💬 Have a suggestion — about my blog, or about me? [Send it anonymously](/suggestions/).

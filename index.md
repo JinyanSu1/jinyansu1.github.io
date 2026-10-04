@@ -10,7 +10,7 @@ I'm interested in designing RL environments in which agents can <strong class="r
 
 Previously, I worked on post-training LLMs for efficiency (reducing token and tool usage), safety (abstention), and general capability (math and question answering). Back then, I mainly designed rewards that shaped model behavior, along with tasks that probed how well those rewards worked.
 
-💬 I'd love to hear your honest thoughts — about my blog, or about me. [Send me an anonymous suggestion](/suggestions/).
+💬 If you have any feedbacks about me, enter it [here](/suggestions/).
 
 ## 📫 Contact
 

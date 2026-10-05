@@ -7,7 +7,7 @@ tags: [ai, rsi, self-improvement, verification, agents, evals]
 excerpt: "AI is already helping to build the next generation of AI, with people still in the loop. What limits its speed is verification: agents produce work far faster than people and tests can check it. Five reasons verification is the hard part, and where the opportunities are."
 ---
 
-<p><em>(Originally posted on <a href="https://x.com/SuJinyan6/status/2106946784224510391" target="_blank" rel="noopener">X</a>.)</em></p>
+<p><em>(没有human edited Chinese translated version，如果需要的话，请自行翻译)</em></p>
 
 ## TL;DR
 

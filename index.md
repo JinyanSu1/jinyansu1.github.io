@@ -14,7 +14,7 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
 
 ## Misc
 
-At the end of my PhD, I started to explore more non-tech staff to understand myself better, such as expressing more of my opinions and being more brave to show my imperfections in public, you can find my other social medias such as <a href="https://www.zhihu.com/people/zhang-hui-2-22" target="_blank" rel="noopener">知乎</a>, <a href="https://www.xiaohongshu.com/user/profile/6275d74f0000000021024fdc" target="_blank" rel="noopener">小红书</a>, <a href="https://space.bilibili.com/392651856" target="_blank" rel="noopener">bilibili</a>, <a href="https://www.xiaoyuzhoufm.com/podcast/6ad0f9e99657732215ef2031" target="_blank" rel="noopener">小宇宙</a>.
+At the end of my PhD, I started to explore more non-tech stuff to understand myself better, such as expressing more of my opinions and being more brave to show my imperfections in public, you can find my other social medias such as <a href="https://www.zhihu.com/people/zhang-hui-2-22" target="_blank" rel="noopener">知乎</a>, <a href="https://www.xiaohongshu.com/user/profile/6275d74f0000000021024fdc" target="_blank" rel="noopener">小红书</a>, <a href="https://space.bilibili.com/392651856" target="_blank" rel="noopener">bilibili</a>, <a href="https://www.xiaoyuzhoufm.com/podcast/6ad0f9e99657732215ef2031" target="_blank" rel="noopener">小宇宙</a>.
 
 ## 📫 Contact
 

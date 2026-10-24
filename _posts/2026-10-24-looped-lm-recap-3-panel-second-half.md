@@ -246,6 +246,10 @@ He also recommended a paper by the authors of Huginn \[14\]: Efficient Parallel 
 
 &#91;22\] [Efficient Parallel Samplers for Recurrent-Depth Models and Their Connection to Diffusion Language Models](https://arxiv.org/abs/2510.14961). ICML 2026, arXiv:2510.14961.
 
+---
+
+*This series: [Part 1｜LT2 and Historical KV Replay](/blog/2026/10/looped-lm-recap-1-lt2/) · [Part 2｜Panel, First Half](/blog/2026/10/looped-lm-recap-2-panel-first-half/) · Part 3｜Panel, Second Half (this post)*
+
 </div>
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
@@ -481,6 +485,10 @@ loop 方向有 Universal Transformer（UT）\[8\] 这类工作，好像能逼近
 &#91;21\] [Diffusion Forcing: Next-token Prediction Meets Full-Sequence Diffusion](https://arxiv.org/abs/2407.01392). NeurIPS 2024, arXiv:2407.01392.
 
 &#91;22\] [Efficient Parallel Samplers for Recurrent-Depth Models and Their Connection to Diffusion Language Models](https://arxiv.org/abs/2510.14961). ICML 2026, arXiv:2510.14961.
+
+---
+
+*本系列：[第一篇｜LT2 与 Historical KV Replay](/blog/2026/10/looped-lm-recap-1-lt2/) · [第二篇｜圆桌（上）](/blog/2026/10/looped-lm-recap-2-panel-first-half/) · 第三篇｜圆桌（下）（本篇）*
 
 </div>
 

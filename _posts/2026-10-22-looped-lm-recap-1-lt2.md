@@ -223,6 +223,10 @@ Next up is the first half of the panel: Where are the bottlenecks in LLM archite
 
 &#91;8\] [On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes](https://arxiv.org/abs/2306.13649). ICLR 2024, arXiv:2306.13649.
 
+---
+
+*This series: Part 1｜LT2 and Historical KV Replay (this post) · [Part 2｜Panel, First Half](/blog/2026/10/looped-lm-recap-2-panel-first-half/) · [Part 3｜Panel, Second Half](/blog/2026/10/looped-lm-recap-3-panel-second-half/)*
+
 </div>
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
@@ -435,6 +439,10 @@ A_t = \prod_{j=1}^{n_h} \left(I - \beta_{t,j}\, k_{t,j} k_{t,j}^{\top}\right)
 &#91;7\] [Distilling to Hybrid Attention Models via KL-Guided Layer Selection](https://arxiv.org/abs/2512.20569). ICLR 2026, arXiv:2512.20569.
 
 &#91;8\] [On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes](https://arxiv.org/abs/2306.13649). ICLR 2024, arXiv:2306.13649.
+
+---
+
+*本系列：第一篇｜LT2 与 Historical KV Replay（本篇） · [第二篇｜圆桌（上）](/blog/2026/10/looped-lm-recap-2-panel-first-half/) · [第三篇｜圆桌（下）](/blog/2026/10/looped-lm-recap-3-panel-second-half/)*
 
 </div>
 

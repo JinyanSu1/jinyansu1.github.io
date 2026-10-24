@@ -283,6 +283,10 @@ The next part covers the second half of the panel: whether looping along depth i
 
 &#91;15\] [Path Independent Equilibrium Models Can Better Exploit Test-Time Computation](https://arxiv.org/abs/2211.09961). NeurIPS 2022, arXiv:2211.09961.
 
+---
+
+*This series: [Part 1｜LT2 and Historical KV Replay](/blog/2026/10/looped-lm-recap-1-lt2/) · Part 2｜Panel, First Half (this post) · [Part 3｜Panel, Second Half](/blog/2026/10/looped-lm-recap-3-panel-second-half/)*
+
 </div>
 
 <div class="lang-content lang-zh" lang="zh" style="display: none;" markdown="1">
@@ -555,6 +559,10 @@ loop 的收益到底来自架构，还是只是多花了算力？怎样验证才
 &#91;14\] [Fixed-Point Reasoners: Stable and Adaptive Deep Looped Transformers](https://arxiv.org/abs/2606.18206). arXiv:2606.18206, 2026.
 
 &#91;15\] [Path Independent Equilibrium Models Can Better Exploit Test-Time Computation](https://arxiv.org/abs/2211.09961). NeurIPS 2022, arXiv:2211.09961.
+
+---
+
+*本系列：[第一篇｜LT2 与 Historical KV Replay](/blog/2026/10/looped-lm-recap-1-lt2/) · 第二篇｜圆桌（上）（本篇） · [第三篇｜圆桌（下）](/blog/2026/10/looped-lm-recap-3-panel-second-half/)*
 
 </div>
 

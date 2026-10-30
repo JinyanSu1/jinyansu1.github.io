@@ -320,7 +320,7 @@ LegoX 是他所在团队围绕这条链路做的一系列开源工作。这次�
 
 **杜一鸣（主讲）**：香港中文大学博士，华为香港研究所高级研究员。本次分享的 LegoX 系列工作来自他所在的团队，覆盖代码智能体的数据与环境管线、SFT 训练、评测和强化学习。
 
-&#91;image: LegoX：面向代码智能体的数据科学与强化学习实践 PPT 封面\]
+<img src="/img/posts/agentic-data-1/slide-01.jpg" alt="LegoX：面向代码智能体的数据科学与强化学习实践 PPT 封面" loading="lazy">
 
 ## 一、四年变化：Agentic Data 正在成为基础设施
 
@@ -331,7 +331,7 @@ LegoX 是他所在团队围绕这条链路做的一系列开源工作。这次�
 - **2025 年，Agent 与工具生态。** Agent 开始进入日常工作，Coding、Agent、Tool Use 都进了前五，主题从“回答问题”变成“完成任务”。
 - **2026 年上半年，真实世界执行。** Agent 和 Coding 排到前两位，Long Horizon、Reliability、Real-world Tasks 也进了前十：模型要在真实环境里完成更长程、更可靠的任务。
 
-&#91;image: 前沿模型发布主题词的演变\]
+<img src="/img/posts/agentic-data-1/slide-02.png" alt="前沿模型发布主题词的演变" loading="lazy">
 
 *图：前沿模型发布主题词的演变（2023 年至 2026 年上半年）*
 
@@ -356,7 +356,7 @@ LegoX 以真实世界的数据来源为基础，比如 GitHub 和 Stack Overflow
 
 这次分享讲其中两块。重点是 LegoFlow；最后简要介绍 Lego-RL，看代码强化学习如何验证这些数据有效。
 
-&#91;image: LegoX 系列工作全景\]
+<img src="/img/posts/agentic-data-1/slide-03.png" alt="LegoX 系列工作全景" loading="lazy">
 
 *图：LegoX 系列工作全景*
 
@@ -368,7 +368,7 @@ LegoX 以真实世界的数据来源为基础，比如 GitHub 和 Stack Overflow
 
 不同脚手架的工具接口形式并不一样，这个差异会直接影响训练。
 
-&#91;image: 代码智能体 = 模型 + 脚手架\]
+<img src="/img/posts/agentic-data-1/slide-04.png" alt="代码智能体 = 模型 + 脚手架" loading="lazy">
 
 *图：代码智能体 = 模型 + 脚手架*
 
@@ -380,7 +380,7 @@ LegoX 以真实世界的数据来源为基础，比如 GitHub 和 Stack Overflow
 2. **SWE 任务构建**：有两条路线。一条用真实 PR，数量有限但真实；另一条是 bug 注入，用大模型重写代码或做 AST 变换（把代码解析成抽象语法树，再按规则改动，比如把“>”改成“>=”）来制造 bug，可以大规模生成。任务都要经过测试验证：参考补丁要能让原本失败的测试通过（FAIL-TO-PASS），也不能破坏原本通过的测试（PASS-TO-PASS）。通过验证的，就是可用的任务实例。
 3. **轨迹推理、过滤与打分**：让 Agent 在这些任务上实际运行，产出轨迹，再过滤、打分。
 
-&#91;image: 传统的代码智能体数据管线\]
+<img src="/img/posts/agentic-data-1/slide-05.png" alt="传统的代码智能体数据管线" loading="lazy">
 
 *图：传统的代码智能体数据管线*
 
@@ -397,13 +397,13 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 - **Trainer**：训练，产出 Models
 - **Evaluator**：评测，产出 Scores
 
-&#91;image: LegoFlow 架构\]
+<img src="/img/posts/agentic-data-1/slide-06.png" alt="LegoFlow 架构" loading="lazy">
 
 *图：LegoFlow 架构：Root 调度四个 Block，各自产出任务、轨迹、模型和分数*
 
 **设计思路：照着团队协作来分工。** 杜一鸣说，LegoFlow 模仿的是真实开发中单人开发与团队协作的关系。一个团队有团队的目标，每个人有自己的分工，怎么把大家协调起来，原本是团队管理的问题。有了 Coding Agent，这些角色可以交给 Agent 来担任。于是每个 Block 对应一个角色和一类任务，产出的环境、日志、输入输出都归档；每个 Block 的角色、行为、输入输出和交互边界，用一个 config.yaml 文件约定。他认为，把边界确认清楚，是团队合作高效的基础。此外，用到的代码仓库都作为黑盒，只通过约定的接口调用，Agent 不必深入阅读和修改仓库内部庞杂的代码。
 
-&#91;image: 设计哲学：Agent“拟人化”分工与协作\]
+<img src="/img/posts/agentic-data-1/slide-07.png" alt="设计哲学：Agent“拟人化”分工与协作" loading="lazy">
 
 *图：设计哲学：Agent“拟人化”分工与协作*
 
@@ -421,7 +421,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 > **注**：Harbor 由 Terminal-Bench 团队开发，与 Terminal-Bench 2.0 一同发布，用于在容器环境中大规模运行和评测智能体，也支持 SFT 和 RL 数据管线。
 
-&#91;image: Curator 的五个步骤\]
+<img src="/img/posts/agentic-data-1/slide-08.png" alt="Curator 的五个步骤" loading="lazy">
 
 *图：Curator 的五个步骤，左边是对应的 config.yaml*
 
@@ -440,7 +440,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 **运行看板：用转化率定位瓶颈。** 从构建任务、推轨迹到训练验证，整条流程耗时长、算力开销大。转化率指每个阶段相对上一阶段的保留比例，它直接影响每条有效数据的成本：转化率越高，单位成本越低，生产效率越高。因此团队用看板实时监控各阶段的转化率。下面是 Curator 一次真实运行的快照：822 个仓库、8,818 个候选 PR，构建出 926 个任务，其中 270 个通过验证，验收通过率 29.2%。没通过的任务，按失败阶段回查环境与测试，修正后重新验收；通过的任务再交给 Tracer 推轨迹。
 
-&#91;image: Curator 运行看板\]
+<img src="/img/posts/agentic-data-1/slide-09.png" alt="Curator 运行看板" loading="lazy">
 
 *图：Curator 一次运行的看板快照*
 
@@ -453,7 +453,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 - 再经任务验证，留下 5000 个任务。从候选 PR 算起，保留率只有 0.0417%；
 - 用 GLM-5.2 在 OpenHands SDK 和 OpenCode 两种脚手架上，对这 5000 个任务推了 9,767 条轨迹，其中 2,780 条成功解题，解决率 28.46%。
 
-&#91;image: LegoFlow-SWE 数据漏斗\]
+<img src="/img/posts/agentic-data-1/slide-10.png" alt="LegoFlow-SWE 数据漏斗" loading="lazy">
 
 *图：LegoFlow-SWE 的数据漏斗：从 1200 万个候选 PR 到 5000 个任务*
 
@@ -461,7 +461,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 > **注**：SWE-rebench V2 是 Nebius 在今年 3 月发布的 SWE 训练任务集，有 3.2 万多个带 Docker 环境的可执行任务，覆盖 20 种编程语言。
 
-&#91;image: 只用 1K 条轨迹 SFT 的效果\]
+<img src="/img/posts/agentic-data-1/slide-11.png" alt="只用 1K 条轨迹 SFT 的效果" loading="lazy">
 
 *图：只用 1K 条轨迹 SFT 的效果*
 
@@ -469,7 +469,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 这个过程不是一次性的。训练和评测之后，结果会回到 Curator，用来制定下一轮的数据合成，数据整体质量才能不断提升。
 
-&#91;image: 基于评测进行下一轮迭代\]
+<img src="/img/posts/agentic-data-1/slide-12.png" alt="基于评测进行下一轮迭代" loading="lazy">
 
 *图：评测结果回到 Curator，进入下一轮数据合成*
 
@@ -479,7 +479,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 - 第一轮评测发现，数据需要去重、过滤浅层推理、规范工具调用。修正后，每轮推理长度的中位数从 140 增至 959 个字符，CoT 质量更高；
 - 第二次训练（按推理深度筛选，512 条轨迹）后达到 64.4，比第一次高 8.3 分。
 
-&#91;image: Agent 端到端自演进\]
+<img src="/img/posts/agentic-data-1/slide-13.png" alt="Agent 端到端自演进" loading="lazy">
 
 *图：Agent 端到端自演进，SWE-bench Verified 从 7.6 升到 64.4*
 
@@ -491,7 +491,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 **推理轮数**与通过率强相关，图中 Pearson 相关系数为 −0.95：轮数越多，解决率越低。真正容易解决的问题，往往很少几轮就解决了。
 
-&#91;image: 经验一：任务复杂度与推理轮数\]
+<img src="/img/posts/agentic-data-1/slide-14.png" alt="经验一：任务复杂度与推理轮数" loading="lazy">
 
 *图：经验一：任务复杂度的五个静态信号（左），推理轮数与解决率（右）*
 
@@ -505,7 +505,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 >
 > （2）公开评测里也出现过类似的漏洞。2025 年 9 月，SWE-bench 的 GitHub issue #465 报告，部分智能体会用 git log --all 等命令查看评测仓库里“未来”的提交记录，从中获得修复思路，甚至看到参考补丁，涉及 Claude 4 Sonnet、GLM-4.5、Qwen3-Coder 等模型的提交。维护者随后更新了 SWE-bench Verified 的镜像，删除了基准提交之后的 git 历史。
 
-&#91;image: 经验二：越强的模型越会“作弊”\]
+<img src="/img/posts/agentic-data-1/slide-15.png" alt="经验二：越强的模型越会“作弊”" loading="lazy">
 
 *图：经验二：去掉泄漏后，教师和学生模型的分数都下降*
 
@@ -515,7 +515,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 团队做过一个实验：把同一批 GLM-5.2 / SWE-rebench-v2 轨迹，按每轮平均推理 token 分成四组，分别训练。四组平均推理长度为 167、368、577、812 token，SFT 后 SWE-bench Verified 分别为 57.0%、64.0%、64.6%、65.0%。从最浅的一组到第二组提升 7 个点，后三组之间只差 1 个点。可见收益主要来自去掉最浅的那组，再往深挑作用不大。所以团队的做法是：先剔除浅层轨迹，再把数据预算用在覆盖更多任务上。
 
-&#91;image: 经验三：过滤浅层推理\]
+<img src="/img/posts/agentic-data-1/slide-16.png" alt="经验三：过滤浅层推理" loading="lazy">
 
 *图：经验三：按推理长度分四组训练*
 
@@ -525,7 +525,7 @@ LegoFlow 是一个开源、易用的代码数据生产项目：造任务、推�
 
 下方热力图的横轴是交互轮数（顺序扩展），纵轴是并行 rollout 数。只跑 1 次时，轮数从 20 加到 100，解决率从 2.0% 升到 41.4%；而轮数停在 20 时，rollout 从 1 次加到 8 次，也只到 6.0%。轮数到 100 左右以后，再加轮数几乎不涨：只跑 1 次时，从 100 轮加到 160 轮，解决率只从 41.4% 升到 43.8%。这时再加 rollout 更划算，最高到 47.4%。
 
-&#91;image: 经验四：先加轮数，再加 rollout\]
+<img src="/img/posts/agentic-data-1/slide-17.png" alt="经验四：先加轮数，再加 rollout" loading="lazy">
 
 *图：经验四：横轴为交互轮数，纵轴为并行 rollout 数*
 
@@ -547,11 +547,11 @@ Lego-RL 的做法是让真实脚手架原样运行，由统一代理在生成时
 
 > **注**：训推不一致并不是智能体 RL 才有的问题。2025 年，Feng Yao 等人在 On the Rollout-Training Mismatch in Modern RL Systems 中指出，即使权重相同，推理引擎（如 vLLM）和训练引擎（如 FSDP）给同一个 token 算出的概率也可能明显不同，相当于把 on-policy RL 变成了 off-policy，并提出用截断重要性采样（TIS）来校正。到了智能体 RL，脚手架改写上下文、MoE 路由不一致，又在此之上叠加了新的问题，也就是本节讨论的几种情况。
 
-&#91;image: 两种做法的局限\]
+<img src="/img/posts/agentic-data-1/slide-18.png" alt="两种做法的局限" loading="lazy">
 
 *图：训练器内建简易脚手架、回放归档对话，两种做法各有局限*
 
-&#91;image: 轨迹保真的三类情况\]
+<img src="/img/posts/agentic-data-1/slide-19.png" alt="轨迹保真的三类情况" loading="lazy">
 
 *图：轨迹保真：三类典型的不一致*
 
@@ -561,7 +561,7 @@ Lego-RL 的做法是让真实脚手架原样运行，由统一代理在生成时
 
 > **注**：这种在 rollout 时记录路由、训练时照搬的做法，学界称为 Rollout Routing Replay（R3），出自小米 MiMo 团队的论文，见文末参考资料。
 
-&#91;image: 路由保真\]
+<img src="/img/posts/agentic-data-1/slide-20.png" alt="路由保真" loading="lazy">
 
 *图：路由保真：记录并复现 MoE 的专家路由*
 
@@ -571,7 +571,7 @@ Lego-RL 的做法是让真实脚手架原样运行，由统一代理在生成时
 
 这种筛法的问题是，需要对原始任务实例做大量 rollout，推理成本很高。
 
-&#91;image: RL 数据筛选\]
+<img src="/img/posts/agentic-data-1/slide-21.png" alt="RL 数据筛选" loading="lazy">
 
 *图：RL 数据筛选的受控比较*
 

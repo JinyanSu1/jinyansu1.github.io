@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "My PhD Grind (3): Me and My PhD Advisors / 我的PhD Grind（3）：我和我读博时的导师们"
+title: "My PhD Grind (3): It's Application Season Again — Let's Talk About Choosing Advisors / 我的PhD Grind（3）：又是一年申请季，聊聊选导师"
 date: 2026-11-13
 categories: personal
 tags: [reflection, life, phd, advisors, research]

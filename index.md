@@ -16,6 +16,8 @@ Previously, I worked on post-training LLMs for efficiency (reducing token and to
 
 At the end of my PhD, I started to explore more non-tech stuff to understand myself better, such as expressing more of my opinions and being more brave to show my imperfections in public, you can find my other social medias such as <a href="https://www.zhihu.com/people/zhang-hui-2-22" target="_blank" rel="noopener">知乎</a>, <a href="https://www.xiaohongshu.com/user/profile/6275d74f0000000021024fdc" target="_blank" rel="noopener">小红书</a>, <a href="https://space.bilibili.com/392651856" target="_blank" rel="noopener">bilibili</a>, <a href="https://www.xiaoyuzhoufm.com/podcast/6ad0f9e99657732215ef2031" target="_blank" rel="noopener">小宇宙</a>, <a href="https://www.youtube.com/@LoveLifeHumans" target="_blank" rel="noopener">YouTube</a>.
 
+I didn't use wechat official account that much, but for those who prefer to read my articles through wechat, you can find my account <a href="https://mp.weixin.qq.com/s/voXbYZitiQjn2fvutpSa0A" target="_blank" rel="noopener">here</a>. (It is not well maintained, but I will maintain it in the future and put on my personal writings.)
+
 ## 📫 Contact
 
 Email: jinyansu6[@]gmail.com
